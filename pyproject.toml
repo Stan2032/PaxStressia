@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mandate-sim"
+version = "0.2.0"
+description = "MANDATE (working title; repo codename PaxStressia) — headless simulation core for a turn-based strategy game about being the world police in a world that keeps score."
+requires-python = ">=3.10"
+# The sim package itself is stdlib-only by design: it must run in bare Termux Python.
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "jsonschema>=4", "ruff>=0.4"]
+harness = ["matplotlib>=3.7"]
+
+[tool.setuptools]
+packages = ["sim"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
