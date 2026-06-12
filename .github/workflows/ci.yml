@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-test-harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: pip install -e ".[dev,harness]"
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Tests
+        run: pytest -q --tb=short
+
+      - name: Mini balance harness (10 runs, passive baseline)
+        run: python harness/run.py --runs 10 --turns 60 --policy passive --out artifacts
+
+      - name: Kinetic comparison run
+        run: python harness/run.py --runs 10 --turns 60 --policy pure_kinetic --out artifacts-kinetic
+
+      - name: Upload balance artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-artifacts
+          path: |
+            artifacts/
+            artifacts-kinetic/
+          retention-days: 30
