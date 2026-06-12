@@ -15,7 +15,8 @@
             "ops_pressure", "attrit", "intel", "local_legitimacy",
             "domestic_legitimacy", "international_legitimacy",
             "governance", "development", "grievance", "amnesty",
-            "partner_capacity", "coup_seed", "drift", "intl_umbrella"
+            "partner_capacity", "coup_seed", "drift", "intl_umbrella",
+            "presence", "patron"
           ]
         },
         "amount": { "type": "number" },
@@ -23,7 +24,11 @@
         "turns": { "type": "integer", "minimum": 1 },
         "rate": { "type": "number", "minimum": 0, "maximum": 1 },
         "tiers": { "type": "integer", "minimum": 1 },
-        "node": { "type": "string", "description": "Optional explicit node target; defaults to the event's drawn context node." }
+        "node": { "type": "string", "description": "Optional explicit node target; defaults to the event's drawn context node." },
+        "faction": { "type": "string", "description": "presence op: which faction to seed/boost." },
+        "strength": { "type": "number", "description": "presence op: strength added (floor-seeded if absent)." },
+        "entrenchment": { "type": "number", "description": "presence op: entrenchment added." },
+        "patron": { "type": "string", "description": "patron op: patron id (e.g. mercenary)." }
       }
     }
   },
@@ -38,6 +43,7 @@
       "title": { "type": "string", "minLength": 1 },
       "text": { "type": "string", "minLength": 1, "description": "Dossier-tone briefing text (§2 tone). Civilian harm abstracted, never gore." },
       "weight": { "type": "number", "minimum": 0 },
+      "once": { "type": "boolean", "default": false, "description": "Historical beats fire at most once per run." },
       "requires": {
         "type": "object",
         "additionalProperties": false,
@@ -48,7 +54,11 @@
           "any_junta": { "type": "boolean" },
           "min_coup_risk": { "type": "number", "minimum": 0 },
           "min_partner_capacity": { "type": "number", "minimum": 0 },
-          "min_casualties": { "type": "integer", "minimum": 0 }
+          "min_casualties": { "type": "integer", "minimum": 0 },
+          "country_collapsed": { "type": "string", "description": "Eligible only after this country collapsed." },
+          "country_not_collapsed": { "type": "string", "description": "Eligible only while this country stands." },
+          "min_collapsed": { "type": "integer", "minimum": 0, "description": "Eligible once at least N countries have collapsed." },
+          "min_links": { "type": "integer", "minimum": 0, "description": "Eligible once the faction graph holds at least N links." }
         }
       },
       "choices": {

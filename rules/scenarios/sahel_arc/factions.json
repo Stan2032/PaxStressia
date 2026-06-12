@@ -1,0 +1,35 @@
+[
+  {
+    "id": "ansar_al_sahel",
+    "name": "Ansar al-Sahel",
+    "composite_of": "Composite closely modeled on JNIM and its precursors (Ansar Dine, AQIM's Saharan katibas, MUJAO, Katiba Macina). Locally rooted, federated structure, shadow-governance playbook.",
+    "ideology": ["salafi-jihadist", "local-grievance"],
+    "sponsor": "aq_network",
+    "capability_tier": 2,
+    "relations": { "wilayat_sahel": -0.4, "azawad_front": -0.1 },
+    "notes": "The entrenchment-first antagonist. Relations with the Azawad front are deliberately ambivalent (-0.1): allied in 2012, at war by 2013, coordinating again by 2026 — the affinity floor (§18.5) keeps the late alliance reachable.",
+    "sources": ["CFR Global Conflict Tracker — Sahel", "ICG reporting on JNIM"]
+  },
+  {
+    "id": "wilayat_sahel",
+    "name": "Wilayat Sahel",
+    "composite_of": "Composite closely modeled on IS-Sahel (ex-ISGS) and ISWAP's Lake Chad presence. Transnational franchise logic, higher-tempo violence, weaker local rooting.",
+    "ideology": ["salafi-jihadist", "transnational"],
+    "sponsor": "is_core",
+    "capability_tier": 2,
+    "relations": { "ansar_al_sahel": -0.4, "azawad_front": -0.6 },
+    "notes": "The strength-first antagonist. Starts only at the Lake Chad rim (the ISWAP face of the composite); the Saharan franchise arrives mid-run via the 'franchise declared' beat — historically the 2015 ISGS split.",
+    "sources": ["ACLED tri-border data", "CFR Global Conflict Tracker — Sahel"]
+  },
+  {
+    "id": "azawad_front",
+    "name": "Azawad National Front",
+    "composite_of": "Composite closely modeled on the Tuareg national movement lineage: MNLA (2012) → CMA → FLA (2025–26). Separatist, ethno-territorial, fights and bargains by turns.",
+    "ideology": ["separatist", "ethno-nationalist"],
+    "sponsor": null,
+    "capability_tier": 2,
+    "relations": { "ansar_al_sahel": -0.1, "wilayat_sahel": -0.6 },
+    "notes": "No external sponsor: its strength is demographic and territorial, not imported (ExternalSupport = 0, §18.5). The April 2026 coordinated offensives with JNIM — ideologically unlike groups allying out of shared interest — are the networking surprise this faction exists to make possible (§5.2).",
+    "sources": ["2012 Azawad declaration record", "en.wikipedia.org/wiki/2026_Mali_offensives"]
+  }
+]

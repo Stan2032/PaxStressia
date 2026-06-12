@@ -17,13 +17,32 @@ RULES_DIR = Path(__file__).resolve().parent.parent / "rules"
 RULE_FILES = ("nodes", "edges", "factions", "initiatives", "events", "constants")
 
 
-def load_rules(rules_dir: Path | None = None) -> dict:
-    """Load every rules file into one dict keyed by file stem."""
+def load_rules(rules_dir: Path | None = None, scenario: str | None = None) -> dict:
+    """Load every rules file into one dict keyed by file stem.
+
+    With a scenario id, files in rules/scenarios/<id>/ override the top level:
+    nodes/edges/factions/events REPLACE wholesale; constants MERGE partially;
+    scenario.json lands under rules["scenario"] (§18.9).
+    """
     base = Path(rules_dir) if rules_dir is not None else RULES_DIR
     rules = {}
     for name in RULE_FILES:
         with open(base / f"{name}.json", encoding="utf-8") as fh:
             rules[name] = json.load(fh)
+    if scenario is not None:
+        sdir = base / "scenarios" / scenario
+        with open(sdir / "scenario.json", encoding="utf-8") as fh:
+            rules["scenario"] = json.load(fh)
+        for name in RULE_FILES:
+            path = sdir / f"{name}.json"
+            if not path.exists():
+                continue
+            with open(path, encoding="utf-8") as fh:
+                data = json.load(fh)
+            if name == "constants":
+                rules["constants"] = {**rules["constants"], **data}
+            else:
+                rules[name] = data
     return rules
 
 
@@ -168,6 +187,7 @@ class WorldState:
     coup_risk: dict[str, float]
     collapsed: dict[str, bool]
     proto_blocs: list[list[str]] = field(default_factory=list)
+    fired_events: set[str] = field(default_factory=set)  # `once` beats already played
 
     def nodes_sorted(self) -> list[Node]:
         return [self.nodes[k] for k in sorted(self.nodes)]
@@ -210,6 +230,7 @@ class WorldState:
             "coup_risk": {k: round(v, 4) for k, v in sorted(self.coup_risk.items())},
             "collapsed": dict(sorted(self.collapsed.items())),
             "proto_blocs": sorted(self.proto_blocs),
+            "fired_events": sorted(self.fired_events),
         }
 
 

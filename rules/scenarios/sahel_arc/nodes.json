@@ -1,0 +1,176 @@
+[
+  {
+    "id": "bamako",
+    "name": "Bamako",
+    "country": "ML",
+    "capital": true,
+    "governance": 55, "development": 45, "grievance": 35,
+    "population_k": 2200, "access": 0.9,
+    "resources": ["administration", "trade"],
+    "government": "civilian", "local_legitimacy": 50, "intel_coverage": 0.5,
+    "patron_influence": { "mercenary": 5 },
+    "presence": {},
+    "notes": "Capital and core region of Mali; ML collapse rolls fire here. 2012: a state shaken but standing.",
+    "sources": ["CFR Global Conflict Tracker — Sahel"]
+  },
+  {
+    "id": "mopti",
+    "name": "Mopti / Centre",
+    "country": "ML",
+    "capital": false,
+    "governance": 35, "development": 25, "grievance": 55,
+    "population_k": 2100, "access": 0.6,
+    "resources": ["agriculture", "livestock"],
+    "government": "civilian", "local_legitimacy": 42, "intel_coverage": 0.3,
+    "presence": {
+      "ansar_al_sahel": { "strength": 12, "entrenchment": 8, "visibility": 30 }
+    },
+    "notes": "Central Mali. Modest 2012 presence; the Katiba Macina expansion (2015+) should emerge from grievance and spread, not be scripted.",
+    "sources": ["ICG reporting on central Mali"]
+  },
+  {
+    "id": "gao",
+    "name": "Gao",
+    "country": "ML",
+    "capital": false,
+    "governance": 22, "development": 20, "grievance": 70,
+    "population_k": 550, "access": 0.5,
+    "resources": ["trade_routes"],
+    "government": "civilian", "local_legitimacy": 35, "intel_coverage": 0.25,
+    "presence": {
+      "ansar_al_sahel": { "strength": 32, "entrenchment": 15, "visibility": 50 },
+      "azawad_front": { "strength": 18, "entrenchment": 12, "visibility": 45 }
+    },
+    "notes": "Niger-bend hub. 2012: MUJAO-held (folded into the Ansar composite) after pushing out the separatists' early control.",
+    "sources": ["2012 northern Mali collapse record"]
+  },
+  {
+    "id": "kidal",
+    "name": "Kidal",
+    "country": "ML",
+    "capital": false,
+    "governance": 12, "development": 15, "grievance": 80,
+    "population_k": 85, "access": 0.3,
+    "resources": ["smuggling_economy"],
+    "government": "civilian", "local_legitimacy": 25, "intel_coverage": 0.2,
+    "presence": {
+      "ansar_al_sahel": { "strength": 28, "entrenchment": 22, "visibility": 35 },
+      "azawad_front": { "strength": 35, "entrenchment": 30, "visibility": 40 }
+    },
+    "notes": "Tuareg heartland; the state's writ never really returns here in the historical run. Highest starting entrenchment on the map.",
+    "sources": ["2012 Azawad declaration record"]
+  },
+  {
+    "id": "menaka",
+    "name": "Ménaka",
+    "country": "ML",
+    "capital": false,
+    "governance": 18, "development": 15, "grievance": 72,
+    "population_k": 250, "access": 0.35,
+    "resources": ["livestock", "smuggling_economy"],
+    "government": "civilian", "local_legitimacy": 30, "intel_coverage": 0.2,
+    "presence": {
+      "azawad_front": { "strength": 20, "entrenchment": 15, "visibility": 35 },
+      "ansar_al_sahel": { "strength": 8, "entrenchment": 5, "visibility": 30 }
+    },
+    "notes": "The corridor between the Tuareg north and the tri-border zone — later the Saharan franchise's killing fields; at start, separatist ground.",
+    "sources": ["ACLED Ménaka region data"]
+  },
+  {
+    "id": "ouagadougou",
+    "name": "Ouagadougou",
+    "country": "BF",
+    "capital": true,
+    "governance": 50, "development": 40, "grievance": 38,
+    "population_k": 1900, "access": 0.85,
+    "resources": ["administration", "trade"],
+    "government": "civilian", "local_legitimacy": 45, "intel_coverage": 0.45,
+    "patron_influence": { "mercenary": 5 },
+    "presence": {},
+    "notes": "Capital and core region of Burkina Faso; BF collapse rolls fire here. 2012: the Compaoré state, brittle beneath the surface.",
+    "sources": ["CFR Global Conflict Tracker — Sahel"]
+  },
+  {
+    "id": "sahel_bf",
+    "name": "Northern Burkina (Sahel region)",
+    "country": "BF",
+    "capital": false,
+    "governance": 30, "development": 18, "grievance": 48,
+    "population_k": 1100, "access": 0.5,
+    "resources": ["livestock", "gold"],
+    "government": "civilian", "local_legitimacy": 40, "intel_coverage": 0.3,
+    "presence": {},
+    "notes": "Djibo and the BF Sahel. Empty at start — whether and when it ignites is the spread mechanic's first real test: historically ~2015–2016, via Soum-province grievances and the Mopti border.",
+    "sources": ["ICG Burkina Faso reporting"]
+  },
+  {
+    "id": "niamey",
+    "name": "Niamey",
+    "country": "NE",
+    "capital": true,
+    "governance": 45, "development": 35, "grievance": 45,
+    "population_k": 1100, "access": 0.8,
+    "resources": ["administration", "trade"],
+    "government": "civilian", "local_legitimacy": 45, "intel_coverage": 0.4,
+    "patron_influence": { "mercenary": 5 },
+    "presence": {},
+    "notes": "Capital and core region of Niger — on the map now (unlike Sahel-lite), so the 2023 pattern can complete the cascade endogenously.",
+    "sources": ["CFR Global Conflict Tracker — Sahel"]
+  },
+  {
+    "id": "tillaberi",
+    "name": "Tillabéri",
+    "country": "NE",
+    "capital": false,
+    "governance": 30, "development": 20, "grievance": 60,
+    "population_k": 2700, "access": 0.55,
+    "resources": ["agriculture"],
+    "government": "civilian", "local_legitimacy": 36, "intel_coverage": 0.3,
+    "presence": {
+      "ansar_al_sahel": { "strength": 5, "entrenchment": 3, "visibility": 25 }
+    },
+    "notes": "The tri-border region. Thin 2012 presence; the Saharan franchise beat and spread should make it the most attacked sector by the late run — as in reality.",
+    "sources": ["ACLED tri-border incident data"]
+  },
+  {
+    "id": "tahoua",
+    "name": "Tahoua",
+    "country": "NE",
+    "capital": false,
+    "governance": 32, "development": 22, "grievance": 55,
+    "population_k": 3000, "access": 0.6,
+    "resources": ["agriculture", "livestock"],
+    "government": "civilian", "local_legitimacy": 38, "intel_coverage": 0.3,
+    "presence": {},
+    "notes": "Between the tri-border and the east; a depth region the insurgency reaches only in bad runs — a useful calibration marker.",
+    "sources": ["ACLED Niger data"]
+  },
+  {
+    "id": "diffa",
+    "name": "Lake Chad rim (Diffa)",
+    "country": "NE",
+    "capital": false,
+    "governance": 28, "development": 18, "grievance": 60,
+    "population_k": 700, "access": 0.45,
+    "resources": ["fisheries", "trade_routes"],
+    "government": "civilian", "local_legitimacy": 35, "intel_coverage": 0.25,
+    "presence": {
+      "wilayat_sahel": { "strength": 18, "entrenchment": 12, "visibility": 50 }
+    },
+    "notes": "The ISWAP face of the Wilayat composite starts here — the arc's second front, historically distinct from the Saharan franchise but the same franchising logic.",
+    "sources": ["ISWAP/Lake Chad reporting"]
+  },
+  {
+    "id": "coastal_north",
+    "name": "Coastal spillover marker (Benin/Togo north)",
+    "country": "GLF",
+    "capital": false,
+    "governance": 45, "development": 30, "grievance": 35,
+    "population_k": 900, "access": 0.6,
+    "resources": ["agriculture", "parks"],
+    "government": "civilian", "local_legitimacy": 50, "intel_coverage": 0.35,
+    "presence": {},
+    "notes": "Composite marker for the Gulf-of-Guinea littoral's northern districts (W-Arly-Pendjari complex). No capital on map — it cannot collapse; it exists to measure how far you let the arc bleed south. Historically: attacks from ~2021.",
+    "sources": ["Coastal West Africa spillover reporting (ICG)"]
+  }
+]

@@ -541,8 +541,16 @@ Global ~45-node map, Sept 2001 start (**PROPOSED**, §2), 25-year horizon, all s
 - **Deployment guide** at `docs/DEPLOY.md` per Stan's request: Cloudflare Pages from GitHub (repo-root deploy → live rules + per-PR playtest preview URLs), wrangler-from-Termux, GitHub Pages alternatives. Cloudflare setup itself is a dashboard action only Stan can do.
 - **The v0.4 gate is now a human question:** Stan playtests; if the 20-minute loop isn't fun, we iterate the proto before building the full arc map.
 
+## 10. Scenario 1 in data — v0.4 (2026-06-12, same code session)
+
+- **"The Arc" delivered as data** (`rules/scenarios/sahel_arc/`): the §12 map at full 12-node resolution (Niamey on-map so Niger's collapse can complete the cascade endogenously; the coastal marker measures southward bleed), the *Azawad National Front* as the third faction, and the historical beat deck — every beat sourced, every beat `once`.
+- **The promised v0.4 engine growth landed in both engines**: spread over edges (§18.5), scenario loading (§18.9), beat predicates, events-only `presence`/`patron` ops. The **beats-vs-system law** is now stated in §18.9: beats supply what the system cannot generate (declarations, splits, arrivals); coups remain endogenous collapse rolls — otherwise the §3.7 calibration test would be circular.
+- **Thesis suite status: two of four XPASS pre-calibration** (hearts-minds-loses-to-momentum; kinetic-loses-Local). History calibration now runs against the arc and remains the honest xfail — that is v0.5's job, now with the map it needs.
+- Proto gained the scenario picker; the arc is playable today.
+
 ### Changelog (post-handoff)
 - **v0.2** — 2026-06-12 — Repo bootstrapped; §5.3 task list delivered (schemas, Sahel-lite data, sim skeleton, tests, CI); DESIGN.md grown with §18; open question #7 (repo name) raised.
 - **v0.2.1** — 2026-06-12 — Two research passes (design craft; authoritarian-reality empirics) → DESIGN.md §19 & §20; Exposure directive recorded as DECIDED; `main` trunk + PR workflow established.
 - **v0.2.2** — 2026-06-12 — Title DECIDED: **PaxStressia**; questions #4/#7 resolved; live files renamed; MANDATE kept in historical record.
 - **v0.3** — 2026-06-12 — Phase 0 greybox prototype delivered (playable, fog-first, smoke-tested); DEPLOY.md (Cloudflare Pages); playtest gate armed.
+- **v0.4** — 2026-06-12 — Scenario 1 "The Arc" in data (12 nodes, 3 factions, beat deck); spread + scenario loading in both engines; beats-vs-system law; two thesis tests XPASS pre-calibration.

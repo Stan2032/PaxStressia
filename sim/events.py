@@ -33,6 +33,17 @@ def _eligible(world: WorldState, card: dict) -> bool:
             return False
     if "min_casualties" in req and world.player.casualties < req["min_casualties"]:
         return False
+    if "country_collapsed" in req and not world.collapsed.get(req["country_collapsed"]):
+        return False
+    if "country_not_collapsed" in req and world.collapsed.get(req["country_not_collapsed"]):
+        return False
+    if "min_collapsed" in req:
+        if sum(1 for v in world.collapsed.values() if v) < req["min_collapsed"]:
+            return False
+    if "min_links" in req:
+        pairs = sum(len(f.links) for f in world.factions_sorted()) // 2
+        if pairs < req["min_links"]:
+            return False
     return True
 
 
@@ -51,7 +62,11 @@ def draw(world: WorldState, consts: dict, rng: random.Random, deck: list[dict]) 
     """At most one event per turn; None on a quiet news cycle."""
     if rng.random() >= consts["event_chance"]:
         return None
-    eligible = [c for c in deck if c["weight"] > 0 and _eligible(world, c)]
+    eligible = [
+        c for c in deck
+        if c["weight"] > 0 and _eligible(world, c)
+        and not (c.get("once") and c["id"] in world.fired_events)
+    ]
     if not eligible:
         return None
     weights = [c["weight"] for c in eligible]

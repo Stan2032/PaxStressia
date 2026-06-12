@@ -1,0 +1,385 @@
+[
+  {
+    "id": "northern_collapse_2012",
+    "title": "The North Declares Itself",
+    "text": "Three garrisons fold in a fortnight. The separatist front declares an independent Azawad from Kidal; the militants who rode in alongside them are already renaming the courts. The capital's army blames the politicians, loudly, on the radio.",
+    "weight": 6,
+    "once": true,
+    "requires": { "max_turn": 3 },
+    "choices": [
+      {
+        "label": "Emergency support to Bamako",
+        "effects": [
+          { "op": "governance", "delta": 3, "node": "bamako" },
+          { "op": "international_legitimacy", "delta": 1 },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      },
+      {
+        "label": "Watch it unfold",
+        "effects": [
+          { "op": "presence", "faction": "azawad_front", "strength": 5, "entrenchment": 3, "node": "kidal" },
+          { "op": "presence", "faction": "ansar_al_sahel", "strength": 4, "node": "gao" }
+        ]
+      }
+    ],
+    "notes": "The 2012 opening beat. The army-blames-politicians line is the coup cascade's first seed, planted in text.",
+    "sources": ["2012 Azawad declaration record"]
+  },
+  {
+    "id": "intervention_window",
+    "title": "The Window",
+    "text": "The columns are moving south; the airport at Sévaré is hours from falling. Bamako is formally asking. Every ally is watching to see whether you answer, and every future recruiter is watching how.",
+    "weight": 6,
+    "once": true,
+    "requires": { "min_turn": 10, "max_turn": 22 },
+    "choices": [
+      {
+        "label": "Intervene in force",
+        "effects": [
+          { "op": "ops_pressure", "amount": 40, "turns": 4, "node": "gao" },
+          { "op": "attrit", "amount": 15, "node": "gao" },
+          { "op": "attrit", "amount": 10, "node": "kidal" },
+          { "op": "local_legitimacy", "delta": 5, "node": "gao" },
+          { "op": "domestic_legitimacy", "delta": 3 },
+          { "op": "international_legitimacy", "delta": 2 }
+        ]
+      },
+      {
+        "label": "Decline the lead role",
+        "effects": [
+          { "op": "attrit", "amount": -8, "node": "gao" },
+          { "op": "grievance", "delta": 5, "node": "mopti" },
+          { "op": "international_legitimacy", "delta": -2 }
+        ]
+      }
+    ],
+    "notes": "The Serval moment. Intervention is genuinely good now — the welcome is real (Kilcullen); what you do with the welcome is the next decade.",
+    "sources": ["2013 intervention record"]
+  },
+  {
+    "id": "franchise_declared",
+    "title": "The Franchise Arrives",
+    "text": "A splinter katiba posts its pledge to the global brand. The men are the same men; the flag and the ambition are new. The corridor between Ménaka and the tri-border begins to change hands at night.",
+    "weight": 5,
+    "once": true,
+    "requires": { "min_turn": 36, "max_turn": 54 },
+    "choices": [
+      {
+        "label": "Note the split — rivals fight each other",
+        "effects": [
+          { "op": "presence", "faction": "wilayat_sahel", "strength": 12, "entrenchment": 5, "node": "menaka" },
+          { "op": "presence", "faction": "wilayat_sahel", "strength": 10, "entrenchment": 3, "node": "tillaberi" }
+        ]
+      },
+      {
+        "label": "Preempt with strikes",
+        "effects": [
+          { "op": "presence", "faction": "wilayat_sahel", "strength": 8, "entrenchment": 3, "node": "menaka" },
+          { "op": "presence", "faction": "wilayat_sahel", "strength": 8, "entrenchment": 2, "node": "tillaberi" },
+          { "op": "attrit", "amount": 6, "node": "menaka" },
+          { "op": "grievance", "delta": 3, "node": "menaka" },
+          { "op": "local_legitimacy", "delta": -2, "node": "menaka" }
+        ]
+      }
+    ],
+    "notes": "The 2015 ISGS split, composited. Both choices seed the franchise — history's gravity — but the shape differs.",
+    "sources": ["ISGS emergence record"]
+  },
+  {
+    "id": "political_crisis_bamako",
+    "title": "The Street and the Barracks",
+    "text": "A contested election, a disputed court, a summer of crowds. The army watches the crowds, and the officers you trained watch the army. Your ambassador's cables have stopped using the word 'stable'.",
+    "weight": 5,
+    "once": true,
+    "requires": { "min_turn": 96, "country_not_collapsed": "ML" },
+    "choices": [
+      {
+        "label": "Stand by the elected government",
+        "effects": [
+          { "op": "coup_seed", "delta": 0.2, "node": "bamako" },
+          { "op": "grievance", "delta": 4, "node": "bamako" },
+          { "op": "international_legitimacy", "delta": 1 }
+        ]
+      },
+      {
+        "label": "Distance yourself quietly",
+        "effects": [
+          { "op": "coup_seed", "delta": 0.4, "node": "bamako" },
+          { "op": "grievance", "delta": 4, "node": "bamako" },
+          { "op": "domestic_legitimacy", "delta": 1 },
+          { "op": "international_legitimacy", "delta": -1 }
+        ]
+      }
+    ],
+    "notes": "The 2020 pre-coup texture. The coup itself stays endogenous (collapse roll) — this beat only loads the dice the way history loaded them.",
+    "sources": ["Mali 2020 crisis record"]
+  },
+  {
+    "id": "ecowas_rupture",
+    "title": "The Regional Bloc Draws a Line",
+    "text": "The regional community announces borders closed and accounts frozen until a transition timetable appears. The junta answers with flags and a rally. Prices rise in the markets first; speeches about sovereignty rise second.",
+    "weight": 5,
+    "once": true,
+    "requires": { "min_turn": 100, "country_collapsed": "ML" },
+    "choices": [
+      {
+        "label": "Back the sanctions line",
+        "effects": [
+          { "op": "international_legitimacy", "delta": 3 },
+          { "op": "grievance", "delta": 5, "node": "bamako" },
+          { "op": "grievance", "delta": 3, "node": "mopti" },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      },
+      {
+        "label": "Work the back channels",
+        "effects": [
+          { "op": "international_legitimacy", "delta": -3 }
+        ]
+      }
+    ],
+    "notes": "Sanctions pressure with the documented humanitarian-blowback channel: the grievance lands on the population before the junta (§7 diplomatic).",
+    "sources": ["ECOWAS-Mali sanctions record 2022"]
+  },
+  {
+    "id": "mercenary_arrival",
+    "title": "Advisors Without Insignia",
+    "text": "Charter flights at night; weights manifested as 'mining equipment'. Within a month the junta's communiqués use new vocabulary, and a concession map you've never seen is circulating in the ministries. Their offer came with no conditions at all.",
+    "weight": 5,
+    "once": true,
+    "requires": { "country_collapsed": "ML" },
+    "choices": [
+      {
+        "label": "Sanction the deployers",
+        "effects": [
+          { "op": "patron", "patron": "mercenary", "delta": 25, "node": "bamako" },
+          { "op": "patron", "patron": "mercenary", "delta": 12, "node": "mopti" },
+          { "op": "patron", "patron": "mercenary", "delta": 12, "node": "gao" },
+          { "op": "international_legitimacy", "delta": 2 },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      },
+      {
+        "label": "Look away",
+        "effects": [
+          { "op": "patron", "patron": "mercenary", "delta": 30, "node": "bamako" },
+          { "op": "patron", "patron": "mercenary", "delta": 15, "node": "mopti" },
+          { "op": "patron", "patron": "mercenary", "delta": 15, "node": "gao" },
+          { "op": "international_legitimacy", "delta": -3 }
+        ]
+      }
+    ],
+    "notes": "The mercenary patron lands either way — the market mechanic's truth (§8): when a junta forms, the no-strings offer wins by default. You only choose what it costs you.",
+    "sources": ["Wagner/Africa Corps Mali deployment record"]
+  },
+  {
+    "id": "aes_declaration",
+    "title": "An Alliance of the Like-Minded",
+    "text": "Three flags on one stage. A mutual-defense pact, a promised joint force, talk of a common currency — and a communiqué naming you, specifically, as the region's problem. The pooled broadcast reach starts that evening.",
+    "weight": 5,
+    "once": true,
+    "requires": { "min_collapsed": 2 },
+    "choices": [
+      {
+        "label": "Isolate the bloc",
+        "effects": [
+          { "op": "international_legitimacy", "delta": 1 },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      },
+      {
+        "label": "Keep channels open",
+        "effects": [
+          { "op": "international_legitimacy", "delta": -2 }
+        ]
+      }
+    ],
+    "notes": "The AES beat. The consolidation clock itself lands v0.7 — at v0.4 the proto-bloc detection plus this card carry the weight in text and price.",
+    "sources": ["Alliance of Sahel States formation record 2023"]
+  },
+  {
+    "id": "insurgent_concord",
+    "title": "The Concord of Enemies",
+    "text": "Two factions that spent a decade killing each other hit five positions in one night, in sequence, on a shared clock. The communiqués are separate; the staff work plainly wasn't. Your analysts called this 'unlikely' in last quarter's assessment.",
+    "weight": 6,
+    "once": true,
+    "requires": { "min_turn": 150, "min_links": 1 },
+    "choices": [
+      {
+        "label": "Surge the response",
+        "effects": [
+          { "op": "attrit", "amount": -12, "node": "gao" },
+          { "op": "attrit", "amount": -8, "node": "menaka" },
+          { "op": "grievance", "delta": 4, "node": "gao" },
+          { "op": "ops_pressure", "amount": 35, "turns": 3, "node": "gao" },
+          { "op": "domestic_legitimacy", "delta": -2 }
+        ]
+      },
+      {
+        "label": "Hold and harden",
+        "effects": [
+          { "op": "attrit", "amount": -12, "node": "gao" },
+          { "op": "attrit", "amount": -8, "node": "menaka" },
+          { "op": "grievance", "delta": 4, "node": "gao" },
+          { "op": "local_legitimacy", "delta": -3, "node": "gao" },
+          { "op": "international_legitimacy", "delta": -1 }
+        ]
+      }
+    ],
+    "notes": "The April 2026 model: ideologically unlike groups, joint offensive (§5.2). Requires an actual link in the faction graph — if the player kept them apart, this card never exists. The strength surge lands either way; the response shapes whose ledger pays.",
+    "sources": ["en.wikipedia.org/wiki/2026_Mali_offensives"]
+  },
+  {
+    "id": "partner_atrocity",
+    "title": "Partner-Force Atrocity",
+    "text": "A unit you raid alongside is credibly accused of executing detainees in a village sweep. Your flag is on the operation. The report is on your desk; the press does not have it yet.",
+    "weight": 1.2,
+    "requires": { "min_partner_capacity": 1 },
+    "choices": [
+      {
+        "label": "Disclose and open a joint inquiry",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": -4 },
+          { "op": "international_legitimacy", "delta": -1 },
+          { "op": "local_legitimacy", "delta": -2 }
+        ]
+      },
+      {
+        "label": "Bury the report",
+        "effects": [
+          { "op": "local_legitimacy", "delta": -4 },
+          { "op": "grievance", "delta": 3 }
+        ]
+      }
+    ],
+    "notes": "Generic deck, shared with Sahel-lite. Transparency Dial prototype; leak clocks land v0.6.",
+    "sources": ["Sahel partner-force abuse reporting", "DESIGN §6 Transparency Dial"]
+  },
+  {
+    "id": "refugee_wave",
+    "title": "Refugee Wave",
+    "text": "Displacement from the contested sectors crosses a threshold; columns are moving toward the capital and the borders. Cameras are already there.",
+    "weight": 1.0,
+    "requires": { "min_avg_grievance": 55 },
+    "choices": [
+      {
+        "label": "Fund and host humanitarian corridors",
+        "effects": [
+          { "op": "international_legitimacy", "delta": 3 },
+          { "op": "domestic_legitimacy", "delta": -2 }
+        ]
+      },
+      {
+        "label": "Press the host state to close the corridor",
+        "effects": [
+          { "op": "international_legitimacy", "delta": -4 },
+          { "op": "domestic_legitimacy", "delta": 2 },
+          { "op": "grievance", "delta": 3 }
+        ]
+      }
+    ],
+    "notes": "Generic deck, shared with Sahel-lite.",
+    "sources": ["UNHCR Sahel displacement record"]
+  },
+  {
+    "id": "base_access_revoked",
+    "title": "Base Access Revoked",
+    "text": "The junta's spokesman, flanked by new advisors you recognize from elsewhere, announces that your forces have weeks to leave. The advisors' employer does not do press conferences.",
+    "weight": 1.5,
+    "requires": { "any_junta": true },
+    "choices": [
+      {
+        "label": "Comply and withdraw in good order",
+        "effects": [
+          { "op": "international_legitimacy", "delta": 1 },
+          { "op": "domestic_legitimacy", "delta": -2 },
+          { "op": "partner_capacity", "delta": -3 }
+        ]
+      },
+      {
+        "label": "Pay to stay — drop the conditionality",
+        "effects": [
+          { "op": "international_legitimacy", "delta": -5 },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      }
+    ],
+    "notes": "Generic deck, shared with Sahel-lite.",
+    "sources": ["2022 French withdrawal from Mali record"]
+  },
+  {
+    "id": "election_shock",
+    "title": "Election Shock at Home",
+    "text": "A coffin-count graphic leads the evening news for the third night running. The opposition has found its single issue, and it is your war.",
+    "weight": 0.8,
+    "requires": { "min_casualties": 5 },
+    "choices": [
+      {
+        "label": "Defend the mission on its merits",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": -5 }
+        ]
+      },
+      {
+        "label": "Pivot to homeland-security framing",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": -2 },
+          { "op": "international_legitimacy", "delta": -2 }
+        ]
+      }
+    ],
+    "notes": "Generic deck, shared with Sahel-lite.",
+    "sources": ["Merom, How Democracies Lose Small Wars"]
+  },
+  {
+    "id": "transitional_council",
+    "title": "A 'Transitional Council' Announces Itself",
+    "text": "Officers from a battalion your trainers certified appear on state television at dawn. They speak of corruption, of the failing war, and of the patriotic necessity of a transitional period. They thank their foreign partners — ambiguously.",
+    "weight": 1.5,
+    "requires": { "min_coup_risk": 0.4 },
+    "choices": [
+      {
+        "label": "Acquiesce — stability first",
+        "effects": [
+          { "op": "coup_seed", "delta": 0.3 },
+          { "op": "international_legitimacy", "delta": -4 }
+        ]
+      },
+      {
+        "label": "Condemn and suspend assistance",
+        "effects": [
+          { "op": "coup_seed", "delta": 0.1 },
+          { "op": "partner_capacity", "delta": -2 },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      }
+    ],
+    "notes": "Generic deck, shared with Sahel-lite.",
+    "sources": ["Sahel coup-leader training records"]
+  },
+  {
+    "id": "quiet_sector_report",
+    "title": "The Quiet Sector",
+    "text": "Incident counts in a sector you barely cover have fallen for two consecutive quarters. Your briefer calls it progress. A footnote mentions new 'dispute-resolution committees' operating in the villages — author unknown.",
+    "weight": 0.7,
+    "choices": [
+      {
+        "label": "Declare progress",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": 3 },
+          { "op": "intel", "delta": -0.1, "turns": 4 }
+        ]
+      },
+      {
+        "label": "Commission an independent assessment",
+        "effects": [
+          { "op": "intel", "delta": 0.15, "turns": 4 },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      }
+    ],
+    "notes": "Generic deck, shared with Sahel-lite.",
+    "sources": ["2026 Sahel entrenchment analyses — falling attacks ≠ security"]
+  }
+]

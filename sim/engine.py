@@ -31,8 +31,9 @@ class Engine:
         seed: int = 0,
         policy: Policy | None = None,
         rules_dir=None,
+        scenario: str | None = None,
     ) -> None:
-        self.rules = rules if rules is not None else load_rules(rules_dir)
+        self.rules = rules if rules is not None else load_rules(rules_dir, scenario=scenario)
         self.consts = self.rules["constants"]
         self.world = build_world(self.rules)
         self.seed = seed
@@ -131,6 +132,23 @@ class Engine:
             world.coup_risk[country] += op_dict["delta"]
         elif op == "drift":
             world.player.authoritarian_drift += op_dict["tiers"]
+        elif op == "presence":
+            from .world import Presence
+
+            node = world.nodes[node_id]
+            pres = node.presence.get(op_dict["faction"])
+            if pres is None:
+                pres = node.presence[op_dict["faction"]] = Presence(visibility=30.0)
+                log.append({"event": "presence_seeded", "faction": op_dict["faction"],
+                            "node": node_id, "source": source})
+            pres.strength = clamp(pres.strength + op_dict.get("strength", 0.0))
+            pres.entrenchment = clamp(pres.entrenchment + op_dict.get("entrenchment", 0.0))
+        elif op == "patron":
+            node = world.nodes[node_id]
+            pid = op_dict["patron"]
+            node.patron_influence[pid] = clamp(
+                node.patron_influence.get(pid, 0.0) + op_dict["delta"]
+            )
         else:
             raise ValueError(f"unknown op: {op}")
 
@@ -203,6 +221,8 @@ class Engine:
             self.ledger.apply(world, INTERNATIONAL, "un_umbrella", umbrella)
         # c) faction growth, itemized
         growth_log, attrition_dealt = factions_mod.apply_growth(world, consts, amnesty_rates)
+        # c2) spread over edges (v0.4)
+        turn_log += factions_mod.apply_spread(world, consts)
         # d) entrenchment conversion + visibility
         factions_mod.entrench_and_visibility(world, consts)
         # e) faction networking
@@ -220,6 +240,7 @@ class Engine:
             ctx = events_mod.context_node(world)
             for eff in choice["effects"]:
                 self._apply_op(eff, eff.get("node", ctx), f"event:{card['id']}", turn_log)
+            world.fired_events.add(card["id"])
             fired_events.append({"id": card["id"], "choice": choice["label"], "node": ctx})
 
         # Phase 4 — Consequence

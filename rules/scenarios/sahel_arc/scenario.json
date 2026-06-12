@@ -1,0 +1,13 @@
+{
+  "id": "sahel_arc",
+  "name": "The Arc — Sahel, 2012–2026",
+  "description": "Scenario 1, the vertical slice (DESIGN.md §12). Mali's northern collapse, the intervention window, the coup cascade, the AES, the mercenary patron, and the 2026 insurgent alliance — fourteen years of the premise running live. Reality is the balance baseline: a passive run should approximately reproduce history; your job is to beat it without breaking the thing you're defending.",
+  "seat": "France-analog (one event deck; US seat arrives with the lead-nation roster, DESIGN.md §16.3)",
+  "notes": "Node and faction starting values are 2012 conditions, PROPOSED pending the v0.5 calibration pass. Niger's collapse is now modeled (Niamey on-map). Coups are endogenous (collapse rolls) — beat events supply the political texture the system cannot generate, never the coups themselves.",
+  "sources": [
+    "CFR Global Conflict Tracker — Violent Extremism in the Sahel",
+    "ICG Sahel reporting 2012–2026",
+    "ACLED tri-border and Burkina Faso data",
+    "en.wikipedia.org/wiki/2026_Mali_offensives"
+  ]
+}
