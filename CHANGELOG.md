@@ -2,6 +2,14 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.2.2 — 2026-06-12
+
+**The title is decided: PaxStressia** (per Stan: the "Pax …ia" eras of history — pax at the cost of stress; "being lied about but not dealing in lies yourself. or, trying your best to."). Resolves DESIGN.md open questions #4 and #7.
+
+- DESIGN.md: §1 gains "The Name"; header retitled; #4/#7 marked RESOLVED.
+- Live files renamed: README, pyproject (`paxstressia-sim`, v0.2.2), `sim/__init__` docstring + `__version__`, harness plot title, all six schema titles.
+- MANDATE remains in historical sections (handoff doc, changelogs, decision records) per the cumulative rule.
+
 ## v0.2.1 — 2026-06-12
 
 Docs-only growth from two research passes; no code or rules changes.

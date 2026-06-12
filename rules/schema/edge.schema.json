@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "edge.schema.json",
-  "title": "MANDATE edges file (rules/edges.json)",
+  "title": "PaxStressia edges file (rules/edges.json)",
   "description": "Edges between region nodes per DESIGN.md §4: borders, smuggling routes, ethnic ties, sea lanes, diaspora links. The networking premise lives here. Edges are targetable (interdiction is a runtime field, engine-owned) but never fully closable.",
   "type": "array",
   "minItems": 1,

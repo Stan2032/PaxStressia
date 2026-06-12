@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "constants.schema.json",
-  "title": "MANDATE constants file (rules/constants.json)",
+  "title": "PaxStressia constants file (rules/constants.json)",
   "description": "Every tunable in the simulation, named exactly as referenced in DESIGN.md §18.5. All values PROPOSED until the v0.5 history-calibration pass; every balance change is a one-line diff here.",
   "type": "object",
   "additionalProperties": false,

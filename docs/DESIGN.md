@@ -1,6 +1,6 @@
-# MANDATE
-### Design Document — v0.2.1
-*Working title. A turn-based grand strategy game about being the world police in a world that keeps score.*
+# PaxStressia
+### Design Document — v0.2.2
+*A turn-based grand strategy game about being the world police in a world that keeps score. (Title DECIDED at v0.2.2; formerly working title MANDATE, v0.1–v0.2.1 — historical mentions kept as record.)*
 
 ---
 
@@ -29,6 +29,10 @@ The secondary thesis comes from the Sahel, 2012–2026, where the premise of thi
 3. **Every tool cuts both ways.** No strictly-good buttons exist. FM 3-24's paradoxes ("the more force you use, the less effective you may be") are action-design law. (§7)
 4. **Quiet is not peace.** Fog of war includes *deceptive calm*: an entrenched insurgency running shadow courts and taxes produces fewer incidents than a contested one. Without intel spend, the map lies to you. (§9)
 5. **You can win ugly, but the game knows.** Emergency powers, dirty partnerships, and censorship are mechanically strong and permanently corrosive. The scoring system tracks democratic integrity to the end. Becoming the thing you fight is a playable — and scored — dark ending. (§7, §11)
+
+### The Name (v0.2.2 — **DECIDED** per Stan, 2026-06-12)
+
+**PaxStressia.** Stan's rationale, near-verbatim: it encapsulates the *"Pax …ia"* eras of history — Pax Romana, Pax Britannica, Pax Americana — **pax at the cost of stress**; and *"being lied about but not dealing in lies yourself. or, trying your best to."* The name is the thesis compressed: the peace is real and so is what holding it costs (the Mandate economy, §6); the world lies about you (hostile fog and the propaganda layer, §20.3) while the game scores whether you kept your own hands clean — and *trying your best to* is exactly the gap the Transparency Dial (§6), Authoritarian Drift (§11), and the Exposure system (§20) play in. You can fail at it; the game scores the trying. Supersedes the working title MANDATE (open questions #4 and #7 resolved, §16).
 
 ---
 
@@ -312,10 +316,10 @@ Global ~45-node map, Sept 2001 start (**PROPOSED**, §2), 25-year horizon, all s
 1. **Election-loss continuity:** when you lose an election — do you (a) keep playing as the state with a changed mandate profile (continuity-of-government model), (b) score out and end the run, or (c) optionally switch seats to the new administration with shifted modifiers? *(My lean: (a) for scenarios, (c) as a grand-mode option.)*
 2. **Historical-names toggle:** ship real insurgent-group names behind an optional toggle, or composites only? *(My lean: composites only at v1.0; revisit.)*
 3. **Lead-nation roster at v1.0:** US-only, or US + France? *(France is the natural Scenario 1 seat; my lean: both, one event deck.)*
-4. **Working title:** **MANDATE** — chosen for the triple meaning (electoral mandate / UN mandate / the colonial League-of-Nations mandates the word can't escape — intentionally uncomfortable). Alternates considered: *Pax*, *The Long War*, *Thin Blue Marble*. Keep MANDATE?
+4. **Working title:** **MANDATE** — chosen for the triple meaning (electoral mandate / UN mandate / the colonial League-of-Nations mandates the word can't escape — intentionally uncomfortable). Alternates considered: *Pax*, *The Long War*, *Thin Blue Marble*. Keep MANDATE? *(RESOLVED 2026-06-12, v0.2.2: the title is **PaxStressia** — see §1 "The Name". MANDATE retired.)*
 5. **License/openness:** open-source like Unciv (community + mods + your public-repo workflow) vs. closed (commercial option preserved)? Affects repo setup at v0.2.
 6. **Multiplayer:** ever? *(My lean: no — the design is a solitaire system game like Rebel Inc; a "shared world, compared scores" async mode is the only plausible shape, post-v2.)*
-7. **Repo name vs. working title** *(added v0.2)*: the GitHub repo is **PaxStressia**; the docs' working title is **MANDATE** (and *Pax* was a shelved alternate, §16.4). Is *PaxStressia* (a) just a repo codename, (b) the new title, or (c) a placeholder until #4 is answered? Docs keep MANDATE until you call it. *(My lean: treat as codename; decide title at v0.8 when store pages exist.)* *(v0.2.1 note: Stan authorized "set up the repo however you wish" — `main` trunk + PR workflow created; the title half of this question remains open.)*
+7. **Repo name vs. working title** *(added v0.2)*: the GitHub repo is **PaxStressia**; the docs' working title is **MANDATE** (and *Pax* was a shelved alternate, §16.4). Is *PaxStressia* (a) just a repo codename, (b) the new title, or (c) a placeholder until #4 is answered? Docs keep MANDATE until you call it. *(My lean: treat as codename; decide title at v0.8 when store pages exist.)* *(v0.2.1 note: Stan authorized "set up the repo however you wish" — `main` trunk + PR workflow created; the title half of this question remains open.)* *(RESOLVED 2026-06-12, v0.2.2: answer is (b) — the repo name **is** the title. See §1 "The Name".)*
 
 ---
 
@@ -516,3 +520,4 @@ Flagged by the research pass as plausible but **unverified — confirm before an
 - **v0.1** — 2026-06-12 — Initial full draft from core prompt + research session (Unciv feasibility check; Sahel 2012–2026 record). Framing locked: real world / alt-history; scenarios-first; design-doc-first per Stan's three scoping answers.
 - **v0.2** — 2026-06-12 — Repo bootstrapped (`stan2032/PaxStressia`). Added §18 Simulation Specification (determinism law, state vectors, resolution order, effect-op vocabulary, v0.2 formulas bound to `rules/constants.json`, itemized-ledger contract, policy interface, stub inventory). Added open question #7 (repo name *PaxStressia* vs working title *MANDATE*). §15 roadmap: v0.2 row marked delivered. No prior content removed.
 - **v0.2.1** — 2026-06-12 — Docs-only growth from two research passes. Added §19 Playability, Pacing & Balance (precedent-game lessons → binding commitments: fun gate, anti-whack-a-mole package, interesting-decisions audit, asymmetry-of-goals, Emergency Powers calibration, dominance check, intrinsic anti-snowball, situational difficulty, misery counterweights). Added §20 The Closed Society & the Exposure System (Stan's directive DECIDED; mechanization PROPOSED for v0.7–v0.9: closed-society content layer, hostile-fog disinformation, Exposure track with documented pressure chains and backfires). §17 gained two source blocks; §18.4 reserved-op list extended for §20. Repair note: the §19 insertion briefly dropped the changelog header and v0.1 entry by edit-anchor mistake — restored in the same session, verified against v0.2 git history; no other content touched.
+- **v0.2.2** — 2026-06-12 — **Title DECIDED: PaxStressia** (per Stan: the "Pax …ia" eras; pax at the cost of stress; "being lied about but not dealing in lies yourself. or, trying your best to."). Added §1 "The Name"; resolved open questions #4 and #7; header retitled; live project files (README, pyproject, schema titles, sim/harness strings) renamed. MANDATE retained in historical sections per the cumulative rule.

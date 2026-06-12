@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "initiative.schema.json",
-  "title": "MANDATE initiatives file (rules/initiatives.json)",
+  "title": "PaxStressia initiatives file (rules/initiatives.json)",
   "description": "The action catalog per DESIGN.md §7. DESIGN LAW, schema-enforced: every initiative has a cost, a benefit, and a documented backfire channel (`backfire` is required, with a human-readable `note`). No strictly-good buttons (Pillar 3).",
   "$defs": {
     "effect_op": {

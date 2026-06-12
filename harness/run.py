@@ -69,7 +69,7 @@ def maybe_plot(results: list[dict], config: dict, out_dir: Path) -> bool:
     ax2.plot([0] * len(finals), finals, "o", alpha=0.6)
     ax2.set_xticks([])
     ax2.set_title(f"final scores — mean {sum(finals) / len(finals):.1f}")
-    fig.suptitle("MANDATE balance harness (v0.2 skeleton — constants uncalibrated)")
+    fig.suptitle("PaxStressia balance harness (v0.2 skeleton — constants uncalibrated)")
     fig.tight_layout()
     fig.savefig(out_dir / "balance.png", dpi=120)
     return True

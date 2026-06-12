@@ -1,6 +1,8 @@
-# MANDATE <sub>(working title — repo codename *PaxStressia*)</sub>
+# PaxStressia
 
 *A turn-based strategy game about being the world police in a world that keeps score.*
+
+**Pax at the cost of stress** — the "Pax …ia" eras, with the price in the name. Being lied about without dealing in lies yourself; or trying your best to. *(Title decided at v0.2.2; formerly working title MANDATE.)*
 
 You lead a real-world democracy holding the line against insurgencies that grow, network, and — left untended — capture states and weld them into authoritarian blocs. Your constraints are your own: voters, allies, law, and a free press. Every lever that wins faster abroad corrodes something at home. **Can you hold the line abroad without breaking the thing you're defending?**
 
