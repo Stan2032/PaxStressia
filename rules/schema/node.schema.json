@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "node.schema.json",
+  "title": "MANDATE region nodes file (rules/nodes.json)",
+  "description": "Region nodes per DESIGN.md §4/§18.2. The map is a node graph, not tiles. Runtime fields (ops_pressure, coup_risk, uncontested_turns, interdiction) are engine-owned and must NOT appear in data.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id", "name", "country", "capital", "governance", "development",
+      "grievance", "population_k", "access", "local_legitimacy", "intel_coverage"
+    ],
+    "properties": {
+      "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "name": { "type": "string", "minLength": 1 },
+      "country": { "type": "string", "pattern": "^[A-Z]{2,3}$", "description": "ISO-style country code the node belongs to." },
+      "capital": { "type": "boolean", "description": "Core region of its state; collapse rolls (§5.3) fire here." },
+      "governance": { "type": "number", "minimum": 0, "maximum": 100 },
+      "development": { "type": "number", "minimum": 0, "maximum": 100 },
+      "grievance": { "type": "number", "minimum": 0, "maximum": 100 },
+      "population_k": { "type": "number", "minimum": 0, "description": "Population in thousands." },
+      "access": { "type": "number", "minimum": 0, "maximum": 1, "description": "Terrain/infrastructure accessibility, 0 (closed) to 1 (open)." },
+      "resources": { "type": "array", "items": { "type": "string" } },
+      "government": { "type": "string", "enum": ["civilian", "junta", "emirate", "failed"], "default": "civilian" },
+      "local_legitimacy": { "type": "number", "minimum": 0, "maximum": 100, "description": "Your standing with this population — the actual COIN win condition (§6)." },
+      "intel_coverage": { "type": "number", "minimum": 0, "maximum": 1, "description": "Starting intel coverage; drives fog noise (§9, §18.5)." },
+      "patron_influence": {
+        "type": "object",
+        "additionalProperties": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "presence": {
+        "type": "object",
+        "description": "Insurgent presence vector per faction id (§5.1).",
+        "additionalProperties": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["strength", "entrenchment", "visibility"],
+          "properties": {
+            "strength": { "type": "number", "minimum": 0, "maximum": 100 },
+            "entrenchment": { "type": "number", "minimum": 0, "maximum": 100 },
+            "visibility": { "type": "number", "minimum": 0, "maximum": 100 }
+          }
+        }
+      },
+      "notes": { "type": "string" },
+      "sources": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}

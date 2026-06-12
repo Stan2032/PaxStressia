@@ -1,0 +1,154 @@
+[
+  {
+    "id": "partner_atrocity",
+    "title": "Partner-Force Atrocity",
+    "text": "A unit you raid alongside is credibly accused of executing detainees in a village sweep. Your flag is on the operation. The report is on your desk; the press does not have it yet.",
+    "weight": 1.2,
+    "requires": { "min_partner_capacity": 1 },
+    "choices": [
+      {
+        "label": "Disclose and open a joint inquiry",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": -4 },
+          { "op": "international_legitimacy", "delta": -1 },
+          { "op": "local_legitimacy", "delta": -2 }
+        ]
+      },
+      {
+        "label": "Bury the report",
+        "effects": [
+          { "op": "local_legitimacy", "delta": -4 },
+          { "op": "grievance", "delta": 3 }
+        ]
+      }
+    ],
+    "notes": "Transparency Dial prototype. At v0.6 the suppress branch starts a leak clock instead of paying immediately; until then the cover-up costs where the population already knows.",
+    "sources": ["Sahel partner-force abuse reporting", "DESIGN §6 Transparency Dial"]
+  },
+  {
+    "id": "refugee_wave",
+    "title": "Refugee Wave",
+    "text": "Displacement from the contested sectors crosses a threshold; columns are moving toward the capital and the borders. Cameras are already there.",
+    "weight": 1.0,
+    "requires": { "min_avg_grievance": 55 },
+    "choices": [
+      {
+        "label": "Fund and host humanitarian corridors",
+        "effects": [
+          { "op": "international_legitimacy", "delta": 3 },
+          { "op": "domestic_legitimacy", "delta": -2 }
+        ]
+      },
+      {
+        "label": "Press the host state to close the corridor",
+        "effects": [
+          { "op": "international_legitimacy", "delta": -4 },
+          { "op": "domestic_legitimacy", "delta": 2 },
+          { "op": "grievance", "delta": 3 }
+        ]
+      }
+    ],
+    "notes": "The Local → International → Domestic cascade (DESIGN §10).",
+    "sources": ["UNHCR Sahel displacement record"]
+  },
+  {
+    "id": "base_access_revoked",
+    "title": "Base Access Revoked",
+    "text": "The junta's spokesman, flanked by new advisors you recognize from elsewhere, announces that your forces have weeks to leave. The advisors' employer does not do press conferences.",
+    "weight": 1.5,
+    "requires": { "any_junta": true },
+    "choices": [
+      {
+        "label": "Comply and withdraw in good order",
+        "effects": [
+          { "op": "international_legitimacy", "delta": 1 },
+          { "op": "domestic_legitimacy", "delta": -2 },
+          { "op": "partner_capacity", "delta": -3 }
+        ]
+      },
+      {
+        "label": "Pay to stay — drop the conditionality",
+        "effects": [
+          { "op": "international_legitimacy", "delta": -5 },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      }
+    ],
+    "notes": "The Mali-expels-France beat (DESIGN §8). The full allegiance market lands v0.7.",
+    "sources": ["2022 French withdrawal from Mali record"]
+  },
+  {
+    "id": "election_shock",
+    "title": "Election Shock at Home",
+    "text": "A coffin-count graphic leads the evening news for the third night running. The opposition has found its single issue, and it is your war.",
+    "weight": 0.8,
+    "requires": { "min_casualties": 5 },
+    "choices": [
+      {
+        "label": "Defend the mission on its merits",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": -5 }
+        ]
+      },
+      {
+        "label": "Pivot to homeland-security framing",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": -2 },
+          { "op": "international_legitimacy", "delta": -2 }
+        ]
+      }
+    ],
+    "notes": "Merom's thesis arriving on schedule: the war is lost or saved at home (DESIGN §1).",
+    "sources": ["Merom, How Democracies Lose Small Wars"]
+  },
+  {
+    "id": "transitional_council",
+    "title": "A 'Transitional Council' Announces Itself",
+    "text": "Officers from a battalion your trainers certified appear on state television at dawn. They speak of corruption, of the failing war, and of the patriotic necessity of a transitional period. They thank their foreign partners — ambiguously.",
+    "weight": 1.5,
+    "requires": { "min_coup_risk": 0.4 },
+    "choices": [
+      {
+        "label": "Acquiesce — stability first",
+        "effects": [
+          { "op": "coup_seed", "delta": 0.3 },
+          { "op": "international_legitimacy", "delta": -4 }
+        ]
+      },
+      {
+        "label": "Condemn and suspend assistance",
+        "effects": [
+          { "op": "coup_seed", "delta": 0.1 },
+          { "op": "partner_capacity", "delta": -2 },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      }
+    ],
+    "notes": "The train-and-equip blowback made visible. The collapse roll itself fires in resolution substep f (DESIGN §18.3).",
+    "sources": ["Sahel coup-leader training records"]
+  },
+  {
+    "id": "quiet_sector_report",
+    "title": "The Quiet Sector",
+    "text": "Incident counts in a sector you barely cover have fallen for two consecutive quarters. Your briefer calls it progress. A footnote mentions new 'dispute-resolution committees' operating in the villages — author unknown.",
+    "weight": 0.7,
+    "choices": [
+      {
+        "label": "Declare progress",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": 3 },
+          { "op": "intel", "delta": -0.1, "turns": 4 }
+        ]
+      },
+      {
+        "label": "Commission an independent assessment",
+        "effects": [
+          { "op": "intel", "delta": 0.15, "turns": 4 },
+          { "op": "domestic_legitimacy", "delta": -1 }
+        ]
+      }
+    ],
+    "notes": "Pillar 4 as an event: quiet is not peace. Declaring progress relaxes collection exactly where entrenchment is doing its work.",
+    "sources": ["2026 Sahel entrenchment analyses — falling attacks ≠ security"]
+  }
+]

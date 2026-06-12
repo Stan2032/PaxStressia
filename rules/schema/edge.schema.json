@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "edge.schema.json",
+  "title": "MANDATE edges file (rules/edges.json)",
+  "description": "Edges between region nodes per DESIGN.md §4: borders, smuggling routes, ethnic ties, sea lanes, diaspora links. The networking premise lives here. Edges are targetable (interdiction is a runtime field, engine-owned) but never fully closable.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "a", "b", "types", "capacity"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "a": { "type": "string", "pattern": "^[a-z0-9_]+$", "description": "Node id." },
+      "b": { "type": "string", "pattern": "^[a-z0-9_]+$", "description": "Node id." },
+      "types": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "type": "string", "enum": ["border", "road", "river", "smuggling", "ethnic", "sea", "diaspora"] }
+      },
+      "capacity": { "type": "number", "minimum": 0, "maximum": 1, "description": "Flow capacity for fighters/arms/funding (0–1); feeds ExternalSupport route_factor (§18.5)." },
+      "notes": { "type": "string" },
+      "sources": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}

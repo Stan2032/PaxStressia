@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "initiative.schema.json",
+  "title": "MANDATE initiatives file (rules/initiatives.json)",
+  "description": "The action catalog per DESIGN.md §7. DESIGN LAW, schema-enforced: every initiative has a cost, a benefit, and a documented backfire channel (`backfire` is required, with a human-readable `note`). No strictly-good buttons (Pillar 3).",
+  "$defs": {
+    "effect_op": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op"],
+      "properties": {
+        "op": {
+          "type": "string",
+          "enum": [
+            "ops_pressure", "attrit", "intel", "local_legitimacy",
+            "domestic_legitimacy", "international_legitimacy",
+            "governance", "development", "grievance", "amnesty",
+            "partner_capacity", "coup_seed", "drift", "intl_umbrella"
+          ]
+        },
+        "amount": { "type": "number" },
+        "delta": { "type": "number" },
+        "turns": { "type": "integer", "minimum": 1 },
+        "rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "tiers": { "type": "integer", "minimum": 1 }
+      }
+    }
+  },
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "name", "family", "target", "mandate_cost", "treasury_cost", "effects", "backfire"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "name": { "type": "string", "minLength": 1 },
+      "family": { "type": "string", "enum": ["military", "governance", "intelligence", "diplomatic", "domestic"] },
+      "target": { "type": "string", "enum": ["node", "global"] },
+      "mandate_cost": { "type": "integer", "minimum": 0 },
+      "treasury_cost": { "type": "number", "minimum": 0 },
+      "effects": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/effect_op" } },
+      "backfire": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["channel", "probability", "effects", "note"],
+        "properties": {
+          "channel": { "type": "string", "minLength": 1 },
+          "probability": { "type": "number", "minimum": 0, "maximum": 1, "description": "Rolled per use, resolution substep 3b (§18.3)." },
+          "effects": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/effect_op" } },
+          "note": { "type": "string", "minLength": 1, "description": "The documented backfire channel, in words — ships in the UI tooltip." }
+        }
+      },
+      "casualty_risk": { "type": "number", "minimum": 0, "maximum": 1, "description": "Per-use chance of friendly casualties (body bags → Domestic, §6)." },
+      "notes": { "type": "string" },
+      "sources": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}

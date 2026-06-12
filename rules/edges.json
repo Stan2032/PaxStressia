@@ -1,0 +1,66 @@
+[
+  {
+    "id": "bamako_mopti",
+    "a": "bamako",
+    "b": "mopti",
+    "types": ["road"],
+    "capacity": 0.7,
+    "notes": "Primary RN6 corridor; state logistics and insurgent infiltration share the same road."
+  },
+  {
+    "id": "mopti_gao",
+    "a": "mopti",
+    "b": "gao",
+    "types": ["road", "river", "smuggling"],
+    "capacity": 0.6,
+    "notes": "Niger river axis; historically the route both of the 2013 intervention and of insurgent rollback."
+  },
+  {
+    "id": "gao_kidal",
+    "a": "gao",
+    "b": "kidal",
+    "types": ["road", "smuggling", "ethnic"],
+    "capacity": 0.5,
+    "notes": "Desert route into the Tuareg heartland; arms flow dating to the 2011 Libya spillover."
+  },
+  {
+    "id": "kidal_tillaberi",
+    "a": "kidal",
+    "b": "tillaberi",
+    "types": ["smuggling", "ethnic"],
+    "capacity": 0.4,
+    "notes": "The Ménaka corridor, abstracted at Sahel-lite scale; v0.4 inserts Ménaka as a node."
+  },
+  {
+    "id": "gao_tillaberi",
+    "a": "gao",
+    "b": "tillaberi",
+    "types": ["border", "smuggling"],
+    "capacity": 0.6,
+    "notes": "Tri-border artery — the densest incident corridor of the real arc."
+  },
+  {
+    "id": "mopti_ouagadougou",
+    "a": "mopti",
+    "b": "ouagadougou",
+    "types": ["border", "road", "ethnic"],
+    "capacity": 0.55,
+    "notes": "Cross-border community ties plus the northern Burkina corridor; the 2015+ spillover path."
+  },
+  {
+    "id": "ouagadougou_tillaberi",
+    "a": "ouagadougou",
+    "b": "tillaberi",
+    "types": ["border", "road"],
+    "capacity": 0.5,
+    "notes": "Eastern Burkina–western Niger axis."
+  },
+  {
+    "id": "bamako_ouagadougou",
+    "a": "bamako",
+    "b": "ouagadougou",
+    "types": ["road"],
+    "capacity": 0.65,
+    "notes": "Inter-capital highway; the political axis along which the coup cascade and later the AES propagated."
+  }
+]

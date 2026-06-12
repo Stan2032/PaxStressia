@@ -1,0 +1,199 @@
+[
+  {
+    "id": "presence_patrols",
+    "name": "Presence Patrols",
+    "family": "military",
+    "target": "node",
+    "mandate_cost": 2,
+    "treasury_cost": 2,
+    "effects": [
+      { "op": "ops_pressure", "amount": 25, "turns": 3 }
+    ],
+    "casualty_risk": 0.3,
+    "backfire": {
+      "channel": "occupation_antibodies",
+      "probability": 0.15,
+      "effects": [
+        { "op": "local_legitimacy", "delta": -2 },
+        { "op": "grievance", "delta": 2 }
+      ],
+      "note": "Foreign boots past the welcome threshold generate antibodies (Kilcullen). Casualty drip handled via casualty_risk → Domestic."
+    },
+    "notes": "Suppresses Strength and raises insurgent Visibility while active.",
+    "sources": ["FM 3-24 paradoxes", "Kilcullen, The Accidental Guerrilla"]
+  },
+  {
+    "id": "partnered_raids",
+    "name": "Partnered Raids",
+    "family": "military",
+    "target": "node",
+    "mandate_cost": 1,
+    "treasury_cost": 1,
+    "effects": [
+      { "op": "attrit", "amount": 8 },
+      { "op": "partner_capacity", "delta": 2 }
+    ],
+    "casualty_risk": 0.1,
+    "backfire": {
+      "channel": "partner_conduct",
+      "probability": 0.2,
+      "effects": [
+        { "op": "local_legitimacy", "delta": -4 },
+        { "op": "international_legitimacy", "delta": -3 },
+        { "op": "grievance", "delta": 4 }
+      ],
+      "note": "Cheap attrition, but partner-force abuses carry your flag — Local and International pay for it."
+    },
+    "sources": ["FM 3-24", "Sahel partner-force abuse reporting"]
+  },
+  {
+    "id": "drone_strike",
+    "name": "Drone Strike",
+    "family": "military",
+    "target": "node",
+    "mandate_cost": 1,
+    "treasury_cost": 2,
+    "effects": [
+      { "op": "attrit", "amount": 12 }
+    ],
+    "backfire": {
+      "channel": "collateral",
+      "probability": 0.25,
+      "effects": [
+        { "op": "local_legitimacy", "delta": -5 },
+        { "op": "grievance", "delta": 6 },
+        { "op": "international_legitimacy", "delta": -2 }
+      ],
+      "note": "Fast and no body bags — until the collateral roll: a crater, a martyrdom narrative, a recruitment spike via Grievance."
+    },
+    "sources": ["RAND on decapitation limits", "FM 3-24 paradoxes"]
+  },
+  {
+    "id": "train_equip",
+    "name": "Train & Equip",
+    "family": "military",
+    "target": "node",
+    "mandate_cost": 2,
+    "treasury_cost": 3,
+    "effects": [
+      { "op": "partner_capacity", "delta": 5 }
+    ],
+    "backfire": {
+      "channel": "coup_seed",
+      "probability": 1.0,
+      "effects": [
+        { "op": "coup_seed", "delta": 0.2 }
+      ],
+      "note": "Cheap force multiplier — and every cycle plants a coup seed: trained officers raise junta odds on the collapse roll (several Sahel coup leaders were Western-trained). Arms leakage to the graph lands v0.4."
+    },
+    "sources": ["Sahel coup-leader training records"]
+  },
+  {
+    "id": "development_program",
+    "name": "Development Program",
+    "family": "governance",
+    "target": "node",
+    "mandate_cost": 2,
+    "treasury_cost": 4,
+    "effects": [
+      { "op": "development", "delta": 3 },
+      { "op": "local_legitimacy", "delta": 2 },
+      { "op": "governance", "delta": 1 }
+    ],
+    "backfire": {
+      "channel": "insurgent_taxation",
+      "probability": 0.3,
+      "effects": [
+        { "op": "attrit", "amount": -2 }
+      ],
+      "note": "Wells, roads, schools — slow Local gains; in contested regions the shadow government taxes the project and the insurgency profits from your aid (negative attrit = strength gain)."
+    },
+    "sources": ["Galula — the 80% political rule"]
+  },
+  {
+    "id": "amnesty_reintegration",
+    "name": "Amnesty & Reintegration",
+    "family": "governance",
+    "target": "node",
+    "mandate_cost": 2,
+    "treasury_cost": 3,
+    "effects": [
+      { "op": "amnesty", "rate": 0.06, "turns": 4 },
+      { "op": "domestic_legitimacy", "delta": -3 }
+    ],
+    "backfire": {
+      "channel": "recidivism",
+      "probability": 0.2,
+      "effects": [
+        { "op": "attrit", "amount": -3 }
+      ],
+      "note": "Drains Strength via Defection and costs you 'soft on terror' at home up front; if security lapses, reintegrated fighters return to the fight."
+    },
+    "sources": ["RAND, How Insurgencies End — negotiated drawdowns"]
+  },
+  {
+    "id": "humint_network",
+    "name": "HUMINT Network",
+    "family": "intelligence",
+    "target": "node",
+    "mandate_cost": 1,
+    "treasury_cost": 2,
+    "effects": [
+      { "op": "intel", "delta": 0.25, "turns": 6 }
+    ],
+    "backfire": {
+      "channel": "blown_agent",
+      "probability": 0.1,
+      "effects": [
+        { "op": "local_legitimacy", "delta": -2 },
+        { "op": "international_legitimacy", "delta": -1 }
+      ],
+      "note": "The only counter to deceptive calm — it reveals Entrenchment truth. A blown network burns the people who trusted you."
+    },
+    "sources": ["DESIGN §9 — fog and deceptive calm"]
+  },
+  {
+    "id": "un_mandate",
+    "name": "Seek UN Mandate",
+    "family": "diplomatic",
+    "target": "global",
+    "mandate_cost": 2,
+    "treasury_cost": 1,
+    "effects": [
+      { "op": "intl_umbrella", "delta": 1, "turns": 8 },
+      { "op": "international_legitimacy", "delta": 3 }
+    ],
+    "backfire": {
+      "channel": "veto_delay",
+      "probability": 0.3,
+      "effects": [
+        { "op": "international_legitimacy", "delta": -2 },
+        { "op": "domestic_legitimacy", "delta": -1 }
+      ],
+      "note": "A cheap legitimacy umbrella that is slow and vetoable — a stalled resolution reads as weakness at home and abroad."
+    },
+    "sources": ["MINUSMA record"]
+  },
+  {
+    "id": "surveillance_expansion",
+    "name": "Surveillance Expansion (Emergency Powers I)",
+    "family": "domestic",
+    "target": "global",
+    "mandate_cost": 1,
+    "treasury_cost": 1,
+    "effects": [
+      { "op": "drift", "tiers": 1 },
+      { "op": "intel", "delta": 0.1, "turns": 8 }
+    ],
+    "backfire": {
+      "channel": "civil_liberties_scandal",
+      "probability": 0.15,
+      "effects": [
+        { "op": "domestic_legitimacy", "delta": -5 },
+        { "op": "international_legitimacy", "delta": -2 }
+      ],
+      "note": "Tier 1 of the Emergency Powers track: real, immediate intel power everywhere — and the Authoritarian Drift is permanent either way. The track must be tempting. That is the point."
+    },
+    "sources": ["DESIGN §7 Domestic / §11 IntegrityMultiplier"]
+  }
+]

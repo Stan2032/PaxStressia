@@ -1,0 +1,24 @@
+[
+  {
+    "id": "ansar_al_sahel",
+    "name": "Ansar al-Sahel",
+    "composite_of": "Composite closely modeled on JNIM and its precursors (Ansar Dine, AQIM's Saharan katibas, MUJAO, Katiba Macina). Locally rooted, federated structure, shadow-governance playbook.",
+    "ideology": ["salafi-jihadist", "local-grievance"],
+    "sponsor": "aq_network",
+    "capability_tier": 2,
+    "relations": { "wilayat_sahel": -0.4 },
+    "notes": "The entrenchment-first antagonist: embeds in local disputes, taxes routes, runs shadow courts. Rivalry with wilayat_sahel is real but historically punctuated by truces of convenience — unlike-group linking must stay possible (DESIGN §5.2).",
+    "sources": ["CFR Global Conflict Tracker — Sahel", "ICG reporting on JNIM"]
+  },
+  {
+    "id": "wilayat_sahel",
+    "name": "Wilayat Sahel",
+    "composite_of": "Composite closely modeled on IS-Sahel (ex-ISGS) and ISWAP influence at the arc's edges. Transnational franchise logic, higher-tempo violence, weaker local rooting.",
+    "ideology": ["salafi-jihadist", "transnational"],
+    "sponsor": "is_core",
+    "capability_tier": 2,
+    "relations": { "ansar_al_sahel": -0.4 },
+    "notes": "The strength-first antagonist: louder, more visible, less survivable under pressure — the contrast faction that makes the Strength/Entrenchment/Visibility triad legible in play.",
+    "sources": ["ACLED tri-border data", "CFR Global Conflict Tracker — Sahel"]
+  }
+]

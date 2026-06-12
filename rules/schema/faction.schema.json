@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "faction.schema.json",
+  "title": "MANDATE factions file (rules/factions.json)",
+  "description": "Insurgent factions per DESIGN.md §2/§5. Composited factions closely modeled on real groups; `composite_of` is REQUIRED — the journalistic sourcing ships in the data itself (the in-game Sources screen reads it). Runtime fields (links) are engine-owned.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "name", "composite_of", "ideology", "capability_tier"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "name": { "type": "string", "minLength": 1 },
+      "composite_of": { "type": "string", "minLength": 1, "description": "Which real organizations this composite is modeled on, stated plainly (§2 framing)." },
+      "ideology": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+      "sponsor": { "type": ["string", "null"], "description": "External sponsor id (patron archetype) or null; sponsors are a decisive survival variable (RAND, §17)." },
+      "capability_tier": { "type": "integer", "minimum": 1, "maximum": 5, "description": "TTP tier (§5.2): 1 ambush/IED … 5 coordinated multi-region offensives. Static at v0.2; tier-ups land later." },
+      "relations": {
+        "type": "object",
+        "description": "Affinity toward other faction ids, −1 (at war) to +1 (aligned); feeds link-formation threshold (§18.5).",
+        "additionalProperties": { "type": "number", "minimum": -1, "maximum": 1 }
+      },
+      "notes": { "type": "string" },
+      "sources": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}

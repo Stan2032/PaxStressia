@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "event.schema.json",
+  "title": "MANDATE events file (rules/events.json)",
+  "description": "Deck-driven events per DESIGN.md §10: historically sourced, weighted by world state, every event a choice with a legitimacy-triangle trade. `requires` predicates gate availability; `weight` sets draw odds among eligible cards.",
+  "$defs": {
+    "effect_op": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op"],
+      "properties": {
+        "op": {
+          "type": "string",
+          "enum": [
+            "ops_pressure", "attrit", "intel", "local_legitimacy",
+            "domestic_legitimacy", "international_legitimacy",
+            "governance", "development", "grievance", "amnesty",
+            "partner_capacity", "coup_seed", "drift", "intl_umbrella"
+          ]
+        },
+        "amount": { "type": "number" },
+        "delta": { "type": "number" },
+        "turns": { "type": "integer", "minimum": 1 },
+        "rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "tiers": { "type": "integer", "minimum": 1 },
+        "node": { "type": "string", "description": "Optional explicit node target; defaults to the event's drawn context node." }
+      }
+    }
+  },
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "title", "text", "weight", "choices"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "title": { "type": "string", "minLength": 1 },
+      "text": { "type": "string", "minLength": 1, "description": "Dossier-tone briefing text (§2 tone). Civilian harm abstracted, never gore." },
+      "weight": { "type": "number", "minimum": 0 },
+      "requires": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "min_turn": { "type": "integer", "minimum": 0 },
+          "max_turn": { "type": "integer", "minimum": 0 },
+          "min_avg_grievance": { "type": "number", "minimum": 0, "maximum": 100 },
+          "any_junta": { "type": "boolean" },
+          "min_coup_risk": { "type": "number", "minimum": 0 },
+          "min_partner_capacity": { "type": "number", "minimum": 0 },
+          "min_casualties": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "choices": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label", "effects"],
+          "properties": {
+            "label": { "type": "string", "minLength": 1 },
+            "effects": { "type": "array", "items": { "$ref": "#/$defs/effect_op" } }
+          }
+        }
+      },
+      "notes": { "type": "string" },
+      "sources": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}
