@@ -534,7 +534,15 @@ Global ~45-node map, Sept 2001 start (**PROPOSED**, §2), 25-year horizon, all s
 - **DECIDED: the title is PaxStressia.** Open questions #4 and #7 resolved (answer to #7: the repo name *is* the title). MANDATE retired as working title; it remains throughout the historical sections of this handoff and the early changelog entries as record, per the cumulative rule. The rationale is captured as design material in `DESIGN.md` §1 "The Name" — the name is the thesis compressed, and "trying your best to" is the exact gap the Transparency Dial, Authoritarian Drift, and the Exposure system play in.
 - Repo state at this point: `main` is the default branch (Stan flipped it); PR #1 (v0.2.1 docs) merged; CI green on every push so far.
 
+## 9. Phase 0 delivered — v0.3 (2026-06-12, same code session)
+
+- **The greybox prototype is playable** (`proto/index.html`): single-file HTML/JS, phone-browser, dark-dossier greybox of Sahel-lite implementing the §18 loop client-side — fog with confidence bands (§19.5 honored: deceptive calm is experiencable in the greybox), 9 initiatives, player-chosen events, itemized ledger reports, elections, collapse rolls, four endings, localStorage saves, and the believed-vs-true post-mortem chart.
+- **Single-source-of-truth held:** served over http the proto fetches `rules/*.json` live; `proto/build.py` embeds a snapshot only as the `file://` fallback, and CI fails if it drifts. The JS engine is a §18-spec port — self-consistently deterministic, not bit-compatible with Python (rules data is the shared truth, not the RNG stream); `proto/smoke.mjs` enforces determinism/ranges/ledger/save-restore headlessly in CI via Node.
+- **Deployment guide** at `docs/DEPLOY.md` per Stan's request: Cloudflare Pages from GitHub (repo-root deploy → live rules + per-PR playtest preview URLs), wrangler-from-Termux, GitHub Pages alternatives. Cloudflare setup itself is a dashboard action only Stan can do.
+- **The v0.4 gate is now a human question:** Stan playtests; if the 20-minute loop isn't fun, we iterate the proto before building the full arc map.
+
 ### Changelog (post-handoff)
 - **v0.2** — 2026-06-12 — Repo bootstrapped; §5.3 task list delivered (schemas, Sahel-lite data, sim skeleton, tests, CI); DESIGN.md grown with §18; open question #7 (repo name) raised.
 - **v0.2.1** — 2026-06-12 — Two research passes (design craft; authoritarian-reality empirics) → DESIGN.md §19 & §20; Exposure directive recorded as DECIDED; `main` trunk + PR workflow established.
 - **v0.2.2** — 2026-06-12 — Title DECIDED: **PaxStressia**; questions #4/#7 resolved; live files renamed; MANDATE kept in historical record.
+- **v0.3** — 2026-06-12 — Phase 0 greybox prototype delivered (playable, fog-first, smoke-tested); DEPLOY.md (Cloudflare Pages); playtest gate armed.
