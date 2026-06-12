@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "event.schema.json",
-  "title": "MANDATE events file (rules/events.json)",
+  "title": "PaxStressia events file (rules/events.json)",
   "description": "Deck-driven events per DESIGN.md §10: historically sourced, weighted by world state, every event a choice with a legitimacy-triangle trade. `requires` predicates gate availability; `weight` sets draw odds among eligible cards.",
   "$defs": {
     "effect_op": {

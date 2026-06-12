@@ -528,6 +528,13 @@ Global ~45-node map, Sept 2001 start (**PROPOSED**, §2), 25-year horizon, all s
 - **Repo setup authorized by Stan** ("setup the repo however you wish"): `main` trunk created at the v0.2 state; development continues on work branches with PRs into `main`. Default-branch flip to `main` requires a one-tap GitHub settings change (Stan). Open question #7's *title* half remains open.
 - **Process incident, logged per the cumulative rule:** a §19 edit-anchor mistake briefly dropped DESIGN.md's changelog header and v0.1 entry; restored verbatim in-session and verified against git history (diff shows only additions + three in-place line extensions).
 
+## 8. Title decision — v0.2.2 (2026-06-12, same code session)
+
+- **Stan, near-verbatim:** "I like the name PaxStressia, it encapsulates the 'Pax …ia' eras in history, pax at the cost of stress. and being lied about but not dealing in lies yourself. or, trying your best to."
+- **DECIDED: the title is PaxStressia.** Open questions #4 and #7 resolved (answer to #7: the repo name *is* the title). MANDATE retired as working title; it remains throughout the historical sections of this handoff and the early changelog entries as record, per the cumulative rule. The rationale is captured as design material in `DESIGN.md` §1 "The Name" — the name is the thesis compressed, and "trying your best to" is the exact gap the Transparency Dial, Authoritarian Drift, and the Exposure system play in.
+- Repo state at this point: `main` is the default branch (Stan flipped it); PR #1 (v0.2.1 docs) merged; CI green on every push so far.
+
 ### Changelog (post-handoff)
 - **v0.2** — 2026-06-12 — Repo bootstrapped; §5.3 task list delivered (schemas, Sahel-lite data, sim skeleton, tests, CI); DESIGN.md grown with §18; open question #7 (repo name) raised.
 - **v0.2.1** — 2026-06-12 — Two research passes (design craft; authoritarian-reality empirics) → DESIGN.md §19 & §20; Exposure directive recorded as DECIDED; `main` trunk + PR workflow established.
+- **v0.2.2** — 2026-06-12 — Title DECIDED: **PaxStressia**; questions #4/#7 resolved; live files renamed; MANDATE kept in historical record.

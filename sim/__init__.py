@@ -1,4 +1,4 @@
-"""MANDATE headless simulation core (working title; repo codename PaxStressia).
+"""PaxStressia headless simulation core.
 
 Data-driven by design: all rules live in JSON under rules/ (DESIGN.md §13.2).
 This package is stdlib-only so it runs in bare Termux Python — jsonschema is
@@ -18,7 +18,7 @@ from .policies import (
 )
 from .world import WorldState, build_world, load_rules
 
-__version__ = "0.2.0"
+__version__ = "0.2.2"
 
 __all__ = [
     "POLICIES",

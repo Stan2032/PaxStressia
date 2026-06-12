@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "faction.schema.json",
-  "title": "MANDATE factions file (rules/factions.json)",
+  "title": "PaxStressia factions file (rules/factions.json)",
   "description": "Insurgent factions per DESIGN.md §2/§5. Composited factions closely modeled on real groups; `composite_of` is REQUIRED — the journalistic sourcing ships in the data itself (the in-game Sources screen reads it). Runtime fields (links) are engine-owned.",
   "type": "array",
   "minItems": 1,
