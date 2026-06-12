@@ -1,0 +1,257 @@
+"""The insurgency model (DESIGN.md §5, formulas §18.5).
+
+Strength accretes from grievance, sponsors, and alliances; decays under
+pressure and defection. Uncontested strength converts into entrenchment
+(shadow governance). Contestation makes insurgencies loud; entrenchment makes
+them quiet — visibility is what the player's map will believe (sim.fog).
+Every ΔStrength term is computed and logged separately: balance work reads
+causes, not net effects.
+"""
+
+from __future__ import annotations
+
+import random
+
+from .legitimacy import Ledger
+from .world import WorldState, clamp
+
+
+def route_factor(world: WorldState, node_id: str) -> float:
+    """Mean open capacity of the node's edges — sponsor flow rides the graph."""
+    edges = world.edges_of(node_id)
+    if not edges:
+        return 0.0
+    return sum(e.capacity * (1.0 - e.interdiction) for e in edges) / len(edges)
+
+
+def growth_terms(
+    world: WorldState, consts: dict, faction_id: str, node_id: str, amnesty_rate: float
+) -> dict[str, float]:
+    """The §5.1 equation, term by term, for one (faction, node)."""
+    node = world.nodes[node_id]
+    pres = node.presence[faction_id]
+    faction = world.factions[faction_id]
+    junta_amp = 1.0 + (consts["junta_recruit_amp"] if node.government == "junta" else 0.0)
+    n_links = len(faction.links)
+    recruitment = (
+        consts["k_recruit"] * (node.grievance / 100.0) * (1.0 - node.governance / 100.0) * junta_amp
+    )
+    external = (
+        consts["sponsor_flow"] * route_factor(world, node_id) * (1.0 + consts["k_pool"] * n_links)
+        if faction.sponsor
+        else 0.0
+    )
+    alliance = consts["k_alliance"] * n_links
+    attrition = (
+        (node.ops_pressure + node.partner_capacity * consts["k_partner"])
+        * consts["k_attrit"]
+        * (pres.strength / 100.0)
+    )
+    defection = amnesty_rate * pres.strength
+    return {
+        "recruitment": recruitment,
+        "external_support": external,
+        "alliance_bonus": alliance,
+        "attrition": -attrition,
+        "defection": -defection,
+    }
+
+
+def apply_growth(
+    world: WorldState, consts: dict, amnesty_rates: dict[str, float]
+) -> tuple[list[dict], dict[str, float]]:
+    """Resolution substep c. Returns (itemized growth log, attrition dealt per faction)."""
+    log: list[dict] = []
+    attrition_dealt: dict[str, float] = {f.id: 0.0 for f in world.factions_sorted()}
+    for faction in world.factions_sorted():
+        for node in world.nodes_sorted():
+            if faction.id not in node.presence:
+                continue
+            pres = node.presence[faction.id]
+            if pres.strength <= 0 and pres.entrenchment <= 0:
+                continue
+            rate = amnesty_rates.get(node.id, 0.0)
+            terms = growth_terms(world, consts, faction.id, node.id, rate)
+            delta = sum(terms.values())
+            pres.strength = clamp(pres.strength + delta)
+            attrition_dealt[faction.id] += -terms["attrition"]
+            log.append(
+                {
+                    "faction": faction.id,
+                    "node": node.id,
+                    "terms": {k: round(v, 4) for k, v in terms.items()},
+                    "strength": round(pres.strength, 4),
+                }
+            )
+    return log, attrition_dealt
+
+
+def entrench_and_visibility(world: WorldState, consts: dict) -> None:
+    """Resolution substep d. Uncontested strength becomes shadow governance;
+    visibility relaxes toward its contested/quiet target (Pillar 4)."""
+    for node in world.nodes_sorted():
+        for fid in sorted(node.presence):
+            pres = node.presence[fid]
+            uncontested = (
+                pres.strength >= consts["entrench_strength_min"]
+                and node.ops_pressure < consts["entrench_pressure_max"]
+            )
+            if uncontested:
+                node.uncontested_turns[fid] = node.uncontested_turns.get(fid, 0) + 1
+                pres.entrenchment = clamp(
+                    pres.entrenchment + consts["k_entrench"] * pres.strength / 100.0
+                )
+            else:
+                node.uncontested_turns[fid] = 0
+            # Entrenchment decays only through Local legitimacy (§6): the slow gauge
+            # is the only thing that permanently starves an insurgency.
+            pres.entrenchment = clamp(
+                pres.entrenchment - consts["k_entrench_decay"] * node.local_legitimacy / 100.0
+            )
+            contest = min(1.0, node.ops_pressure / consts["pressure_ref"])
+            target = clamp(
+                consts["vis_floor"]
+                + consts["vis_contest"] * contest
+                - consts["vis_quiet"] * pres.entrenchment
+            )
+            pres.visibility = clamp(
+                pres.visibility + consts["vis_smooth"] * (target - pres.visibility)
+            )
+
+
+def networking_check(
+    world: WorldState, consts: dict, attrition_dealt: dict[str, float]
+) -> list[dict]:
+    """Resolution substep e (§5.2). Deterministic threshold:
+    affinity_eff × mutual_need × route_access ≥ link_threshold.
+    The affinity floor keeps ideologically unlike alliances possible."""
+    log: list[dict] = []
+    factions = world.factions_sorted()
+    for i, f in enumerate(factions):
+        for g in factions[i + 1 :]:
+            if f.linked_with(g.id):
+                continue
+            affinity_eff = max(f.relations.get(g.id, 0.0), consts["affinity_floor"])
+            mutual_need = min(
+                2.0, 1.0 + (attrition_dealt.get(f.id, 0.0) + attrition_dealt.get(g.id, 0.0)) / 20.0
+            )
+            access = _shared_route_access(world, f.id, g.id)
+            score = affinity_eff * mutual_need * access
+            if score >= consts["link_threshold"]:
+                f.links.append({"with": g.id, "turn": world.turn})
+                g.links.append({"with": f.id, "turn": world.turn})
+                log.append(
+                    {
+                        "event": "faction_link",
+                        "factions": [f.id, g.id],
+                        "score": round(score, 4),
+                        "turn": world.turn,
+                    }
+                )
+    return log
+
+
+def _shared_route_access(world: WorldState, fid: str, gid: str) -> float:
+    """1.0 if the factions share a node; else best open edge between their nodes."""
+    def held_nodes(faction_id: str) -> set[str]:
+        return {
+            n.id
+            for n in world.nodes_sorted()
+            if faction_id in n.presence and n.presence[faction_id].strength > 0
+        }
+
+    f_nodes, g_nodes = held_nodes(fid), held_nodes(gid)
+    if not f_nodes or not g_nodes:
+        return 0.0
+    if f_nodes & g_nodes:
+        return 1.0
+    best = 0.0
+    for edge in sorted(world.edges, key=lambda e: e.id):
+        if (edge.a in f_nodes and edge.b in g_nodes) or (edge.b in f_nodes and edge.a in g_nodes):
+            best = max(best, edge.capacity * (1.0 - edge.interdiction))
+    return best
+
+
+def collapse_rolls(
+    world: WorldState, consts: dict, rng: random.Random, ledger: Ledger
+) -> list[dict]:
+    """Resolution substep f (§5.3). One collapse per country at v0.2.
+    Junta is the most common outcome in fragile-but-functional states — and the
+    coup seeds you planted with Train & Equip are in the weights."""
+    log: list[dict] = []
+    for country in world.countries():
+        if world.collapsed[country]:
+            continue
+        capital = world.capital_of(country)
+        if capital is None:
+            continue  # off-map capital (Sahel-lite NE): cannot collapse in this dataset
+        threat = 0.0
+        for node in world.country_nodes(country):
+            for fid in sorted(node.presence):
+                pres = node.presence[fid]
+                threat = max(threat, pres.strength * (0.5 + pres.entrenchment / 200.0))
+        ratio = threat / max(1.0, capital.governance)
+        if ratio < consts["collapse_ratio"]:
+            continue
+        cap_entrench_share = max(
+            (p.entrenchment / 100.0 for p in capital.presence.values()), default=0.0
+        )
+        outcomes = ["junta", "failed", "emirate"]
+        weights = [
+            consts["w_junta"] + world.coup_risk[country],
+            consts["w_failed"],
+            consts["w_emirate"] * cap_entrench_share,
+        ]
+        if sum(weights) <= 0:
+            continue
+        outcome = rng.choices(outcomes, weights=weights, k=1)[0]
+        world.collapsed[country] = True
+        capital.government = outcome
+        if outcome == "junta":
+            capital.governance = clamp(capital.governance - consts["junta_gov_hit"])
+            capital.patron_influence["mercenary"] = clamp(
+                capital.patron_influence.get("mercenary", 0.0) + consts["junta_patron_gain"]
+            )
+            for node in world.country_nodes(country):
+                node.grievance = clamp(node.grievance + consts["junta_grievance_hit"])
+                node.government = "junta"
+        elif outcome == "failed":
+            capital.governance = clamp(capital.governance * 0.5)
+            for node in world.country_nodes(country):
+                node.government = "failed"
+        else:  # emirate: the strongest faction governs; sanctuary dynamics land v0.7
+            capital.governance = clamp(capital.governance - consts["junta_gov_hit"])
+            for node in world.country_nodes(country):
+                node.government = "emirate"
+        log.append(
+            {
+                "event": "state_collapse",
+                "country": country,
+                "outcome": outcome,
+                "threat_ratio": round(ratio, 4),
+                "coup_risk": round(world.coup_risk[country], 4),
+                "turn": world.turn,
+            }
+        )
+    return log
+
+
+def detect_proto_blocs(world: WorldState) -> list[dict]:
+    """v0.2 stub of §5.4: adjacent non-civilian states are *detected and logged*
+    as a proto-bloc. The consolidation clock itself lands at v0.7."""
+    log: list[dict] = []
+    non_civilian = {
+        c for c in world.countries()
+        if (cap := world.capital_of(c)) is not None and cap.government != "civilian"
+    }
+    if len(non_civilian) < 2:
+        return log
+    for edge in sorted(world.edges, key=lambda e: e.id):
+        ca = world.nodes[edge.a].country
+        cb = world.nodes[edge.b].country
+        if ca != cb and ca in non_civilian and cb in non_civilian:
+            pair = sorted((ca, cb))
+            if pair not in world.proto_blocs:
+                world.proto_blocs.append(pair)
+                log.append({"event": "proto_bloc_detected", "countries": pair, "turn": world.turn})
+    return log
