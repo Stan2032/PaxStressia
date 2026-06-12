@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PaxStressia — greybox prototype (v0.3)</title>
+<style>
+  :root{
+    --bg:#14181d; --panel:#1c2229; --panel2:#222a33; --ink:#cfd8dc; --dim:#78909c;
+    --amber:#ffb300; --teal:#26a69a; --red:#ef5350; --blue:#42a5f5; --green:#9ccc65;
+    --junta:#b71c1c; --emirate:#4a148c; --failed:#37474f; --civ:#33691e;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0; height:100%; background:var(--bg); color:var(--ink);
+    font:14px/1.45 ui-monospace,Menlo,Consolas,monospace}
+  #app{display:flex; flex-direction:column; height:100%; max-width:760px; margin:0 auto}
+  header{padding:6px 10px; background:var(--panel); border-bottom:1px solid #000}
+  .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+  .date{color:var(--amber); font-weight:bold}
+  .chip{background:var(--panel2); border-radius:4px; padding:1px 7px; white-space:nowrap}
+  .chip b{color:var(--amber)}
+  .gauges{display:flex; gap:6px; margin-top:4px}
+  .gauge{flex:1}
+  .gauge label{font-size:10px; color:var(--dim); display:flex; justify-content:space-between}
+  .bar{height:7px; background:#000; border-radius:3px; overflow:hidden}
+  .bar i{display:block; height:100%; transition:width .4s}
+  #map{flex:1; min-height:240px; background:
+    radial-gradient(ellipse at 70% 20%, #1a2129 0%, var(--bg) 70%)}
+  #map svg{width:100%; height:100%}
+  .edge{stroke:#3a4750; stroke-width:1.5}
+  .edge.smuggling{stroke-dasharray:5 4; stroke:#5d4037}
+  .node circle.body{stroke:#000; stroke-width:1.5; cursor:pointer}
+  .node.sel circle.body{stroke:var(--amber); stroke-width:3}
+  .node text{fill:var(--ink); font-size:11px; pointer-events:none}
+  .node .est{fill:var(--amber); font-size:10px}
+  .node .pips{fill:var(--red); font-size:9px}
+  .node .star{fill:var(--amber); font-size:10px}
+  .node .patron{fill:#ff7043}
+  #sheet{background:var(--panel); border-top:2px solid #000; height:46%; display:flex;
+    flex-direction:column}
+  nav{display:flex}
+  nav button{flex:1; background:var(--panel2); border:0; color:var(--dim); padding:8px;
+    font:inherit; border-right:1px solid #000}
+  nav button.on{background:var(--panel); color:var(--amber); font-weight:bold}
+  #panel{flex:1; overflow-y:auto; padding:8px 10px}
+  .head{color:var(--amber); margin:6px 0 3px; font-weight:bold}
+  .sub{color:var(--dim); font-size:12px}
+  .card{background:var(--panel2); border-radius:6px; padding:7px 9px; margin:6px 0}
+  .init{display:flex; justify-content:space-between; align-items:center; gap:6px;
+    border-left:3px solid var(--dim)}
+  .init.armed{border-left-color:var(--amber); background:#2c3540}
+  .init small{color:var(--dim); display:block}
+  .cost{color:var(--amber); white-space:nowrap}
+  button.act{background:var(--panel2); color:var(--ink); border:1px solid #000;
+    border-radius:6px; padding:8px 12px; font:inherit}
+  button.primary{background:var(--amber); color:#000; font-weight:bold; width:100%;
+    padding:11px; border:0; border-radius:6px; font-size:15px}
+  .led{font-size:12px; margin-left:8px}
+  .led .pos{color:var(--green)} .led .neg{color:var(--red)}
+  .hl{border-left:3px solid var(--red); padding-left:8px; margin:5px 0; font-size:13px}
+  .hl.warn{border-left-color:var(--amber)} .hl.info{border-left-color:var(--blue)}
+  .frow{display:flex; justify-content:space-between; font-size:12px; padding:2px 0}
+  .band{color:var(--dim)}
+  #modal,#endgame{position:fixed; inset:0; background:rgba(0,0,0,.78); display:none;
+    align-items:center; justify-content:center; padding:16px; z-index:10}
+  #modal.show,#endgame.show{display:flex}
+  .paper{background:var(--panel); border:1px solid var(--amber); border-radius:8px;
+    max-width:420px; width:100%; max-height:90%; overflow-y:auto; padding:14px}
+  .paper h2{color:var(--amber); margin:0 0 6px; font-size:16px}
+  .choice{display:block; width:100%; text-align:left; margin:7px 0; padding:9px;
+    background:var(--panel2); color:var(--ink); border:1px solid #000; border-radius:6px;
+    font:inherit}
+  .choice:active{background:#2c3540}
+  canvas{width:100%; background:#0d1117; border-radius:6px}
+  .src{font-size:10px; color:var(--dim); text-align:right}
+  input,select{background:var(--panel2); color:var(--ink); border:1px solid #000;
+    border-radius:4px; padding:5px; font:inherit; width:90px}
+  .queue{color:var(--teal); font-size:12px}
+  table{width:100%; border-collapse:collapse; font-size:12px}
+  td{padding:2px 4px; border-bottom:1px solid #2a323b}
+  td:last-child{text-align:right}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="row">
+      <span class="date" id="hDate">—</span>
+      <span class="chip">Mandate <b id="hMandate">0</b></span>
+      <span class="chip">Treasury <b id="hTreasury">0</b></span>
+      <span class="chip" id="hElection">—</span>
+      <span class="chip" id="hDrift" style="display:none">Drift <b>0</b></span>
+      <span class="chip src" id="hSource">rules: …</span>
+    </div>
+    <div class="gauges">
+      <div class="gauge"><label>Domestic <span id="vDom"></span></label>
+        <div class="bar"><i id="bDom" style="background:var(--blue)"></i></div></div>
+      <div class="gauge"><label>International <span id="vIntl"></span></label>
+        <div class="bar"><i id="bIntl" style="background:var(--teal)"></i></div></div>
+      <div class="gauge"><label>Local avg <span id="vLoc"></span></label>
+        <div class="bar"><i id="bLoc" style="background:var(--green)"></i></div></div>
+    </div>
+  </header>
+  <div id="map"></div>
+  <div id="sheet">
+    <nav>
+      <button id="tabBrief" class="on">Briefing</button>
+      <button id="tabAct">Act</button>
+      <button id="tabReport">Report</button>
+    </nav>
+    <div id="panel"></div>
+  </div>
+</div>
+<div id="modal"><div class="paper" id="modalPaper"></div></div>
+<div id="endgame"><div class="paper" id="endPaper"></div></div>
+
+<script id="rules-snapshot" type="application/json">
+{"constants":{"affinity_floor":0.2,"collapse_ratio":1.2,"continuity_reversion":0.5,"cost_per_casualty":0.4,"cost_spend_norm":0.05,"domestic_hit_per_casualty":0.8,"drift_per_tier":0.15,"edge_interdiction_cap":0.8,"election_k":12,"election_period_turns":60,"entrench_pressure_max":10,"entrench_strength_min":20,"event_chance":0.45,"fog_calm_bias":0.6,"fog_entrench_mult":1.5,"fog_sigma_max":0.45,"honeymoon_mult":1.25,"honeymoon_turns":6,"horizon_turns":168,"integrity_floor":0.2,"junta_gov_hit":15,"junta_grievance_hit":12,"junta_patron_gain":25,"junta_recruit_amp":0.5,"k_alliance":0.8,"k_attrit":0.12,"k_entrench":1.5,"k_entrench_decay":0.8,"k_partner":0.6,"k_pool":0.5,"k_recruit":2.2,"lameduck_mult":0.6,"lameduck_turns":6,"link_threshold":0.3,"mandate_base":3,"notes":{"election":"60-turn period = France-analog presidential cadence at month scale; the US seat (48) arrives with the seat roster.","formulas":"Each key is referenced by name in DESIGN.md \u00a718.5. Change values here, never in code.","horizon":"168 monthly turns = Jan 2012 \u2192 Dec 2025, the Sahel-lite arc.","status":"ALL VALUES PROPOSED \u2014 initial guesses pending the v0.5 history-calibration pass (passive player ~reproduces 2012-2026: Mali junta by ~turn 100, insurgent expansion, proto-bloc detected)."},"order_bloc_weight":0.5,"order_junta_weight":0.25,"patron_drift_junta":1.5,"pressure_ref":30,"sponsor_flow":1.2,"start_date":"2012-01","starting":{"domestic":60,"international":65,"treasury":20},"treasury_income":4,"turn_scale":"month","vis_contest":60,"vis_floor":15,"vis_quiet":0.45,"vis_smooth":0.35,"w_emirate":0.15,"w_failed":0.25,"w_junta":0.6},"edges":[{"a":"bamako","b":"mopti","capacity":0.7,"id":"bamako_mopti","notes":"Primary RN6 corridor; state logistics and insurgent infiltration share the same road.","types":["road"]},{"a":"mopti","b":"gao","capacity":0.6,"id":"mopti_gao","notes":"Niger river axis; historically the route both of the 2013 intervention and of insurgent rollback.","types":["road","river","smuggling"]},{"a":"gao","b":"kidal","capacity":0.5,"id":"gao_kidal","notes":"Desert route into the Tuareg heartland; arms flow dating to the 2011 Libya spillover.","types":["road","smuggling","ethnic"]},{"a":"kidal","b":"tillaberi","capacity":0.4,"id":"kidal_tillaberi","notes":"The M\u00e9naka corridor, abstracted at Sahel-lite scale; v0.4 inserts M\u00e9naka as a node.","types":["smuggling","ethnic"]},{"a":"gao","b":"tillaberi","capacity":0.6,"id":"gao_tillaberi","notes":"Tri-border artery \u2014 the densest incident corridor of the real arc.","types":["border","smuggling"]},{"a":"mopti","b":"ouagadougou","capacity":0.55,"id":"mopti_ouagadougou","notes":"Cross-border community ties plus the northern Burkina corridor; the 2015+ spillover path.","types":["border","road","ethnic"]},{"a":"ouagadougou","b":"tillaberi","capacity":0.5,"id":"ouagadougou_tillaberi","notes":"Eastern Burkina\u2013western Niger axis.","types":["border","road"]},{"a":"bamako","b":"ouagadougou","capacity":0.65,"id":"bamako_ouagadougou","notes":"Inter-capital highway; the political axis along which the coup cascade and later the AES propagated.","types":["road"]}],"events":[{"choices":[{"effects":[{"delta":-4,"op":"domestic_legitimacy"},{"delta":-1,"op":"international_legitimacy"},{"delta":-2,"op":"local_legitimacy"}],"label":"Disclose and open a joint inquiry"},{"effects":[{"delta":-4,"op":"local_legitimacy"},{"delta":3,"op":"grievance"}],"label":"Bury the report"}],"id":"partner_atrocity","notes":"Transparency Dial prototype. At v0.6 the suppress branch starts a leak clock instead of paying immediately; until then the cover-up costs where the population already knows.","requires":{"min_partner_capacity":1},"sources":["Sahel partner-force abuse reporting","DESIGN \u00a76 Transparency Dial"],"text":"A unit you raid alongside is credibly accused of executing detainees in a village sweep. Your flag is on the operation. The report is on your desk; the press does not have it yet.","title":"Partner-Force Atrocity","weight":1.2},{"choices":[{"effects":[{"delta":3,"op":"international_legitimacy"},{"delta":-2,"op":"domestic_legitimacy"}],"label":"Fund and host humanitarian corridors"},{"effects":[{"delta":-4,"op":"international_legitimacy"},{"delta":2,"op":"domestic_legitimacy"},{"delta":3,"op":"grievance"}],"label":"Press the host state to close the corridor"}],"id":"refugee_wave","notes":"The Local \u2192 International \u2192 Domestic cascade (DESIGN \u00a710).","requires":{"min_avg_grievance":55},"sources":["UNHCR Sahel displacement record"],"text":"Displacement from the contested sectors crosses a threshold; columns are moving toward the capital and the borders. Cameras are already there.","title":"Refugee Wave","weight":1.0},{"choices":[{"effects":[{"delta":1,"op":"international_legitimacy"},{"delta":-2,"op":"domestic_legitimacy"},{"delta":-3,"op":"partner_capacity"}],"label":"Comply and withdraw in good order"},{"effects":[{"delta":-5,"op":"international_legitimacy"},{"delta":-1,"op":"domestic_legitimacy"}],"label":"Pay to stay \u2014 drop the conditionality"}],"id":"base_access_revoked","notes":"The Mali-expels-France beat (DESIGN \u00a78). The full allegiance market lands v0.7.","requires":{"any_junta":true},"sources":["2022 French withdrawal from Mali record"],"text":"The junta's spokesman, flanked by new advisors you recognize from elsewhere, announces that your forces have weeks to leave. The advisors' employer does not do press conferences.","title":"Base Access Revoked","weight":1.5},{"choices":[{"effects":[{"delta":-5,"op":"domestic_legitimacy"}],"label":"Defend the mission on its merits"},{"effects":[{"delta":-2,"op":"domestic_legitimacy"},{"delta":-2,"op":"international_legitimacy"}],"label":"Pivot to homeland-security framing"}],"id":"election_shock","notes":"Merom's thesis arriving on schedule: the war is lost or saved at home (DESIGN \u00a71).","requires":{"min_casualties":5},"sources":["Merom, How Democracies Lose Small Wars"],"text":"A coffin-count graphic leads the evening news for the third night running. The opposition has found its single issue, and it is your war.","title":"Election Shock at Home","weight":0.8},{"choices":[{"effects":[{"delta":0.3,"op":"coup_seed"},{"delta":-4,"op":"international_legitimacy"}],"label":"Acquiesce \u2014 stability first"},{"effects":[{"delta":0.1,"op":"coup_seed"},{"delta":-2,"op":"partner_capacity"},{"delta":-1,"op":"domestic_legitimacy"}],"label":"Condemn and suspend assistance"}],"id":"transitional_council","notes":"The train-and-equip blowback made visible. The collapse roll itself fires in resolution substep f (DESIGN \u00a718.3).","requires":{"min_coup_risk":0.4},"sources":["Sahel coup-leader training records"],"text":"Officers from a battalion your trainers certified appear on state television at dawn. They speak of corruption, of the failing war, and of the patriotic necessity of a transitional period. They thank their foreign partners \u2014 ambiguously.","title":"A 'Transitional Council' Announces Itself","weight":1.5},{"choices":[{"effects":[{"delta":3,"op":"domestic_legitimacy"},{"delta":-0.1,"op":"intel","turns":4}],"label":"Declare progress"},{"effects":[{"delta":0.15,"op":"intel","turns":4},{"delta":-1,"op":"domestic_legitimacy"}],"label":"Commission an independent assessment"}],"id":"quiet_sector_report","notes":"Pillar 4 as an event: quiet is not peace. Declaring progress relaxes collection exactly where entrenchment is doing its work.","sources":["2026 Sahel entrenchment analyses \u2014 falling attacks \u2260 security"],"text":"Incident counts in a sector you barely cover have fallen for two consecutive quarters. Your briefer calls it progress. A footnote mentions new 'dispute-resolution committees' operating in the villages \u2014 author unknown.","title":"The Quiet Sector","weight":0.7}],"factions":[{"capability_tier":2,"composite_of":"Composite closely modeled on JNIM and its precursors (Ansar Dine, AQIM's Saharan katibas, MUJAO, Katiba Macina). Locally rooted, federated structure, shadow-governance playbook.","id":"ansar_al_sahel","ideology":["salafi-jihadist","local-grievance"],"name":"Ansar al-Sahel","notes":"The entrenchment-first antagonist: embeds in local disputes, taxes routes, runs shadow courts. Rivalry with wilayat_sahel is real but historically punctuated by truces of convenience \u2014 unlike-group linking must stay possible (DESIGN \u00a75.2).","relations":{"wilayat_sahel":-0.4},"sources":["CFR Global Conflict Tracker \u2014 Sahel","ICG reporting on JNIM"],"sponsor":"aq_network"},{"capability_tier":2,"composite_of":"Composite closely modeled on IS-Sahel (ex-ISGS) and ISWAP influence at the arc's edges. Transnational franchise logic, higher-tempo violence, weaker local rooting.","id":"wilayat_sahel","ideology":["salafi-jihadist","transnational"],"name":"Wilayat Sahel","notes":"The strength-first antagonist: louder, more visible, less survivable under pressure \u2014 the contrast faction that makes the Strength/Entrenchment/Visibility triad legible in play.","relations":{"ansar_al_sahel":-0.4},"sources":["ACLED tri-border data","CFR Global Conflict Tracker \u2014 Sahel"],"sponsor":"is_core"}],"initiatives":[{"backfire":{"channel":"occupation_antibodies","effects":[{"delta":-2,"op":"local_legitimacy"},{"delta":2,"op":"grievance"}],"note":"Foreign boots past the welcome threshold generate antibodies (Kilcullen). Casualty drip handled via casualty_risk \u2192 Domestic.","probability":0.15},"casualty_risk":0.3,"effects":[{"amount":25,"op":"ops_pressure","turns":3}],"family":"military","id":"presence_patrols","mandate_cost":2,"name":"Presence Patrols","notes":"Suppresses Strength and raises insurgent Visibility while active.","sources":["FM 3-24 paradoxes","Kilcullen, The Accidental Guerrilla"],"target":"node","treasury_cost":2},{"backfire":{"channel":"partner_conduct","effects":[{"delta":-4,"op":"local_legitimacy"},{"delta":-3,"op":"international_legitimacy"},{"delta":4,"op":"grievance"}],"note":"Cheap attrition, but partner-force abuses carry your flag \u2014 Local and International pay for it.","probability":0.2},"casualty_risk":0.1,"effects":[{"amount":8,"op":"attrit"},{"delta":2,"op":"partner_capacity"}],"family":"military","id":"partnered_raids","mandate_cost":1,"name":"Partnered Raids","sources":["FM 3-24","Sahel partner-force abuse reporting"],"target":"node","treasury_cost":1},{"backfire":{"channel":"collateral","effects":[{"delta":-5,"op":"local_legitimacy"},{"delta":6,"op":"grievance"},{"delta":-2,"op":"international_legitimacy"}],"note":"Fast and no body bags \u2014 until the collateral roll: a crater, a martyrdom narrative, a recruitment spike via Grievance.","probability":0.25},"effects":[{"amount":12,"op":"attrit"}],"family":"military","id":"drone_strike","mandate_cost":1,"name":"Drone Strike","sources":["RAND on decapitation limits","FM 3-24 paradoxes"],"target":"node","treasury_cost":2},{"backfire":{"channel":"coup_seed","effects":[{"delta":0.2,"op":"coup_seed"}],"note":"Cheap force multiplier \u2014 and every cycle plants a coup seed: trained officers raise junta odds on the collapse roll (several Sahel coup leaders were Western-trained). Arms leakage to the graph lands v0.4.","probability":1.0},"effects":[{"delta":5,"op":"partner_capacity"}],"family":"military","id":"train_equip","mandate_cost":2,"name":"Train & Equip","sources":["Sahel coup-leader training records"],"target":"node","treasury_cost":3},{"backfire":{"channel":"insurgent_taxation","effects":[{"amount":-2,"op":"attrit"}],"note":"Wells, roads, schools \u2014 slow Local gains; in contested regions the shadow government taxes the project and the insurgency profits from your aid (negative attrit = strength gain).","probability":0.3},"effects":[{"delta":3,"op":"development"},{"delta":2,"op":"local_legitimacy"},{"delta":1,"op":"governance"}],"family":"governance","id":"development_program","mandate_cost":2,"name":"Development Program","sources":["Galula \u2014 the 80% political rule"],"target":"node","treasury_cost":4},{"backfire":{"channel":"recidivism","effects":[{"amount":-3,"op":"attrit"}],"note":"Drains Strength via Defection and costs you 'soft on terror' at home up front; if security lapses, reintegrated fighters return to the fight.","probability":0.2},"effects":[{"op":"amnesty","rate":0.06,"turns":4},{"delta":-3,"op":"domestic_legitimacy"}],"family":"governance","id":"amnesty_reintegration","mandate_cost":2,"name":"Amnesty & Reintegration","sources":["RAND, How Insurgencies End \u2014 negotiated drawdowns"],"target":"node","treasury_cost":3},{"backfire":{"channel":"blown_agent","effects":[{"delta":-2,"op":"local_legitimacy"},{"delta":-1,"op":"international_legitimacy"}],"note":"The only counter to deceptive calm \u2014 it reveals Entrenchment truth. A blown network burns the people who trusted you.","probability":0.1},"effects":[{"delta":0.25,"op":"intel","turns":6}],"family":"intelligence","id":"humint_network","mandate_cost":1,"name":"HUMINT Network","sources":["DESIGN \u00a79 \u2014 fog and deceptive calm"],"target":"node","treasury_cost":2},{"backfire":{"channel":"veto_delay","effects":[{"delta":-2,"op":"international_legitimacy"},{"delta":-1,"op":"domestic_legitimacy"}],"note":"A cheap legitimacy umbrella that is slow and vetoable \u2014 a stalled resolution reads as weakness at home and abroad.","probability":0.3},"effects":[{"delta":1,"op":"intl_umbrella","turns":8},{"delta":3,"op":"international_legitimacy"}],"family":"diplomatic","id":"un_mandate","mandate_cost":2,"name":"Seek UN Mandate","sources":["MINUSMA record"],"target":"global","treasury_cost":1},{"backfire":{"channel":"civil_liberties_scandal","effects":[{"delta":-5,"op":"domestic_legitimacy"},{"delta":-2,"op":"international_legitimacy"}],"note":"Tier 1 of the Emergency Powers track: real, immediate intel power everywhere \u2014 and the Authoritarian Drift is permanent either way. The track must be tempting. That is the point.","probability":0.15},"effects":[{"op":"drift","tiers":1},{"delta":0.1,"op":"intel","turns":8}],"family":"domestic","id":"surveillance_expansion","mandate_cost":1,"name":"Surveillance Expansion (Emergency Powers I)","sources":["DESIGN \u00a77 Domestic / \u00a711 IntegrityMultiplier"],"target":"global","treasury_cost":1}],"nodes":[{"access":0.9,"capital":true,"country":"ML","development":45,"governance":55,"government":"civilian","grievance":35,"id":"bamako","intel_coverage":0.5,"local_legitimacy":50,"name":"Bamako","notes":"Capital and core region of Mali. Collapse rolls for ML fire here (DESIGN \u00a75.3).","patron_influence":{"mercenary":5},"population_k":2200,"presence":{},"resources":["administration","trade"],"sources":["CFR Global Conflict Tracker \u2014 Sahel"]},{"access":0.6,"capital":false,"country":"ML","development":25,"governance":35,"government":"civilian","grievance":60,"id":"mopti","intel_coverage":0.3,"local_legitimacy":40,"name":"Mopti / Centre","notes":"Central Mali: intercommunal grievance plus weak state presence \u2014 the historical epicenter of post-2015 expansion.","patron_influence":{},"population_k":2100,"presence":{"ansar_al_sahel":{"entrenchment":15,"strength":25,"visibility":40}},"resources":["agriculture","livestock"],"sources":["ICG reporting on central Mali"]},{"access":0.5,"capital":false,"country":"ML","development":20,"governance":25,"government":"civilian","grievance":70,"id":"gao","intel_coverage":0.25,"local_legitimacy":35,"name":"Gao","notes":"Northern hub on the Niger bend; contested between both composites from the start.","patron_influence":{},"population_k":550,"presence":{"ansar_al_sahel":{"entrenchment":10,"strength":20,"visibility":45},"wilayat_sahel":{"entrenchment":5,"strength":15,"visibility":50}},"resources":["trade_routes"],"sources":["CFR Global Conflict Tracker \u2014 Sahel"]},{"access":0.3,"capital":false,"country":"ML","development":15,"governance":15,"government":"civilian","grievance":80,"id":"kidal","intel_coverage":0.2,"local_legitimacy":25,"name":"Kidal","notes":"Far-north Tuareg heartland; state writ minimal at start date. Highest starting entrenchment on the map.","patron_influence":{},"population_k":85,"presence":{"ansar_al_sahel":{"entrenchment":25,"strength":30,"visibility":35}},"resources":["smuggling_economy"],"sources":["2012 northern Mali collapse record"]},{"access":0.85,"capital":true,"country":"BF","development":40,"governance":50,"government":"civilian","grievance":40,"id":"ouagadougou","intel_coverage":0.45,"local_legitimacy":45,"name":"Ouagadougou","notes":"Capital and core region of Burkina Faso. Collapse rolls for BF fire here.","patron_influence":{"mercenary":5},"population_k":1900,"presence":{},"resources":["administration","trade"],"sources":["CFR Global Conflict Tracker \u2014 Sahel"]},{"access":0.55,"capital":false,"country":"NE","development":20,"governance":30,"government":"civilian","grievance":65,"id":"tillaberi","intel_coverage":0.3,"local_legitimacy":35,"name":"Tillab\u00e9ri","notes":"Niger's tri-border region \u2014 the most attacked sector of the real arc. Niger's capital is off-map at Sahel-lite scale, so NE cannot collapse in this dataset; full arc map (v0.4) adds Niamey.","patron_influence":{},"population_k":2700,"presence":{"ansar_al_sahel":{"entrenchment":5,"strength":10,"visibility":40},"wilayat_sahel":{"entrenchment":10,"strength":20,"visibility":55}},"resources":["agriculture"],"sources":["ACLED tri-border incident data"]}]}
+</script>
+
+<script id="engine-js">
+/* PaxStressia greybox engine — DOM-free port of sim/ (DESIGN.md §18).
+   Self-consistent seeded determinism; not bit-compatible with the Python sim
+   (each client is internally deterministic; rules JSON is the shared truth). */
+"use strict";
+const PaxEngine = (function () {
+  function clamp(v, lo, hi) {
+    lo = lo === undefined ? 0 : lo; hi = hi === undefined ? 100 : hi;
+    return Math.max(lo, Math.min(hi, v));
+  }
+  function mulberry32(seed) {
+    let s = seed >>> 0;
+    return {
+      state: () => s,
+      setState: (v) => { s = v >>> 0; },
+      next() {
+        s |= 0; s = (s + 0x6D2B79F5) | 0;
+        let t = Math.imul(s ^ (s >>> 15), 1 | s);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      },
+    };
+  }
+  function gauss(rng, sigma) {
+    let u = rng.next(); if (u <= 0) u = 1e-12;
+    const v = rng.next();
+    return sigma * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+  const sorted = (obj) => Object.keys(obj).sort();
+
+  function Game(rules, seed) {
+    const C = rules.constants;
+    const rng = mulberry32(seed);
+    const st = {
+      seed, turn: 0, pendingEvent: null,
+      nodes: {}, edges: [], factions: {}, coupRisk: {}, collapsed: {},
+      protoBlocs: [], actives: [],
+      player: { domestic: C.starting.domestic, international: C.starting.international,
+        treasury: C.starting.treasury, mandate: 0, drift: 0, casualties: 0,
+        turnsSinceElection: 0, honeymoonLeft: 0, spentTotal: 0 },
+      ledger: [], reports: [], estimates: {}, headlines: [],
+      hist: { believed: [], truth: [], domestic: [], international: [], localAvg: [] },
+      headlineStreak: {},
+    };
+    for (const n of rules.nodes) {
+      st.nodes[n.id] = { id: n.id, name: n.name, country: n.country, capital: n.capital,
+        governance: n.governance, development: n.development, grievance: n.grievance,
+        population_k: n.population_k, government: n.government || "civilian",
+        local: n.local_legitimacy, intelBase: n.intel_coverage, intel: n.intel_coverage,
+        patron: Object.assign({}, n.patron_influence || {}), opsPressure: 0, partnerCap: 0,
+        presence: {} };
+      for (const f of sorted(n.presence || {})) {
+        const p = n.presence[f];
+        st.nodes[n.id].presence[f] = { s: p.strength, e: p.entrenchment, v: p.visibility };
+      }
+    }
+    st.edges = rules.edges.map((e) => ({ id: e.id, a: e.a, b: e.b, types: e.types,
+      capacity: e.capacity, interdiction: 0 }));
+    for (const f of rules.factions) {
+      st.factions[f.id] = { id: f.id, name: f.name, sponsor: f.sponsor || null,
+        tier: f.capability_tier, relations: f.relations || {}, links: [] };
+    }
+    const countries = [...new Set(rules.nodes.map((n) => n.country))].sort();
+    for (const c of countries) { st.coupRisk[c] = 0; st.collapsed[c] = false; }
+    const inits = {}; for (const i of rules.initiatives) inits[i.id] = i;
+
+    const nodesSorted = () => sorted(st.nodes).map((k) => st.nodes[k]);
+    const countryNodes = (c) => nodesSorted().filter((n) => n.country === c);
+    const capitalOf = (c) => countryNodes(c).find((n) => n.capital) || null;
+    const edgesOf = (id) => st.edges.filter((e) => e.a === id || e.b === id);
+    const avgGrievance = () =>
+      nodesSorted().reduce((s, n) => s + n.grievance, 0) / nodesSorted().length;
+    const juntaCount = () => countries.filter((c) => {
+      const cap = capitalOf(c); return cap && cap.government !== "civilian" &&
+        cap.government !== "failed";
+    }).length;
+    const totalStrength = () => nodesSorted().reduce((s, n) =>
+      s + sorted(n.presence).reduce((t, f) => t + n.presence[f].s, 0), 0);
+    const localAvg = () =>
+      nodesSorted().reduce((s, n) => s + n.local, 0) / nodesSorted().length;
+
+    function ledgerApply(gauge, source, delta) {
+      let applied = 0;
+      if (gauge === "domestic") {
+        const old = st.player.domestic;
+        st.player.domestic = clamp(old + delta); applied = st.player.domestic - old;
+      } else if (gauge === "international") {
+        const old = st.player.international;
+        st.player.international = clamp(old + delta); applied = st.player.international - old;
+      } else {
+        const n = st.nodes[gauge.slice(6)];
+        const old = n.local; n.local = clamp(old + delta); applied = n.local - old;
+      }
+      if (applied !== 0) st.ledger.push({ turn: st.turn, gauge, source,
+        delta: Math.round(applied * 10000) / 10000 });
+    }
+
+    function refreshActives() {
+      st.actives = st.actives.filter((a) => a.expires > st.turn);
+      for (const n of nodesSorted()) { n.opsPressure = 0; n.intel = n.intelBase; }
+      const amnesty = {}; let umbrella = 0;
+      for (const a of st.actives) {
+        if (a.op === "ops_pressure") st.nodes[a.node].opsPressure += a.params.amount;
+        else if (a.op === "intel") {
+          const targets = a.node ? [a.node] : sorted(st.nodes);
+          for (const t of targets) st.nodes[t].intel += a.params.delta;
+        } else if (a.op === "amnesty") amnesty[a.node] = (amnesty[a.node] || 0) + a.params.rate;
+        else if (a.op === "intl_umbrella") umbrella += a.params.delta;
+      }
+      for (const n of nodesSorted()) n.intel = clamp(n.intel, 0.05, 0.95);
+      return { amnesty, umbrella };
+    }
+
+    function applyOp(op, nodeId, source, log) {
+      const kind = op.op;
+      if (["ops_pressure", "intel", "amnesty", "intl_umbrella"].includes(kind)) {
+        const params = {}; for (const k of Object.keys(op))
+          if (!["op", "turns", "node"].includes(k)) params[k] = op[k];
+        st.actives.push({ op: kind, params,
+          node: kind === "intl_umbrella" ? null : nodeId, source,
+          expires: st.turn + (op.turns || 1) });
+      } else if (kind === "attrit") {
+        const n = st.nodes[nodeId];
+        const ids = sorted(n.presence);
+        if (ids.length) {
+          const target = ids.reduce((a, b) => (n.presence[b].s > n.presence[a].s ? b : a));
+          n.presence[target].s = clamp(n.presence[target].s - op.amount);
+          log.push({ event: "attrit", node: nodeId, faction: target,
+            amount: op.amount, source });
+        }
+      } else if (kind === "local_legitimacy") ledgerApply("local:" + nodeId, source, op.delta);
+      else if (kind === "domestic_legitimacy") ledgerApply("domestic", source, op.delta);
+      else if (kind === "international_legitimacy")
+        ledgerApply("international", source, op.delta);
+      else if (["governance", "development", "grievance"].includes(kind)) {
+        const n = st.nodes[nodeId]; n[kind] = clamp(n[kind] + op.delta);
+      } else if (kind === "partner_capacity") {
+        const n = st.nodes[nodeId]; n.partnerCap = Math.max(0, n.partnerCap + op.delta);
+      } else if (kind === "coup_seed") {
+        st.coupRisk[st.nodes[nodeId].country] += op.delta;
+      } else if (kind === "drift") st.player.drift += op.tiers;
+    }
+
+    function routeFactor(nodeId) {
+      const es = edgesOf(nodeId); if (!es.length) return 0;
+      return es.reduce((s, e) => s + e.capacity * (1 - e.interdiction), 0) / es.length;
+    }
+    function growthTerms(fid, nid, amnestyRate) {
+      const n = st.nodes[nid], p = n.presence[fid], f = st.factions[fid];
+      const juntaAmp = 1 + (n.government === "junta" ? C.junta_recruit_amp : 0);
+      const links = f.links.length;
+      const recruitment = C.k_recruit * (n.grievance / 100) * (1 - n.governance / 100) * juntaAmp;
+      const external = f.sponsor
+        ? C.sponsor_flow * routeFactor(nid) * (1 + C.k_pool * links) : 0;
+      const alliance = C.k_alliance * links;
+      const attrition = (n.opsPressure + n.partnerCap * C.k_partner) * C.k_attrit * (p.s / 100);
+      const defection = amnestyRate * p.s;
+      return { recruitment, external_support: external, alliance_bonus: alliance,
+        attrition: -attrition, defection: -defection };
+    }
+    function applyGrowth(amnesty) {
+      const log = [], dealt = {};
+      for (const fid of sorted(st.factions)) dealt[fid] = 0;
+      for (const fid of sorted(st.factions)) for (const n of nodesSorted()) {
+        if (!(fid in n.presence)) continue;
+        const p = n.presence[fid];
+        if (p.s <= 0 && p.e <= 0) continue;
+        const t = growthTerms(fid, n.id, amnesty[n.id] || 0);
+        p.s = clamp(p.s + t.recruitment + t.external_support + t.alliance_bonus +
+          t.attrition + t.defection);
+        dealt[fid] += -t.attrition;
+        log.push({ faction: fid, node: n.id, terms: t, strength: p.s });
+      }
+      return { log, dealt };
+    }
+    function entrenchAndVisibility() {
+      for (const n of nodesSorted()) for (const fid of sorted(n.presence)) {
+        const p = n.presence[fid];
+        if (p.s >= C.entrench_strength_min && n.opsPressure < C.entrench_pressure_max)
+          p.e = clamp(p.e + C.k_entrench * p.s / 100);
+        p.e = clamp(p.e - C.k_entrench_decay * n.local / 100);
+        const contest = Math.min(1, n.opsPressure / C.pressure_ref);
+        const target = clamp(C.vis_floor + C.vis_contest * contest - C.vis_quiet * p.e);
+        p.v = clamp(p.v + C.vis_smooth * (target - p.v));
+      }
+    }
+    function sharedRouteAccess(fa, fb) {
+      const holds = (fid) => new Set(nodesSorted()
+        .filter((n) => fid in n.presence && n.presence[fid].s > 0).map((n) => n.id));
+      const A = holds(fa), B = holds(fb);
+      if (!A.size || !B.size) return 0;
+      for (const x of A) if (B.has(x)) return 1;
+      let best = 0;
+      for (const e of [...st.edges].sort((p, q) => p.id < q.id ? -1 : 1)) {
+        if ((A.has(e.a) && B.has(e.b)) || (A.has(e.b) && B.has(e.a)))
+          best = Math.max(best, e.capacity * (1 - e.interdiction));
+      }
+      return best;
+    }
+    function networkingCheck(dealt) {
+      const log = [], ids = sorted(st.factions);
+      for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) {
+        const f = st.factions[ids[i]], g = st.factions[ids[j]];
+        if (f.links.some((l) => l.with === g.id)) continue;
+        const affinity = Math.max(f.relations[g.id] || 0, C.affinity_floor);
+        const need = Math.min(2, 1 + ((dealt[f.id] || 0) + (dealt[g.id] || 0)) / 20);
+        const score = affinity * need * sharedRouteAccess(f.id, g.id);
+        if (score >= C.link_threshold) {
+          f.links.push({ with: g.id, turn: st.turn });
+          g.links.push({ with: f.id, turn: st.turn });
+          log.push({ event: "faction_link", factions: [f.id, g.id], turn: st.turn });
+        }
+      }
+      return log;
+    }
+    function collapseRolls() {
+      const log = [];
+      for (const c of countries) {
+        if (st.collapsed[c]) continue;
+        const cap = capitalOf(c); if (!cap) continue;
+        let threat = 0;
+        for (const n of countryNodes(c)) for (const fid of sorted(n.presence)) {
+          const p = n.presence[fid];
+          threat = Math.max(threat, p.s * (0.5 + p.e / 200));
+        }
+        const ratio = threat / Math.max(1, cap.governance);
+        if (ratio < C.collapse_ratio) continue;
+        const entShare = Math.max(0, ...sorted(cap.presence)
+          .map((f) => cap.presence[f].e / 100));
+        const weights = [["junta", C.w_junta + st.coupRisk[c]], ["failed", C.w_failed],
+          ["emirate", C.w_emirate * entShare]];
+        const total = weights.reduce((s, w) => s + w[1], 0);
+        if (total <= 0) continue;
+        let roll = rng.next() * total, outcome = "junta";
+        for (const [name, w] of weights) { if (roll < w) { outcome = name; break; } roll -= w; }
+        st.collapsed[c] = true;
+        if (outcome === "junta") {
+          cap.governance = clamp(cap.governance - C.junta_gov_hit);
+          cap.patron.mercenary = clamp((cap.patron.mercenary || 0) + C.junta_patron_gain);
+          for (const n of countryNodes(c)) {
+            n.grievance = clamp(n.grievance + C.junta_grievance_hit); n.government = "junta";
+          }
+        } else if (outcome === "failed") {
+          cap.governance = clamp(cap.governance * 0.5);
+          for (const n of countryNodes(c)) n.government = "failed";
+        } else {
+          cap.governance = clamp(cap.governance - C.junta_gov_hit);
+          for (const n of countryNodes(c)) n.government = "emirate";
+        }
+        log.push({ event: "state_collapse", country: c, outcome,
+          ratio: Math.round(ratio * 100) / 100, turn: st.turn });
+      }
+      return log;
+    }
+    function detectProtoBlocs() {
+      const log = [];
+      const bad = new Set(countries.filter((c) => {
+        const cap = capitalOf(c); return cap && cap.government !== "civilian";
+      }));
+      if (bad.size < 2) return log;
+      for (const e of [...st.edges].sort((p, q) => p.id < q.id ? -1 : 1)) {
+        const ca = st.nodes[e.a].country, cb = st.nodes[e.b].country;
+        if (ca !== cb && bad.has(ca) && bad.has(cb)) {
+          const pair = [ca, cb].sort().join("+");
+          if (!st.protoBlocs.includes(pair)) {
+            st.protoBlocs.push(pair);
+            log.push({ event: "proto_bloc", countries: pair, turn: st.turn });
+          }
+        }
+      }
+      return log;
+    }
+    function patronDrift() {
+      const log = [];
+      for (const c of countries) {
+        const cap = capitalOf(c);
+        if (!cap || cap.government === "civilian") continue;
+        for (const n of countryNodes(c)) {
+          const old = n.patron.mercenary || 0;
+          n.patron.mercenary = clamp(old + C.patron_drift_junta);
+          if (old < 50 && n.patron.mercenary >= 50)
+            log.push({ event: "patron_dominant", node: n.id, turn: st.turn });
+        }
+      }
+      return log;
+    }
+    function mandateIncome() {
+      let phase = 1;
+      if (st.player.honeymoonLeft > 0) phase = C.honeymoon_mult;
+      else {
+        const toEl = C.election_period_turns - st.player.turnsSinceElection;
+        if (toEl <= C.lameduck_turns && st.player.domestic < 50) phase = C.lameduck_mult;
+      }
+      return Math.max(1, Math.round(C.mandate_base * (0.5 + st.player.domestic / 100) * phase));
+    }
+    function electionTick() {
+      st.player.turnsSinceElection += 1;
+      if (st.player.honeymoonLeft > 0) st.player.honeymoonLeft -= 1;
+      if (st.player.turnsSinceElection < C.election_period_turns) return null;
+      st.player.turnsSinceElection = 0;
+      const winP = 1 / (1 + Math.exp(-(st.player.domestic - 50) / C.election_k));
+      const won = rng.next() < winP;
+      if (won) st.player.honeymoonLeft = C.honeymoon_turns;
+      else {
+        const target = 50 + (st.player.domestic - 50) * C.continuity_reversion;
+        ledgerApply("domestic", "election:loss_reversion", target - st.player.domestic);
+      }
+      return { event: "election", won, winP: Math.round(winP * 100) / 100, turn: st.turn };
+    }
+    function estimate(trueV, coverage, ent, sigmaMult) {
+      const sigma = C.fog_sigma_max * (1 - coverage) * (sigmaMult || 1);
+      const bias = -C.fog_calm_bias * (ent / 100) * (1 - coverage);
+      const displayed = Math.max(0, trueV * (1 + bias + gauss(rng, sigma)));
+      return { est: Math.round(displayed * 10) / 10,
+        band: Math.round(1.64 * sigma * trueV * 10) / 10 };
+    }
+    function computeEstimates() {
+      const out = {};
+      for (const n of nodesSorted()) {
+        const per = {};
+        for (const fid of sorted(n.presence)) {
+          const p = n.presence[fid];
+          const s = estimate(p.s, n.intel, p.e, 1);
+          const e = estimate(p.e, n.intel, p.e, C.fog_entrench_mult);
+          per[fid] = { s: s.est, sBand: s.band, e: e.est, eBand: e.band,
+            v: Math.round(p.v) };
+        }
+        out[n.id] = { coverage: Math.round(n.intel * 100) / 100, factions: per };
+      }
+      st.estimates = out;
+    }
+    function eligible(card) {
+      const r = card.requires || {};
+      if (r.min_turn !== undefined && st.turn < r.min_turn) return false;
+      if (r.max_turn !== undefined && st.turn > r.max_turn) return false;
+      if (r.min_avg_grievance !== undefined && avgGrievance() < r.min_avg_grievance)
+        return false;
+      if (r.any_junta && juntaCount() === 0) return false;
+      if (r.min_coup_risk !== undefined &&
+        Math.max(0, ...Object.values(st.coupRisk)) < r.min_coup_risk) return false;
+      if (r.min_partner_capacity !== undefined &&
+        Math.max(0, ...nodesSorted().map((n) => n.partnerCap)) < r.min_partner_capacity)
+        return false;
+      if (r.min_casualties !== undefined && st.player.casualties < r.min_casualties)
+        return false;
+      return true;
+    }
+    function contextNode() {
+      let best = null, bestS = -1;
+      for (const n of nodesSorted()) {
+        const t = sorted(n.presence).reduce((s, f) => s + n.presence[f].s, 0);
+        if (t > bestS) { best = n.id; bestS = t; }
+      }
+      return best || nodesSorted()[0].id;
+    }
+    function drawEvent() {
+      if (rng.next() >= C.event_chance) return null;
+      const pool = rules.events.filter((c) => c.weight > 0 && eligible(c));
+      if (!pool.length) return null;
+      const total = pool.reduce((s, c) => s + c.weight, 0);
+      let roll = rng.next() * total;
+      for (const c of pool) { if (roll < c.weight) return c; roll -= c.weight; }
+      return pool[pool.length - 1];
+    }
+
+    let work = null; // per-turn scratch between endTurn and finishTurn
+    function endTurn(orders) {
+      const log = [], events = [];
+      const casualtiesBefore = st.player.casualties;
+      const executed = [];
+      for (const o of orders || []) {
+        const init = inits[o.initiative]; if (!init) continue;
+        if (init.target === "node" && !(o.node in st.nodes)) continue;
+        if (init.mandate_cost > st.player.mandate ||
+            init.treasury_cost > st.player.treasury) continue;
+        st.player.mandate -= init.mandate_cost;
+        st.player.treasury -= init.treasury_cost;
+        st.player.spentTotal += init.treasury_cost;
+        executed.push({ initiative: init.id, node: o.node || null });
+      }
+      for (const o of executed) {
+        const init = inits[o.initiative];
+        for (const eff of init.effects) applyOp(eff, o.node, init.id, log);
+        const risk = init.casualty_risk || 0;
+        if (init.family === "military" && risk > 0 && rng.next() < risk) {
+          st.player.casualties += 1;
+          log.push({ event: "casualties", initiative: init.id, node: o.node });
+        }
+      }
+      for (const o of executed) {
+        const bf = inits[o.initiative].backfire;
+        if (rng.next() < bf.probability) {
+          for (const eff of bf.effects) applyOp(eff, o.node, o.initiative + ":backfire", log);
+          log.push({ event: "backfire", initiative: o.initiative, channel: bf.channel,
+            node: o.node });
+        }
+      }
+      const { amnesty, umbrella } = refreshActives();
+      if (umbrella > 0) ledgerApply("international", "un_umbrella", umbrella);
+      const growth = applyGrowth(amnesty);
+      entrenchAndVisibility();
+      log.push(...networkingCheck(growth.dealt));
+      log.push(...collapseRolls());
+      log.push(...detectProtoBlocs());
+      log.push(...patronDrift());
+      work = { log, events, executed, casualtiesBefore, growthLog: growth.log };
+      const card = drawEvent();
+      if (card) {
+        st.pendingEvent = { id: card.id, ctx: contextNode() };
+        return { phase: "event", card, ctx: st.pendingEvent.ctx };
+      }
+      return finishTurn();
+    }
+    function resolveEvent(choiceIdx) {
+      const card = rules.events.find((c) => c.id === st.pendingEvent.id);
+      const idx = Math.min(choiceIdx, card.choices.length - 1);
+      const choice = card.choices[idx];
+      for (const eff of choice.effects)
+        applyOp(eff, eff.node || st.pendingEvent.ctx, "event:" + card.id, work.log);
+      work.events.push({ id: card.id, title: card.title, choice: choice.label,
+        node: st.pendingEvent.ctx });
+      st.pendingEvent = null;
+      return finishTurn();
+    }
+    function finishTurn() {
+      const newCas = st.player.casualties - work.casualtiesBefore;
+      if (newCas > 0)
+        ledgerApply("domestic", "casualties", -C.domestic_hit_per_casualty * newCas);
+      const el = electionTick(); if (el) work.log.push(el);
+      const believed = nodesSorted().reduce((s, n) => {
+        const est = st.estimates[n.id];
+        return s + sorted(est.factions).reduce((t, f) => t + est.factions[f].s, 0);
+      }, 0);
+      st.hist.believed.push(Math.round(believed));
+      st.hist.truth.push(Math.round(totalStrength()));
+      st.hist.domestic.push(Math.round(st.player.domestic));
+      st.hist.international.push(Math.round(st.player.international));
+      st.hist.localAvg.push(Math.round(localAvg()));
+      const report = { turn: st.turn,
+        ledger: st.ledger.filter((e) => e.turn === st.turn),
+        log: work.log, events: work.events, orders: work.executed,
+        growth: work.growthLog };
+      st.reports.push(report);
+      if (st.reports.length > 8) st.reports.shift();
+      st.turn += 1;
+      startTurn();
+      return { phase: "done", report };
+    }
+    function startTurn() {
+      refreshActives();
+      const income = mandateIncome();
+      st.player.mandate += income;
+      st.player.treasury += C.treasury_income;
+      st.lastIncome = income;
+      computeEstimates();
+    }
+    function score() {
+      const ns = nodesSorted();
+      const stab = 100 * ns.reduce((s, n) =>
+        s + (n.local / 100) * (n.governance / 100), 0) / ns.length;
+      const order = 1 / (1 + C.order_junta_weight * juntaCount() +
+        C.order_bloc_weight * st.protoBlocs.length);
+      const integrity = Math.max(C.integrity_floor, 1 - C.drift_per_tier * st.player.drift);
+      const costs = st.player.casualties * C.cost_per_casualty +
+        st.player.spentTotal * C.cost_spend_norm;
+      const round = (x) => Math.round(x * 100) / 100;
+      return { stabilization: round(stab), order_mult: round(order),
+        integrity_mult: round(integrity), costs: round(costs),
+        juntas: juntaCount(), blocs: st.protoBlocs.length,
+        casualties: st.player.casualties, drift: st.player.drift,
+        final: round(stab * order * integrity - costs) };
+    }
+    function ending() {
+      const s = score();
+      const stabOK = s.stabilization >= 25, integOK = s.integrity_mult >= 0.85;
+      if (stabOK && integOK && s.juntas === 0) return { name: "Pax",
+        text: "Stabilized abroad, intact at home, allies still answer the phone. The hard ending — you found it." };
+      if (stabOK && !integOK) return { name: "Fortress",
+        text: "You kept the peace and lost the thing it was for. The republic stands; ask it what it is now." };
+      if (!stabOK && integOK) return { name: "Retreat",
+        text: "Clean hands, burning world. The blocs write the next chapter; your conscience writes the footnotes." };
+      return { name: "Collapse",
+        text: "Quagmire abroad, exhaustion at home. The terms are set elsewhere now." };
+    }
+    function serialize() {
+      return JSON.stringify({ v: 1, rngState: rng.state(), st });
+    }
+    function restore(json) {
+      const data = JSON.parse(json);
+      rng.setState(data.rngState);
+      Object.assign(st, data.st);
+      return api;
+    }
+    const api = {
+      state: st, consts: C, initiatives: inits, rules,
+      endTurn, resolveEvent, score, ending, serialize, restore,
+      startTurn, mandateIncome, nodesSorted, juntaCount, totalStrength, localAvg,
+      capitalOf,
+    };
+    startTurn();
+    return api;
+  }
+  return { Game, clamp };
+})();
+if (typeof module !== "undefined") module.exports = PaxEngine;
+</script>
+
+<script>
+/* UI layer — everything below touches the DOM. */
+"use strict";
+if (typeof document !== "undefined") (function () {
+  const $ = (id) => document.getElementById(id);
+  const POS = { bamako: [16, 74], mopti: [37, 54], gao: [62, 28], kidal: [73, 9],
+    ouagadougou: [44, 86], tillaberi: [80, 56] };
+  const GOV_FILL = { civilian: "var(--civ)", junta: "var(--junta)",
+    emirate: "var(--emirate)", failed: "var(--failed)" };
+  const SAVE_KEY = "paxstressia_save_v1";
+  const RULE_FILES = ["nodes", "edges", "factions", "initiatives", "events", "constants"];
+
+  let game = null, rules = null, rulesSource = "snapshot";
+  let tab = "brief", selNode = null, armed = null, queue = [], horizon = 60;
+
+  async function loadRules() {
+    try {
+      const fetched = {};
+      for (const f of RULE_FILES) {
+        const r = await fetch("../rules/" + f + ".json");
+        if (!r.ok) throw new Error(f);
+        fetched[f] = await r.json();
+      }
+      rulesSource = "live"; return fetched;
+    } catch (e) {
+      const snap = JSON.parse($("rules-snapshot").textContent);
+      if (snap.__placeholder__) {
+        document.body.innerHTML = "<p style='padding:2em'>No rules: serve over http " +
+          "(python3 -m http.server from repo root) or run proto/build.py.</p>";
+        throw e;
+      }
+      rulesSource = "snapshot"; return snap;
+    }
+  }
+  function save() {
+    try { localStorage.setItem(SAVE_KEY,
+      JSON.stringify({ horizon, data: game.serialize() })); } catch (e) {}
+  }
+  function newGame(seed) {
+    game = PaxEngine.Game(rules, seed);
+    queue = []; armed = null; selNode = null;
+    save(); renderAll();
+  }
+
+  // ---------- header ----------
+  function dateStr() {
+    const [y, m] = game.consts.start_date.split("-").map(Number);
+    const t = (m - 1) + game.state.turn;
+    return (y + Math.floor(t / 12)) + "-" + String(t % 12 + 1).padStart(2, "0");
+  }
+  function renderHeader() {
+    const p = game.state.player;
+    $("hDate").textContent = "T" + game.state.turn + " · " + dateStr();
+    $("hMandate").textContent = p.mandate - queue.reduce((s, q) =>
+      s + game.initiatives[q.initiative].mandate_cost, 0);
+    $("hTreasury").textContent = Math.round(p.treasury - queue.reduce((s, q) =>
+      s + game.initiatives[q.initiative].treasury_cost, 0));
+    const toEl = game.consts.election_period_turns - p.turnsSinceElection;
+    $("hElection").textContent = "Election in " + toEl;
+    $("hDrift").style.display = p.drift > 0 ? "" : "none";
+    if (p.drift > 0) $("hDrift").querySelector("b").textContent = p.drift;
+    $("hSource").textContent = "rules: " + rulesSource;
+    setBar("Dom", p.domestic); setBar("Intl", p.international);
+    setBar("Loc", game.localAvg());
+  }
+  function setBar(key, v) {
+    $("b" + key).style.width = v + "%";
+    $("v" + key).textContent = Math.round(v);
+  }
+
+  // ---------- map ----------
+  function renderMap() {
+    const W = 100, H = 100;
+    let svg = '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">';
+    for (const e of game.state.edges) {
+      const [ax, ay] = POS[e.a], [bx, by] = POS[e.b];
+      const cls = e.types.includes("smuggling") ? "edge smuggling" : "edge";
+      svg += `<line class="${cls}" x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}"/>`;
+    }
+    for (const n of game.nodesSorted()) {
+      const [x, y] = POS[n.id] || [50, 50];
+      const r = 3 + Math.sqrt(n.population_k) / 18;
+      const est = game.state.estimates[n.id];
+      const tot = Object.values(est.factions).reduce((s, f) => s + f.s, 0);
+      const band = Object.values(est.factions).reduce((s, f) => s + f.sBand, 0);
+      const maxV = Math.max(0, ...Object.values(est.factions).map((f) => f.v));
+      const pips = "!".repeat(maxV > 60 ? 3 : maxV > 35 ? 2 : maxV > 15 ? 1 : 0);
+      const sel = selNode === n.id ? " sel" : "";
+      const op = (0.45 + n.intel * 0.55).toFixed(2);
+      svg += `<g class="node${sel}" data-node="${n.id}">` +
+        `<circle class="body" cx="${x}" cy="${y}" r="${r}" fill="${GOV_FILL[n.government]}"/>` +
+        (n.capital ? `<text class="star" x="${x - 1.6}" y="${y - r - 1.5}">★</text>` : "") +
+        ((n.patron.mercenary || 0) >= 50
+          ? `<circle class="patron" cx="${x + r}" cy="${y - r}" r="1.4"/>` : "") +
+        `<text x="${x + r + 1.2}" y="${y + 1}">${n.name.split(" ")[0]}</text>` +
+        (Object.keys(est.factions).length
+          ? `<text class="est" x="${x + r + 1.2}" y="${y + 5}" opacity="${op}">` +
+            `≈${Math.round(tot)}±${Math.round(band)}</text>` : "") +
+        (pips ? `<text class="pips" x="${x - r - 3.5}" y="${y + 1}">${pips}</text>` : "") +
+        `</g>`;
+    }
+    svg += "</svg>";
+    $("map").innerHTML = svg;
+    $("map").querySelectorAll(".node").forEach((g) => {
+      g.addEventListener("click", () => onNodeTap(g.dataset.node));
+    });
+  }
+  function onNodeTap(id) {
+    if (armed) {
+      queue.push({ initiative: armed, node: id });
+      armed = null;
+      setTab("act");
+    } else { selNode = id; if (tab === "brief") renderPanel(); }
+    renderAll();
+  }
+
+  // ---------- panels ----------
+  function setTab(t) { tab = t;
+    for (const x of ["Brief", "Act", "Report"])
+      $("tab" + x).classList.toggle("on", t === x.toLowerCase());
+    renderPanel();
+  }
+  function sevClass(h) { return h.sev === 2 ? "hl" : h.sev === 1 ? "hl warn" : "hl info"; }
+  function headlines(report) {
+    if (!report) return [{ sev: 0, text: "First briefing. The folder is thin; the theater is not." }];
+    const out = [], streak = game.state.headlineStreak;
+    const push = (key, sev, text) => {
+      streak[key] = (streak[key] || 0) + 1;
+      out.push({ sev, text: streak[key] > 1 ? text + " (" + streak[key] + " straight)" : text });
+    };
+    const seen = new Set();
+    for (const l of report.log) {
+      if (l.event === "state_collapse" && !seen.has("col")) {
+        seen.add("col");
+        push("col", 2, l.country + " has fallen: " + l.outcome + " takes the capital.");
+      } else if (l.event === "proto_bloc" && !seen.has("bloc")) {
+        seen.add("bloc");
+        push("bloc", 2, "Proto-bloc detected: " + l.countries + ". Left alone, it grows.");
+      } else if (l.event === "faction_link" && !seen.has("link")) {
+        seen.add("link");
+        push("link", 2, "Factions linking: " + l.factions.join(" ↔ ") + ".");
+      } else if (l.event === "backfire" && !seen.has("bf")) {
+        seen.add("bf");
+        push("bf", 1, "Backfire — " + l.channel.replace(/_/g, " ") +
+          (l.node ? " in " + l.node : "") + ".");
+      } else if (l.event === "casualties" && !seen.has("cas")) {
+        seen.add("cas");
+        push("cas", 1, "Casualties coming home from " + l.node + ".");
+      } else if (l.event === "election" && !seen.has("el")) {
+        seen.add("el");
+        push("el", 1, l.won ? "Election won. Honeymoon mandate." :
+          "Election lost. The state endures; your standing reverts.");
+      } else if (l.event === "patron_dominant" && !seen.has("pat")) {
+        seen.add("pat");
+        push("pat", 1, "Mercenary patron now dominant in " + l.node + ".");
+      }
+    }
+    for (const k of Object.keys(streak))
+      if (!out.some((h) => h.text.startsWith(k))) { /* streaks reset by absence */ }
+    if (!out.length) out.push({ sev: 0,
+      text: "A quiet month on the wires. Quiet is not peace." });
+    return out.slice(0, 3);
+  }
+  function nodeCard(id) {
+    const n = game.state.nodes[id], est = game.state.estimates[id];
+    let rows = "";
+    for (const fid of Object.keys(est.factions).sort()) {
+      const f = est.factions[fid], name = game.state.factions[fid].name;
+      rows += `<div class="frow"><span>${name}</span>` +
+        `<span>str ≈${f.s} <span class="band">±${f.sBand}</span> · ` +
+        `entr ≈${f.e} <span class="band">±${f.eBand}</span> · vis ${f.v}</span></div>`;
+    }
+    if (!rows) rows = '<div class="sub">No tracked insurgent presence. (Tracked ≠ none.)</div>';
+    return `<div class="card"><b>${n.name}</b> · ${n.country} · ${n.government}` +
+      (n.capital ? " · capital" : "") +
+      `<div class="frow"><span>governance ${Math.round(n.governance)}</span>` +
+      `<span>grievance ${Math.round(n.grievance)}</span>` +
+      `<span>local legit ${Math.round(n.local)}</span></div>` +
+      `<div class="frow"><span>intel coverage ${est.coverage}</span>` +
+      `<span>ops ${Math.round(n.opsPressure)}</span>` +
+      `<span>partner ${Math.round(n.partnerCap)}</span></div>${rows}</div>`;
+  }
+  function renderPanel() {
+    const P = $("panel");
+    if (tab === "brief") {
+      const rep = game.state.reports[game.state.reports.length - 1];
+      let html = '<div class="head">Morning folder</div>';
+      for (const h of headlines(rep)) html += `<div class="${sevClass(h)}">${h.text}</div>`;
+      html += `<div class="sub">Mandate income ${game.state.lastIncome}` +
+        ` · estimates carry ±90% bands · coverage buys narrower lies</div>`;
+      html += '<div class="head">' + (selNode ? "Selected region" : "Tap a region") + "</div>";
+      if (selNode) html += nodeCard(selNode);
+      P.innerHTML = html;
+    } else if (tab === "act") {
+      const p = game.state.player;
+      const mLeft = p.mandate - queue.reduce((s, q) =>
+        s + game.initiatives[q.initiative].mandate_cost, 0);
+      const tLeft = p.treasury - queue.reduce((s, q) =>
+        s + game.initiatives[q.initiative].treasury_cost, 0);
+      let html = `<div class="sub">Queue orders, then end the month. ` +
+        `Budget left: <b>${mLeft}</b> mandate, <b>${Math.round(tLeft)}</b> treasury.</div>`;
+      for (const id of Object.keys(game.initiatives).sort()) {
+        const i = game.initiatives[id];
+        const cls = armed === id ? "card init armed" : "card init";
+        html += `<div class="${cls}" data-init="${id}"><div><b>${i.name}</b>` +
+          `<small>${i.family} · ${i.target} · backfire: ${i.backfire.channel.replace(/_/g, " ")}` +
+          ` (${Math.round(i.backfire.probability * 100)}%)</small></div>` +
+          `<span class="cost">${i.mandate_cost}M ${i.treasury_cost}T</span></div>`;
+      }
+      if (queue.length) {
+        html += '<div class="head">Queued</div>';
+        queue.forEach((q, k) => {
+          html += `<div class="queue" data-dq="${k}">✕ ${game.initiatives[q.initiative].name}` +
+            (q.node ? " → " + q.node : "") + "</div>";
+        });
+      }
+      html += '<div style="height:8px"></div><button class="primary" id="btnEnd">End month</button>';
+      P.innerHTML = html;
+      P.querySelectorAll("[data-init]").forEach((el) => el.addEventListener("click", () => {
+        const i = game.initiatives[el.dataset.init];
+        const mLeft2 = game.state.player.mandate - queue.reduce((s, q) =>
+          s + game.initiatives[q.initiative].mandate_cost, 0);
+        const tLeft2 = game.state.player.treasury - queue.reduce((s, q) =>
+          s + game.initiatives[q.initiative].treasury_cost, 0);
+        if (i.mandate_cost > mLeft2 || i.treasury_cost > tLeft2) return;
+        if (i.target === "global") { queue.push({ initiative: i.id, node: null }); armed = null; }
+        else armed = armed === i.id ? null : i.id;
+        renderPanel(); renderHeader();
+      }));
+      P.querySelectorAll("[data-dq]").forEach((el) => el.addEventListener("click", () => {
+        queue.splice(Number(el.dataset.dq), 1); renderPanel(); renderHeader();
+      }));
+      $("btnEnd").addEventListener("click", doEndTurn);
+    } else {
+      const rep = game.state.reports[game.state.reports.length - 1];
+      if (!rep) { P.innerHTML = '<div class="sub">No resolved turns yet.</div>'; return; }
+      let html = `<div class="head">Turn ${rep.turn} — itemized consequences</div>`;
+      const groups = {};
+      for (const e of rep.ledger) (groups[e.gauge] = groups[e.gauge] || []).push(e);
+      for (const g of Object.keys(groups).sort()) {
+        html += `<div class="card"><b>${g}</b>`;
+        for (const e of groups[g]) {
+          const cls = e.delta >= 0 ? "pos" : "neg";
+          html += `<div class="led"><span class="${cls}">${e.delta >= 0 ? "+" : ""}` +
+            `${e.delta.toFixed(1)}</span> ${e.source}</div>`;
+        }
+        html += "</div>";
+      }
+      if (!rep.ledger.length) html += '<div class="sub">No legitimacy movement.</div>';
+      if (rep.events.length) {
+        html += '<div class="head">Events</div>';
+        for (const ev of rep.events)
+          html += `<div class="card">${ev.title}<br><span class="sub">→ ${ev.choice}</span></div>`;
+      }
+      html += '<div class="head">World log</div>';
+      for (const l of rep.log.slice(0, 12))
+        html += `<div class="sub">· ${l.event}${l.country ? " " + l.country : ""}` +
+          `${l.node ? " @" + l.node : ""}${l.outcome ? " → " + l.outcome : ""}</div>`;
+      html += `<div class="head">Settings</div><div class="row">` +
+        `<span class="sub">seed</span><input id="inSeed" value="${game.state.seed}">` +
+        `<span class="sub">months</span><select id="inLen">` +
+        [36, 60, game.consts.horizon_turns].map((v) =>
+          `<option ${v === horizon ? "selected" : ""}>${v}</option>`).join("") +
+        `</select> <button class="act" id="btnNew">New run</button></div>`;
+      P.innerHTML = html;
+      $("btnNew").addEventListener("click", () => {
+        horizon = Number($("inLen").value);
+        newGame(Number($("inSeed").value) || 0);
+      });
+    }
+  }
+
+  // ---------- turn flow ----------
+  function doEndTurn() {
+    const res = game.endTurn(queue);
+    queue = []; armed = null;
+    if (res.phase === "event") showEvent(res.card, res.ctx);
+    else afterTurn();
+  }
+  function showEvent(card, ctx) {
+    const M = $("modalPaper");
+    let html = `<h2>${card.title}</h2><p>${card.text}</p>` +
+      `<p class="sub">Context: ${ctx}</p>`;
+    card.choices.forEach((c, i) => {
+      html += `<button class="choice" data-c="${i}">${c.label}</button>`;
+    });
+    if (card.sources) html += `<div class="src">${card.sources.join(" · ")}</div>`;
+    M.innerHTML = html;
+    $("modal").classList.add("show");
+    M.querySelectorAll(".choice").forEach((b) => b.addEventListener("click", () => {
+      $("modal").classList.remove("show");
+      game.resolveEvent(Number(b.dataset.c));
+      afterTurn();
+    }));
+  }
+  function afterTurn() {
+    save();
+    if (game.state.turn >= horizon ||
+        Object.values(game.state.collapsed).every(Boolean)) return showEnd();
+    setTab("brief"); renderAll();
+  }
+  function showEnd() {
+    const s = game.score(), e = game.ending();
+    const E = $("endPaper");
+    E.innerHTML = `<h2>${e.name}</h2><p>${e.text}</p>` +
+      `<table><tr><td>Stabilization</td><td>${s.stabilization}</td></tr>` +
+      `<tr><td>× Order (juntas ${s.juntas}, blocs ${s.blocs})</td><td>${s.order_mult}</td></tr>` +
+      `<tr><td>× Integrity (drift ${s.drift})</td><td>${s.integrity_mult}</td></tr>` +
+      `<tr><td>− Costs (casualties ${s.casualties}, spend)</td><td>${s.costs}</td></tr>` +
+      `<tr><td><b>Final score</b></td><td><b>${s.final}</b></td></tr></table>` +
+      `<div class="head">Post-mortem: what you believed vs what was true</div>` +
+      `<canvas id="pm" width="380" height="170"></canvas>` +
+      `<div class="sub">amber = believed insurgent strength (briefing estimates) · ` +
+      `red = the truth · the gap is the fog you did or didn't buy down</div>` +
+      `<div style="height:8px"></div>` +
+      `<button class="primary" id="btnAgain">New run (seed ${game.state.seed + 1})</button>`;
+    $("endgame").classList.add("show");
+    drawPostMortem();
+    $("btnAgain").addEventListener("click", () => {
+      $("endgame").classList.remove("show");
+      newGame(game.state.seed + 1);
+    });
+  }
+  function drawPostMortem() {
+    const cv = $("pm"), ctx = cv.getContext("2d");
+    const { believed, truth } = game.state.hist;
+    const W = cv.width, H = cv.height, n = truth.length;
+    const max = Math.max(10, ...believed, ...truth) * 1.1;
+    ctx.fillStyle = "#0d1117"; ctx.fillRect(0, 0, W, H);
+    const line = (data, color) => {
+      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+      data.forEach((v, i) => {
+        const x = 8 + (W - 16) * (n > 1 ? i / (n - 1) : 0);
+        const y = H - 8 - (H - 16) * (v / max);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.stroke();
+    };
+    line(believed, "#ffb300"); line(truth, "#ef5350");
+  }
+
+  function renderAll() { renderHeader(); renderMap(); renderPanel(); }
+
+  // ---------- boot ----------
+  (async function boot() {
+    rules = await loadRules();
+    let restored = false;
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (raw) {
+        const blob = JSON.parse(raw);
+        horizon = blob.horizon || 60;
+        game = PaxEngine.Game(rules, 0).restore(blob.data);
+        restored = true;
+      }
+    } catch (e) { restored = false; }
+    if (!restored) { game = PaxEngine.Game(rules, 42); save(); }
+    $("tabBrief").addEventListener("click", () => setTab("brief"));
+    $("tabAct").addEventListener("click", () => setTab("act"));
+    $("tabReport").addEventListener("click", () => setTab("report"));
+    if (game.state.turn >= horizon) { showEnd(); } else renderAll();
+  })();
+})();
+</script>
+</body>
+</html>

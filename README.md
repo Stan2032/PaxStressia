@@ -6,7 +6,7 @@
 
 You lead a real-world democracy holding the line against insurgencies that grow, network, and — left untended — capture states and weld them into authoritarian blocs. Your constraints are your own: voters, allies, law, and a free press. Every lever that wins faster abroad corrodes something at home. **Can you hold the line abroad without breaking the thing you're defending?**
 
-**Status: v0.2** — JSON rules + schemas, headless Python simulation core, thesis-test scaffold, CI with a Monte Carlo mini-harness. Nothing is playable yet by design: the sim must be *true* before it gets a face (see the roadmap in [`docs/DESIGN.md`](docs/DESIGN.md) §15).
+**Status: v0.3** — the greybox prototype is **playable in a phone browser**: `python3 -m http.server 8080` from the repo root, then open `http://localhost:8080/proto/`. Deployment (Cloudflare Pages, one-time setup): [`docs/DEPLOY.md`](docs/DEPLOY.md). Underneath: JSON rules + schemas, headless Python sim, thesis-test scaffold, CI with a Monte Carlo mini-harness and a proto engine smoke test. Roadmap: [`docs/DESIGN.md`](docs/DESIGN.md) §15.
 
 ## Read first
 

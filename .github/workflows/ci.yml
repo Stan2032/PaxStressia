@@ -23,6 +23,12 @@ jobs:
       - name: Tests
         run: pytest -q --tb=short
 
+      - name: Proto snapshot drift check
+        run: python3 proto/build.py --check
+
+      - name: Proto engine smoke (Node)
+        run: node proto/smoke.mjs
+
       - name: Mini balance harness (10 runs, passive baseline)
         run: python harness/run.py --runs 10 --turns 60 --policy passive --out artifacts
 
