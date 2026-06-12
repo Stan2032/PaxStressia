@@ -1,5 +1,5 @@
 # MANDATE
-### Design Document — v0.2
+### Design Document — v0.2.1
 *Working title. A turn-based grand strategy game about being the world police in a world that keeps score.*
 
 ---
@@ -303,6 +303,8 @@ Global ~45-node map, Sept 2001 start (**PROPOSED**, §2), 25-year horizon, all s
 | v1.x | Colombia, AfPak scenarios |
 | v2.0 | Grand mode |
 
+*Roadmap annotations (v0.2.1, cumulative):* v0.3 must include fog rendering in the greybox (§19.5); v0.5 adds the MixedPolicy dominance check to CI (§19.7); v0.7 additionally carries the Exposure-system mechanics and hostile-fog propaganda term (§20.3–20.4); v0.8–v0.9 carry the closed-society content pass and its verification ledger (§20.2, §20.6).
+
 ---
 
 ## 16. Open Questions (for Stan)
@@ -313,7 +315,7 @@ Global ~45-node map, Sept 2001 start (**PROPOSED**, §2), 25-year horizon, all s
 4. **Working title:** **MANDATE** — chosen for the triple meaning (electoral mandate / UN mandate / the colonial League-of-Nations mandates the word can't escape — intentionally uncomfortable). Alternates considered: *Pax*, *The Long War*, *Thin Blue Marble*. Keep MANDATE?
 5. **License/openness:** open-source like Unciv (community + mods + your public-repo workflow) vs. closed (commercial option preserved)? Affects repo setup at v0.2.
 6. **Multiplayer:** ever? *(My lean: no — the design is a solitaire system game like Rebel Inc; a "shared world, compared scores" async mode is the only plausible shape, post-v2.)*
-7. **Repo name vs. working title** *(added v0.2)*: the GitHub repo is **PaxStressia**; the docs' working title is **MANDATE** (and *Pax* was a shelved alternate, §16.4). Is *PaxStressia* (a) just a repo codename, (b) the new title, or (c) a placeholder until #4 is answered? Docs keep MANDATE until you call it. *(My lean: treat as codename; decide title at v0.8 when store pages exist.)*
+7. **Repo name vs. working title** *(added v0.2)*: the GitHub repo is **PaxStressia**; the docs' working title is **MANDATE** (and *Pax* was a shelved alternate, §16.4). Is *PaxStressia* (a) just a repo codename, (b) the new title, or (c) a placeholder until #4 is answered? Docs keep MANDATE until you call it. *(My lean: treat as codename; decide title at v0.8 when store pages exist.)* *(v0.2.1 note: Stan authorized "set up the repo however you wish" — `main` trunk + PR workflow created; the title half of this question remains open.)*
 
 ---
 
@@ -324,6 +326,10 @@ Global ~45-node map, Sept 2001 start (**PROPOSED**, §2), 25-year horizon, all s
 **The live case:** the Sahel arc 2012–2026 — JNIM/IS-Sahel expansion; the Mali–Burkina–Niger coup cascade; Alliance of Sahel States formation, ECOWAS exit, party dissolutions, Africa Corps arrival; the April 2026 insurgent-alliance offensives; analyst findings that falling incident counts reflected entrenchment, not peace. (CFR Global Conflict Tracker; ACLED; ICG reporting.)
 
 **Design precedents:** *Rebel Inc.* (reputation, intel fog, civ/mil initiative balance, negotiated endings) · GMT's COIN board-game series — *Fire in the Lake*, *A Distant Plain* (proof this problem space is fun turn-based) · *Twilight Struggle* (global influence at node scale) · *Afghanistan '11* (hearts-and-minds ops layer; cautionary platform tale) · *Plague Inc.* (network-growth pacing as antagonist).
+
+**Design craft (added v0.2.1, feeding §19):** Vaughan/Ndemic on Rebel Inc's research grounding and balance (`paxsims.wordpress.com/2019/04/30/an-interview-with-rebel-inc-designer-james-vaughn-ndemic-creations/`) · player-reception record on its whack-a-mole failure mode (Steam/Metacritic, §19.2) · Ruhnke on the COIN system's asymmetry of goals (`theplayersaid.com/2016/08/22/interview-with-coin-series-creator-designer-volko-ruhnke-part-i/`) · 11 bit on Frostpunk's Book of Laws (`pcgamer.com/frostpunk-developers-on-hope-misery-and-the-ultimately-terrifying-book-of-laws/`) · *This War of Mine* GDC 2015 (`gdcvault.com/play/1022335/This-War-of-Mine-Raising`) · Lucas Pope on *Papers, Please* (`gamedeveloper.com/design/road-to-the-igf-lucas-pope-s-i-papers-please-i-`) · Sid Meier, GDC 2012 (`gamedeveloper.com/design/gdc-2012-sid-meier-on-how-to-see-games-as-sets-of-interesting-decisions`) · anti-snowball design (`waywardstrategy.com/2020/07/06/anti-snowball-design/`) · automated balancing literature (`arxiv.org/pdf/1908.01423`, `arxiv.org/html/2503.18748v1`) · difficulty-mode design (`gamedeveloper.com/design/difficulty-is-difficult-designing-for-hard-modes-in-games`).
+
+**The closed society & exposure (added v0.2.1, feeding §20):** UN OHCHR on Moura and on Mali's party dissolution · HRW on Burkina Faso's punitive conscription, abductions, and civic-space closure, and on the 2026 US sanctions reversal · Freedom House, *Transnational Repression* · EU EUvsDisinfo/EEAS on "African Initiative" (FIMI) · Forbidden Stories on Russia's Sahel information offensive and the Pegasus Project · Amnesty Security Lab (Pegasus forensics) · Global Witness / Human Rights First on the Magnitsky designation pipeline · US Treasury OFAC (Wagner-Mali designations, 2023) · OCCRP funding-and-independence FAQ · Al Jazeera (UN Mali panel veto; Ngefa expulsion) · VOA/Euronews (the media-ban ladder). Full URLs inline in §20; the in-game Sources screen ships them.
 
 ---
 
@@ -374,7 +380,7 @@ Initiatives and event choices express consequences as lists of typed ops. Implem
 | `drift {tiers}` | global | permanent Authoritarian Drift increment (scoring multiplier, §11) |
 | `intl_umbrella {delta, turns}` | global | UN-mandate style per-turn International trickle while active |
 
-**Backfire block** (required on every initiative — schema-enforced; Pillar 3 as a validation rule): `{channel, probability, effects[], note}` rolled at substep 3b. A deferred-clock form (`{clock: turns}`) is reserved for the Transparency Dial at v0.6. Reserved ops (documented now, implemented per roadmap): `interdict_edge, decapitate, surge, contractors, sanction, summit, negotiate, messaging, war_powers, veterans`.
+**Backfire block** (required on every initiative — schema-enforced; Pillar 3 as a validation rule): `{channel, probability, effects[], note}` rolled at substep 3b. A deferred-clock form (`{clock: turns}`) is reserved for the Transparency Dial at v0.6. Reserved ops (documented now, implemented per roadmap): `interdict_edge, decapitate, surge, contractors, sanction, summit, negotiate, messaging, war_powers, veterans` — and, for the §20 Exposure system (v0.7+): `fund_research, support_exile_media, osint_unit, designate_sanctions, propaganda_pressure`.
 
 ### 18.5 v0.2 formulas (constants in **bold** are keys in `rules/constants.json`)
 Per (faction *f*, node *n*) each turn, with all gauges 0–100 and clamped:
@@ -405,7 +411,108 @@ Faction links form and pool support, but **joint offensives** don't fire yet · 
 
 ---
 
+## 19. Playability, Pacing & Balance (v0.2.1 — PROPOSED; research-backed design commitments)
+
+*Added after a dedicated game-design/balancing research pass (2026-06-12) into the precedent games and balance methodology. Each lesson below is a documented finding → a commitment binding future versions. Sources inline and in §17. Honesty note: most findings rest on interviews, postmortems, and player-reception records retrieved at snippet level; items marked [unverified] are background knowledge pending primary-source confirmation. Highest-value unread primaries for a follow-up pass: the PAXsims Vaughan interview and the Ruhnke podcast notes (`conflictsimulations.com/2018/03/28/harold-on-games-podcast-1-with-volko-ruhnke-notes/`).*
+
+### 19.1 The fun gate, hardened (Papers, Please)
+Lucas Pope's method was "make it fun, then make it mean something": the inspection loop was compelling *before* the empathy layer landed — and the bureaucratic procedure itself induces the dehumanized mindset the game critiques (`gamedeveloper.com/design/road-to-the-igf-lucas-pope-s-i-papers-please-i-`). **Commitments:** (a) the v0.3 greybox prototype validates the bare loop with placeholder text — if pushing numbers around the Sahel-lite map isn't engaging for 20 minutes, no amount of meaning rescues it; (b) where possible, the game's point of view should emerge from *procedures the player executes* (the Transparency Dial, the drift tiers, triage under thin Mandate) rather than from editorializing text.
+
+### 19.2 The anti-whack-a-mole package (Rebel Inc's documented failure mode)
+Rebel Inc's most-repeated criticism is literally our named risk: "glorified whack-a-mole simulator," insurgents who "pop out of nowhere," one dominant (military) style, and warning-spam fatigue ("Done with this game. Tired of seeing 'Lack of stability critically affecting your reputation'") — while its praised core is "directing, rather than commanding" (`steamcommunity.com/app/1088790/discussions/`, `metacritic.com/game/rebel-inc-escalation/user-reviews/`). **Commitments:**
+1. **Legibility law:** every insurgent resurgence must be *explicable in hindsight* — the per-term growth ledger (§18.5) and post-mortem reveal must let the player reconstruct exactly which grievance, route, or link fed it. Nothing pops out of nowhere; it pops out of somewhere you could have watched.
+2. **Doctrine plurality:** multiple viable strategy mixes is a balance *target*, not a hope — enforced by the §19.7 harness check.
+3. **Alert rationing:** the briefing carries a severity budget; recurring conditions escalate in form (footnote → item → lead story) instead of repeating verbatim. UI law from v0.3 on.
+4. Stay at the "directing" altitude: no encirclement micro, no unit pushing — the player sets posture and policy, the theater answers.
+
+### 19.3 The interesting-decisions audit (Sid Meier)
+A decision is uninteresting if one option always wins or the choice is effectively random; good ones trade short-term vs long-term and let players "envision the future." Players also credit themselves for wins and blame the game for losses — so show cause chains generously (`gamedeveloper.com/design/gdc-2012-sid-meier-on-how-to-see-games-as-sets-of-interesting-decisions`). **Commitments:** every initiative menu, event card, and Emergency Powers tier passes the audit (no dominant option, no coin-flip, a visible short/long tension) — reviewed at each content version; the itemized ledger and post-mortem exist precisely to make losses *attributable* ("you lost because X fed Y" is the game teaching, not the game cheating).
+
+### 19.4 Forced portfolio balance is the genre's proven core (Rebel Inc)
+Vaughan's loop punishes purity in both directions: pure military breeds popular resistance, pure civilian lets rebels undo progress (`en.wikipedia.org/wiki/Rebel_Inc._(video_game)`). Both failure modes must be *equally vivid*. This is already encoded as thesis tests #2 and #3 (§13.3) — the lesson confirms the suite and raises the bar: the failures must not merely occur, they must be **felt and legible** when they do. Vaughan's research-grounded method (SIGAR reports, expert interviews, the Colombia/FARC process; World Bank praise, a peace-conference invitation — `paxsims.wordpress.com/2019/04/30/an-interview-with-rebel-inc-designer-james-vaughn-ndemic-creations/`) is also the external validation of our §12 calibration plan: history-grounding is a proven playbook, and the credibility doubles as identity.
+
+### 19.5 Asymmetry of goals, not stats (GMT COIN / Ruhnke)
+The COIN system's appeal is faction-specific action menus and victory logic — "asymmetry of goals and options," population control as legitimacy, and **dual-use event cards where every card helps someone** (`en.wikipedia.org/wiki/COIN_(board_game)`, `theplayersaid.com/2016/08/22/interview-with-coin-series-creator-designer-volko-ruhnke-part-i/`). **Commitments:** (a) the two composite factions diverge in *behavioral logic*, not stat lines — entrenchment-first vs strength-first is already seeded in the data; their AI doctrines (v0.4+) must keep that contrast visible; (b) event cards should tempt: choices that are good for you *and* feed something else (§10 cards get an adversarial-benefit review at v0.4). Ruhnke also called hidden information a years-long "conundrum" even for him — confirmation that deceptive-calm fog is a first-class design risk: **the v0.3 prototype must include the fog rendering**, not defer it, because the loop's fun partly *is* the fog.
+
+### 19.6 Calibrating the temptation (Frostpunk's Book of Laws)
+11 bit tuned dilemmas to be "not too subtle to notice or too exaggerated to become comical" — the Book of Laws works as a *self-test* the player runs on their own stated morals (`pcgamer.com/frostpunk-developers-on-hope-misery-and-the-ultimately-terrifying-book-of-laws/`). The ending judgment ("the city survived, but was it worth it?") provoked exactly the lasting reflection we want — **but players revolted where the moral line felt arbitrary** (one step past prisons = "you went too far"). [unverified: laws being irreversible and cooldown-gated, benefit-now/cost-later asymmetry — background knowledge.] **Commitments for the Emergency Powers track (§7):**
+1. Each tier's cost is *felt and visible* at signing — never subtle, never lurid.
+2. Benefit lands immediately and concretely; the corrosion is deferred and social (drift already works this way — keep it).
+3. Tiers are **one-way and rate-limited** (a cooldown between tiers; no same-turn cascade to autocracy) — the "crossing the line" moment is a deliberate ritual, not a shopping spree.
+4. Integrity is judged **continuously and transparently** (the multiplier, visible all game; epilogue text scales in gradations) — no single binary "you went too far" cliff.
+
+### 19.7 Balance methodology: personas, fitness targets, dominance checks
+Automated balancing is established practice — MCTS "procedural personas" simulating player archetypes, iterative tuning for asymmetric games, self-play optimization (`arxiv.org/pdf/1908.01423`, `arxiv.org/html/2503.18748v1`). Our policy archetypes (§18.7) *are* procedural personas, and the §12 passive-replay calibration is a **fitness target**: distance between the do-nothing run and the historical trajectory is the loss function for constants tuning at v0.5. **New commitment — the dominance check:** at v0.5 the harness gains a `MixedPolicy` (doctrine portfolio) and CI compares archetype mean scores across the seed battery; if any *pure* archetype matches or beats the mixed baseline, CI flags it as a balance regression. Pillar 3 becomes a number.
+
+### 19.8 Anti-snowball: intrinsic, never rubber-banded
+Engineered pity bonuses are resented; durable anti-snowball comes from diminishing returns, nonlinear costs, and attention limits (`waywardstrategy.com/2020/07/06/anti-snowball-design/`). Insurgency natively anti-snowballs (holding territory costs the holder; entrenchment decays under Local legitimacy; Mandate caps player tempo). **Commitment:** no hidden catch-up modifiers in either direction — the comeback arcs are *systemic* (negotiation unlocks at stalemate, §7) and the difficulty knobs are honest (§19.9).
+
+### 19.9 Difficulty changes situations, not arithmetic
+Good hard modes add behaviors and systems rather than inflating numbers — Rebel Inc's Mega-Brutal adds road quality, desperation attacks, and deeper negotiations; Halo raises AI aggression (`gamedeveloper.com/design/difficulty-is-difficult-designing-for-hard-modes-in-games`, `rebelinc.wiki.gg/wiki/Difficulty`). **Commitments:** difficulty = constants *presets* plus system toggles (e.g., patron aggressiveness, faction link eagerness, press-freedom leak speed) — never information unfairness, never rule changes that break legibility. The genre-native model, and our JSON-rules core makes each preset a readable diff.
+
+### 19.10 Misery counterweights (This War of Mine)
+11 bit staged dilemmas as concrete micro-scenes with personal stakes, and deliberately included "pride and satisfaction" in the emotional palette — misery alone numbs (`gdcvault.com/play/1022335/This-War-of-Mine-Raising`, `gamedeveloper.com/design/the-secrets-behind-i-this-war-of-mine-i-s-emotional-impact`). **Commitments:** (a) **writing law** — legitimacy deltas arrive attached to named places, named composite people, and specific incidents, never as bare modifiers; (b) **pride beats** — stabilization produces visible, earned positive moments (a market reopens, an election held safely, a road travels without escort) with the same dramaturgical care as the failures. The §14 misery-sim mitigation row now has teeth.
+
+---
+
+## 20. The Closed Society & the Exposure System (v0.2.1 — direction **DECIDED** per Stan, 2026-06-12; mechanization **PROPOSED**; scheduled, not yet built)
+
+*Stan's directive, verbatim intent: when the fundamentals are stable, the game must remind the player of the harsh and often brutal realities citizens of authoritarian states endure; the hidden, subtle ways these regimes behave and lie on the international stage; and give the player the ability to fund think tanks and academics doing empirical research into those regimes so the reality reaches the global stage and pressure rises. This section designs that now so it lands integrated, not bolted on. Grounding research pass: 2026-06-12; sources inline and in §17. Implementation: mechanics with the patron/bloc systems at **v0.7** (same subsystem family — legitimacy warfare); content pass at **v0.8–v0.9** with the Sources screen. Gated on the §19.1 fun gate clearing first.*
+
+### 20.1 Design stance
+The §14 point-of-view row, extended: the cost of authoritarian "stability" must be *visible inside the systems*, not asserted by narration. Two laws carry over: **procedures, not sermons** (§19.1 — the player should encounter the closed society through what their instruments can and cannot see, fund, or save), and **sober, abstracted, never gore** (§2). And one mirror, deliberately: the Emergency Powers track (§7) means the player who drifts sees the same machinery from the inside — the Fortress ending is this section pointed at yourself.
+
+### 20.2 The Closed Society layer (content: documented patterns → event cards and dossiers)
+When a state collapses out of civilian rule (§5.3), its nodes change *register*: briefing dossiers shift to "inside the closed sector" reporting — thinner, sourced from exiles and monitors, and (deceptive-calm synergy, §9) less precise exactly when it matters most. The event pool for junta/emirate states draws on the documented record, each card carrying its citation:
+
+- **Party dissolution by decree** — Mali, May 2025: all political parties dissolved, members banned from meeting, after a boycotted "national consultation"; UN experts condemned it (`ohchr.org/en/press-releases/2025/05/mali-dissolution-political-parties-step-wrong-direction-warn-un-experts`).
+- **Conscription as punishment** — Burkina Faso's 2023 general-mobilization decree used to forcibly conscript journalists, activists, even prosecutors and judges who pursued junta allies; abductions and enforced disappearances of critics (`hrw.org/news/2024/08/21/burkina-faso-conscription-used-punish-prosecutors-judges`, `hrw.org/news/2024/02/27/burkina-faso-abductions-used-crack-down-dissent`).
+- **Mass civic-space closure** — 118 civil-society organizations dissolved in one announcement, Burkina Faso, April 2026 (`hrw.org/news/2026/04/20/burkina-faso-crackdown-on-civil-society`).
+- **The massacre that quiet hides** — Moura, Mali, March 2022: UN fact-finding documented 500+ killed over five days by Malian troops and "foreign military personnel" (Wagner), mostly summary executions; possible crimes against humanity (`ohchr.org/en/press-releases/2023/05/malian-troops-foreign-military-personnel-killed-over-500-people-during`).
+- **The media-ban ladder** — escalation as a reusable arc: French broadcasters banned (2022–23) → BBC/VOA suspended *specifically for covering an HRW massacre report* (2024) → ten outlets suspended at once (Niger, 2026) (`voanews.com/a/burkina-faso-bans-french-state-broadcaster-in-blow-to-press-freedom/6863277.html`, `euronews.com/my-europe/2026/05/09/niger-suspends-nine-french-media-outlets-over-alleged-threats-to-public-order`).
+- **The threat follows the refugees** — transnational repression as *domestic* events for the player: Freedom House documents 1,375 direct physical incidents by 54 governments in 107 host countries (2014–2025); detention the top method (`freedomhouse.org/report/transnational-repression`). Dissidents who fled the bloc are reached inside *your* country — a Local/Domestic/International triangle card.
+- **Named people, kept** (§19.10 law doing double duty): composite people introduced in pride-beats and earlier events reappear in closed-society dossiers and the post-mortem — the teacher whose school you built, under the new curriculum; the journalist you quoted, conscripted. The post-mortem reveal shows what the regime did with the quiet you left it.
+
+### 20.3 The lying layer (regimes deceive internationally — the player's information environment is contested)
+§5.4 gave blocs "pooled propaganda reach"; this grounds it:
+
+- **The fake news agency** — Russia's "African Initiative," built from repurposed Wagner media assets (late 2023), posing as a pan-African agency, FSB-linked editor, paying and training local influencers, publishing in five languages; EU-sanctioned as a FIMI operation (`euvsdisinfo.eu/african-initiative-russian-fimi-operation-disguised-as-a-news-agency/`, `forbiddenstories.org/propaganda-machine-russias-information-offensive-in-the-sahel/`). Field note from our own research pass: searches on Sahel media bans surfaced `news-pravda.com` and `afrinz.ru` framing the bans sympathetically — the flood is measurable first-hand.
+- **Mechanic — hostile fog:** bloc/patron `propaganda_pressure` adds a *hostile term* to the §18.5 fog model (bias and variance up in affected theaters) and contests International legitimacy with counter-narratives after your incidents. Disinformation attacks the player's *epistemics*, not their units — that is the honest model of the threat.
+- **Killing the referee** — Russia's August 2023 veto terminated the UN Mali sanctions regime and its Panel of Experts after the panel documented Wagner-linked abuses (`aljazeera.com/news/2023/8/31/russia-vetoes-un-resolution-to-extend-sanctions-monitoring-in-mali`). Event: your monitoring umbrella is voted out of existence — and independent Exposure assets (§20.4) become more valuable the moment official instruments die.
+
+### 20.4 The Exposure system (the player's counter — Stan's mechanic, mechanized)
+A per-regime/per-bloc **Exposure track (0–100)**: how thoroughly the world's institutions, markets, and publics *know* what the regime does, with evidence that survives denial.
+
+**Instruments (new initiative cluster across Intelligence/Diplomatic families; ~4 initiatives, each with the §7-mandated backfire):**
+1. **Endow independent research programs** (think tanks, V-Dem/Freedom-House-style indices, academic field networks) — slow, durable Exposure growth; the empirical backbone.
+2. **Support exile media & in-country journalists** — faster Exposure, *human* risk carried by named composite people (§20.2).
+3. **OSINT / forensic-accountability units** (Bellingcat/OCCRP-model) — converts incidents from *alleged* to *documented*: upgrades the evidence tier of past events, retroactively.
+4. **Targeted-designation diplomacy** — spends Exposure to trigger Magnitsky-style sanctions on regime figures.
+
+**Exposure converts into pressure (each channel grounded):**
+- (a) counters propaganda reach (§20.3) — the antidote to hostile fog is documented truth;
+- (b) raises the *reputational price* third parties pay for the patron's no-strings offer (allegiance-market modifier, §8);
+- (c) gates and scales targeted sanctions — the documented chain: Global Witness/Sentry research → the first Global Magnitsky tranche (Gertler network, 2017) (`globalwitness.org/en/blog/its-the-end-of-the-year-the-global-magnitsky-sanctions-are-here/`); UN/HRW/Amnesty Wagner documentation → OFAC designations of Wagner's Mali head and Mali's defense minister (2023) (`home.treasury.gov/news/press-releases/jy1645`); NGO coalitions formally submit designation dossiers (`humanrightsfirst.org/library/u-s-global-magnitsky-sanctions/`);
+- (d) feeds UN panels, mandates, and ICC-referral events;
+- (e) at home, inoculates Domestic against "quiet sector" complacency (§10's deceptive-calm card weakens at high Exposure).
+
+**The sobering counterweight (event, sourced):** pressure is *reversible by geopolitics* — the US lifted the Wagner-linked Mali sanctions in March 2026 amid realignment (`hrw.org/news/2026/03/17/us-lifts-sanctions-on-wagner-linked-officials-in-mali`). Exposure persists; its conversion rate can be politically gutted overnight. The truth outlives the policy that acted on it — and has to wait for the next one.
+
+**Backfire channels (design law §7; all documented):**
+- **The funder's paradox** — the OCCRP case: ~52% of 2014–23 funding from the US government, with veto rights over key hires; deniable editorial influence, undeniable attack surface; then the 2025 USAID freeze gutted the stream (`occrp.org/en/frequently-asked-questions-on-occrps-funding-and-editorial-policies`). Mechanic: choose the funding channel — **overt state grant** (cheap, fast, "foreign puppet"-attackable, and *election-dependent: your own domestic politics can kill your exposure network mid-game*) vs **arms-length endowment** (expensive, slow, resilient).
+- **Regime counter-moves**, each an event with your fingerprints on the consequences: expel the investigator (Mali PNG'd the UN mission's human-rights chief over witness choices, 2023 — `aljazeera.com/news/2023/2/6/mali-expels-u-n-missions-human-rights-chief`); ban the funder's NGOs wholesale (Mali banned all French-funded NGOs, Nov 2022 — `africanews.com/2022/11/22/mali-bans-ngos-funded-or-supported-by-france/`); punish the coverage itself (the 2024 BBC/VOA bans, §20.2); conscript or disappear local staff (§20.2 — *your funded researchers' local partners pay the price; the game must not flinch from this*); spyware against your networks (Pegasus Project: forensically confirmed targeting of journalists and human-rights defenders, including HRW staff — `securitylab.amnesty.org/case-study-the-pegasus-project/`, `hrw.org/news/2022/01/26/human-rights-watch-among-pegasus-spyware-targets`).
+- **The credibility bank** — rushed or wrong claims spend it: a failed allegation reduces Exposure and International both. Empirical care is mechanically rewarded; that is the point of funding *empirical* research over messaging.
+
+### 20.5 Resonance, named
+The game itself behaves like the organizations it depicts: it cites its homework (the §14 Sources screen) and treats documentation as a weapon against manufactured quiet. The Exposure system is the game's own method, handed to the player.
+
+### 20.6 Verification ledger (no-phantom discipline for the content pipeline)
+Flagged by the research pass as plausible but **unverified — confirm before any card ships**: Mali's 2022 RFI/France 24 suspension specifics; the 49 Ivorian soldiers detention (2022) as hostage diplomacy; President Bazoum's continued detention; the jailed Malian economist Étienne Fakaba Sissoko; Wagner-linked AFRIC fake election observers; Sahel juntas hiring Western PR/lobbying firms (FARA-searchable). Also not yet researched: internet-shutdown statistics (Access Now #KeepItOn), "foreign agent" law diffusion, SLAPP/lawfare cases, astroturfed think tanks.
+
+---
+
 ## Changelog
 
 - **v0.1** — 2026-06-12 — Initial full draft from core prompt + research session (Unciv feasibility check; Sahel 2012–2026 record). Framing locked: real world / alt-history; scenarios-first; design-doc-first per Stan's three scoping answers.
 - **v0.2** — 2026-06-12 — Repo bootstrapped (`stan2032/PaxStressia`). Added §18 Simulation Specification (determinism law, state vectors, resolution order, effect-op vocabulary, v0.2 formulas bound to `rules/constants.json`, itemized-ledger contract, policy interface, stub inventory). Added open question #7 (repo name *PaxStressia* vs working title *MANDATE*). §15 roadmap: v0.2 row marked delivered. No prior content removed.
+- **v0.2.1** — 2026-06-12 — Docs-only growth from two research passes. Added §19 Playability, Pacing & Balance (precedent-game lessons → binding commitments: fun gate, anti-whack-a-mole package, interesting-decisions audit, asymmetry-of-goals, Emergency Powers calibration, dominance check, intrinsic anti-snowball, situational difficulty, misery counterweights). Added §20 The Closed Society & the Exposure System (Stan's directive DECIDED; mechanization PROPOSED for v0.7–v0.9: closed-society content layer, hostile-fog disinformation, Exposure track with documented pressure chains and backfires). §17 gained two source blocks; §18.4 reserved-op list extended for §20. Repair note: the §19 insertion briefly dropped the changelog header and v0.1 entry by edit-anchor mistake — restored in the same session, verified against v0.2 git history; no other content touched.
