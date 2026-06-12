@@ -13,7 +13,7 @@ from __future__ import annotations
 import random
 
 from .legitimacy import Ledger
-from .world import WorldState, clamp
+from .world import Presence, WorldState, clamp
 
 
 def route_factor(world: WorldState, node_id: str) -> float:
@@ -84,6 +84,39 @@ def apply_growth(
                 }
             )
     return log, attrition_dealt
+
+
+def apply_spread(world: WorldState, consts: dict) -> list[dict]:
+    """Resolution substep c2 (v0.4): strength above the threshold replicates
+    over open edges into adjacent grievance. Spread is replication, not
+    movement — momentum recruits locally; the source is not depleted (§18.5).
+    The arc's historical test: northern Burkina must ignite from Mopti."""
+    log: list[dict] = []
+    inflow: dict[tuple[str, str], float] = {}
+    for faction in world.factions_sorted():
+        for node in world.nodes_sorted():
+            pres = node.presence.get(faction.id)
+            if pres is None or pres.strength <= consts["spread_threshold"]:
+                continue
+            for edge in sorted(world.edges_of(node.id), key=lambda e: e.id):
+                other_id = edge.b if edge.a == node.id else edge.a
+                other = world.nodes[other_id]
+                flow = (
+                    consts["k_spread"] * pres.strength
+                    * edge.capacity * (1.0 - edge.interdiction)
+                    * (other.grievance / 100.0)
+                )
+                if flow > 0:
+                    key = (faction.id, other_id)
+                    inflow[key] = inflow.get(key, 0.0) + flow
+    for (fid, nid) in sorted(inflow):
+        node = world.nodes[nid]
+        pres = node.presence.get(fid)
+        if pres is None:
+            pres = node.presence[fid] = Presence(visibility=25.0)
+            log.append({"event": "spread", "faction": fid, "node": nid, "turn": world.turn})
+        pres.strength = clamp(pres.strength + inflow[(fid, nid)])
+    return log
 
 
 def entrench_and_visibility(world: WorldState, consts: dict) -> None:

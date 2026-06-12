@@ -2,6 +2,15 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.4.0 — 2026-06-12
+
+**Scenario 1 — "The Arc" (Sahel 2012–2026) — full map and event deck in data**, playable in the proto via the scenario picker.
+
+- `rules/scenarios/sahel_arc/`: 12 nodes (Niamey on-map; coastal-spillover marker), 18 edges, 3 factions (new: *Azawad National Front*, the MNLA→CMA→FLA composite), 14-card deck — 8 sourced historical beats (northern collapse, the intervention window, franchise declared, the Bamako crisis, ECOWAS rupture, mercenary arrival, AES declaration, the concord of enemies) + the 6 generic cards.
+- Engine (both Python and JS, doc in lockstep): **spread over edges** (§18.5 — replication into adjacent grievance; northern Burkina ignites unscripted), **scenario loading** (§18.9 replace/merge/fall-through), `once` beats, new requires predicates (`country_collapsed`, `country_not_collapsed`, `min_collapsed`, `min_links`), events-only `presence`/`patron` ops.
+- Beats-vs-system law (§18.9): beats supply political texture; coups stay endogenous or calibration means nothing.
+- Tests: arc schema/integrity suite, full-horizon passive runs, spread-ignition and once-ness assertions, scenario-semantics test; history-calibration thesis test now targets the arc. **Second thesis test XPASSes pre-calibration** (pure-kinetic loses Local legitimacy on all seeds — FM 3-24's paradox). Node smoke extended with a 168-turn arc battery.
+
 ## v0.3.0 — 2026-06-12
 
 **The greybox prototype — PaxStressia is playable.** `proto/index.html`: single-file, phone-browser, dark-dossier greybox of Sahel-lite answering Phase 0's question (*is the core loop fun in 20 minutes?*).

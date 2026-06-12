@@ -23,11 +23,22 @@ BLOCK = re.compile(
 
 
 def snapshot() -> str:
-    rules = {}
+    base = {}
     for name in RULE_FILES:
         with open(ROOT / "rules" / f"{name}.json", encoding="utf-8") as fh:
-            rules[name] = json.load(fh)
-    return json.dumps(rules, sort_keys=True, separators=(",", ":"))
+            base[name] = json.load(fh)
+    scenarios = {}
+    scen_root = ROOT / "rules" / "scenarios"
+    for sdir in sorted(p for p in scen_root.iterdir() if (p / "scenario.json").exists()):
+        pack = {}
+        for name in ("scenario", *RULE_FILES):
+            path = sdir / f"{name}.json"
+            if path.exists():
+                with open(path, encoding="utf-8") as fh:
+                    pack[name] = json.load(fh)
+        scenarios[sdir.name] = pack
+    return json.dumps({"base": base, "scenarios": scenarios},
+                      sort_keys=True, separators=(",", ":"))
 
 
 def main() -> int:

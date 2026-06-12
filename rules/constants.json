@@ -22,6 +22,9 @@
   "k_partner": 0.6,
   "k_attrit": 0.12,
 
+  "spread_threshold": 35,
+  "k_spread": 0.04,
+
   "entrench_strength_min": 20,
   "entrench_pressure_max": 10,
   "k_entrench": 1.5,

@@ -14,6 +14,12 @@ const rules = {};
 for (const f of ["nodes", "edges", "factions", "initiatives", "events", "constants"]) {
   rules[f] = JSON.parse(readFileSync(new URL(`../rules/${f}.json`, import.meta.url), "utf8"));
 }
+// Arc scenario, merged the way the UI and sim/world.py merge (§18.9)
+const arcRules = Object.assign({}, rules);
+for (const f of ["nodes", "edges", "factions", "events"]) {
+  arcRules[f] = JSON.parse(readFileSync(
+    new URL(`../rules/scenarios/sahel_arc/${f}.json`, import.meta.url), "utf8"));
+}
 
 let failures = 0;
 const check = (cond, msg) => {
@@ -91,5 +97,33 @@ check(passive.state.player.drift === 0, "passive: no drift");
   check(g1.serialize() === g2.serialize(), "restored game evolves identically");
 }
 
+// the Arc (v0.4): full-horizon determinism, ranges, once-beats, spread
+{
+  const runArc = (seed) => {
+    const g = PaxEngine.Game(arcRules, seed);
+    for (let t = 0; t < 168; t++) {
+      let r = g.endTurn([]);
+      if (r.phase === "event") r = g.resolveEvent(0);
+    }
+    return g;
+  };
+  const a1 = runArc(5), a2 = runArc(5);
+  check(a1.serialize() === a2.serialize(), "arc: same seed identical");
+  for (const n of a1.nodesSorted()) {
+    for (const f of Object.keys(n.presence)) {
+      const p = n.presence[f];
+      check(p.s >= 0 && p.s <= 100 && p.e >= 0 && p.e <= 100, "arc presence range @" + n.id);
+    }
+  }
+  const onceIds = arcRules.events.filter((c) => c.once).map((c) => c.id);
+  for (const id of onceIds)
+    check(a1.state.fired.filter((x) => x === id).length <= 1, "arc once-beat " + id);
+  const emptyAtStart = arcRules.nodes.filter((n) =>
+    !Object.keys(n.presence || {}).length).map((n) => n.id);
+  const ignited = emptyAtStart.filter((id) =>
+    Object.values(a1.state.nodes[id].presence).some((p) => p.s > 5));
+  check(ignited.length > 0, "arc: spread should ignite at least one empty region");
+}
+
 if (failures) { console.error(failures + " smoke failures"); process.exit(1); }
-console.log("proto smoke ok — determinism, ranges, ledger, save/restore, scoring");
+console.log("proto smoke ok — determinism, ranges, ledger, save/restore, scoring, arc");

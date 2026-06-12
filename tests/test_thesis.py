@@ -16,6 +16,7 @@ from sim import (
     PassivePolicy,
     PureHeartsMindsPolicy,
     PureKineticPolicy,
+    load_rules,
 )
 
 SEEDS = range(5)
@@ -38,14 +39,18 @@ def run(policy_cls, seed: int, turns: int) -> Engine:
     reason="Sahel calibration is the v0.5 milestone; constants are first guesses (DESIGN §12)",
 )
 def test_passive_player_reproduces_history():
-    """Untouched, the sim should approximately replay 2012–2026: Mali collapses
-    to a junta around the coup-cascade window, and insurgent reach expands."""
+    """Untouched, the sim should approximately replay 2012–2026 on the full
+    arc map (v0.4): Mali collapses to a junta around the coup-cascade window,
+    and insurgent reach expands."""
     junta_runs = 0
     for seed in SEEDS:
-        eng = run(PassivePolicy, seed, 168)
+        eng = Engine(rules=load_rules(scenario="sahel_arc"), seed=seed,
+                     policy=PassivePolicy())
+        eng.run(168)
         start = sum(
             p.strength
-            for n in Engine(seed=seed).world.nodes_sorted()
+            for n in Engine(rules=load_rules(scenario="sahel_arc"),
+                            seed=seed).world.nodes_sorted()
             for p in n.presence.values()
         )
         assert total_strength(eng) > 1.5 * start, "insurgency should expand unopposed"
