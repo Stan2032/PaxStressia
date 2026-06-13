@@ -2,6 +2,17 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.5.0 — 2026-06-13
+
+**History calibration — reality is the baseline, and now it's enforced.** Tuned the constants until a passive player reproduces the Sahel arc 2012–2026 on 10/10 seeds.
+
+- **Calibration result** (`harness/calibrate.py`, 5-check battery): Mali junta in the coup-cascade window, cascade order ML→BF→NE (the historical sequence), proto-bloc detected, insurgent reach ≥2× and still growing at the horizon — all 10/10.
+- **New engine mechanics** (Python + JS, doc-code lockstep): absorptive capacity (headroom-scaled growth → realistic S-curves), distance-discounted collapse threat (`collapse_dist_decay` — the far north menaced Bamako less than the center did), governance-resisted spread (quadratic — capitals are raided, never occupied, as in reality).
+- **Thesis suite: 3 of 4 promoted xfail → ENFORCED** — `test_passive_player_reproduces_history`, `test_pure_kinetic_strategy_loses_integrity_and_local`, `test_pure_hearts_minds_without_security_loses_to_momentum`. A balance change that breaks any now fails CI.
+- **`MixedPolicy` + §19.7 dominance check** ship as instruments, honestly `xfail` until a winnable balanced path exists (v0.7) — asserting mixed-dominance today would be false (every policy loses the not-yet-winnable arc; cheapest loser wins on cost), and faking it by tuning costs is the dishonesty the suite exists to prevent.
+- **CI** runs the calibration battery and uploads `calibration.json`. Constants status flipped PROPOSED → CALIBRATED.
+- Known compression (flagged, not hidden): BF→NE collapse spacing is tighter than history (correctly ordered, ~5 turns vs ~18 months); within the generous window, queued for v0.6.
+
 ## v0.4.0 — 2026-06-12
 
 **Scenario 1 — "The Arc" (Sahel 2012–2026) — full map and event deck in data**, playable in the proto via the scenario picker.
