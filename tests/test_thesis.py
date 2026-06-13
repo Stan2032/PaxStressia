@@ -1,11 +1,11 @@
 """The design-thesis regression suite (DESIGN.md §13.3, PROJECT_CONTEXT §3.8) —
 the idea to protect above all others: the design's claims, asserted in pytest.
 
-All four are real simulations already, marked xfail (non-strict) until the
-systems and the v0.5 calibration land. When one starts passing, pytest reports
-XPASS — that is the roadmap telling us a milestone arrived. If a balance change
-ever breaks one after it passes, CI fails and the design document stays true
-by force.
+As of v0.5 (the calibration milestone) three of the four are **enforced**: the
+Sahel history calibration, the pure-kinetic paradox, and hearts-minds-loses-to-
+momentum. A balance change that breaks any of them now fails CI — the design
+document stays true by force. The fourth (emergency powers tempting-but-scored)
+stays xfail until the full Emergency Powers track lands (v0.6+).
 """
 
 import pytest
@@ -13,6 +13,7 @@ import pytest
 from sim import (
     EmergencyPowersPolicy,
     Engine,
+    MixedPolicy,
     PassivePolicy,
     PureHeartsMindsPolicy,
     PureKineticPolicy,
@@ -20,6 +21,15 @@ from sim import (
 )
 
 SEEDS = range(5)
+
+
+def mean_final(policy_cls, turns: int = 120) -> float:
+    scores = []
+    for seed in SEEDS:
+        eng = Engine(rules=load_rules(scenario="sahel_arc"), seed=seed, policy=policy_cls())
+        eng.run(turns)
+        scores.append(eng.score()["final"])
+    return sum(scores) / len(scores)
 
 
 def total_strength(engine: Engine) -> float:
@@ -34,46 +44,51 @@ def run(policy_cls, seed: int, turns: int) -> Engine:
     return eng
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="Sahel calibration is the v0.5 milestone; constants are first guesses (DESIGN §12)",
-)
+def _collapse_turn(eng: Engine, country: str) -> int | None:
+    for report in eng.reports:
+        for entry in report["log"]:
+            if entry.get("event") == "state_collapse" and entry.get("country") == country:
+                return entry["turn"]
+    return None
+
+
 def test_passive_player_reproduces_history():
-    """Untouched, the sim should approximately replay 2012–2026 on the full
-    arc map (v0.4): Mali collapses to a junta around the coup-cascade window,
-    and insurgent reach expands."""
-    junta_runs = 0
+    """ENFORCED (v0.5). Untouched, the sim replays the Sahel arc 2012–2026: Mali
+    falls to a junta in the coup-cascade window, the cascade runs ML→BF→NE, a
+    bloc forms, and the insurgency keeps growing to the end (the ICG finding —
+    the juntas don't solve it). Reality is the balance baseline (DESIGN §12)."""
+    ml_junta_window = 0
+    cascade_ordered = 0
     for seed in SEEDS:
         eng = Engine(rules=load_rules(scenario="sahel_arc"), seed=seed,
                      policy=PassivePolicy())
+        start = total_strength(eng)
         eng.run(168)
-        start = sum(
-            p.strength
-            for n in Engine(rules=load_rules(scenario="sahel_arc"),
-                            seed=seed).world.nodes_sorted()
-            for p in n.presence.values()
-        )
-        assert total_strength(eng) > 1.5 * start, "insurgency should expand unopposed"
-        capital = eng.world.capital_of("ML")
-        if eng.world.collapsed["ML"] and capital is not None and capital.government == "junta":
-            collapse_turns = [
-                entry["turn"]
-                for report in eng.reports
-                for entry in report["log"]
-                if entry.get("event") == "state_collapse" and entry.get("country") == "ML"
-            ]
-            if collapse_turns and 60 <= collapse_turns[0] <= 140:
-                junta_runs += 1
-    assert junta_runs >= 3, "Mali junta in the historical window should be the modal outcome"
+        assert total_strength(eng) > 2.0 * start, "insurgency should expand unopposed"
+        # still growing in the final two years
+        late = eng.history[-1]
+        tail = eng.history[-25]
+        late_s = sum(p["strength"] for n in late["nodes"].values()
+                     for p in n["presence"].values())
+        tail_s = sum(p["strength"] for n in tail["nodes"].values()
+                     for p in n["presence"].values())
+        assert late_s > tail_s, "insurgency should still be growing at the horizon"
+        t_ml = _collapse_turn(eng, "ML")
+        cap = eng.world.capital_of("ML")
+        if t_ml is not None and cap.government == "junta" and 60 <= t_ml <= 140:
+            ml_junta_window += 1
+        t_bf, t_ne = _collapse_turn(eng, "BF"), _collapse_turn(eng, "NE")
+        if t_ml is not None and (t_bf is None or t_ml <= t_bf) and (
+            t_bf is None or t_ne is None or t_bf <= t_ne
+        ):
+            cascade_ordered += 1
+    assert ml_junta_window >= 4, "Mali junta in the historical window must be near-universal"
+    assert cascade_ordered >= 4, "the cascade must run ML→BF→NE (the historical order)"
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="needs occupation antibodies + calibrated casualty/collateral rates (v0.5–v0.6)",
-)
 def test_pure_kinetic_strategy_loses_integrity_and_local():
-    """Force suppresses Strength but corrodes Local and bleeds Domestic —
-    FM 3-24's paradox as a regression test."""
+    """ENFORCED (v0.5). Force suppresses Strength but corrodes Local and bleeds
+    Domestic — FM 3-24's paradox as a regression test."""
     for seed in SEEDS:
         kinetic = run(PureKineticPolicy, seed, 96)
         passive = run(PassivePolicy, seed, 96)
@@ -84,13 +99,9 @@ def test_pure_kinetic_strategy_loses_integrity_and_local():
         assert kinetic.world.player.domestic < passive.world.player.domestic
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="needs spread + joint offensives so momentum can actually punish (v0.4–v0.7)",
-)
 def test_pure_hearts_minds_without_security_loses_to_momentum():
-    """Development without any security component must not stop a growing
-    insurgency — Galula's 80% political still needs the other 20%."""
+    """ENFORCED (v0.5). Development without any security component must not stop
+    a growing insurgency — Galula's 80% political still needs the other 20%."""
     for seed in SEEDS:
         hearts = run(PureHeartsMindsPolicy, seed, 96)
         start = sum(
@@ -99,6 +110,25 @@ def test_pure_hearts_minds_without_security_loses_to_momentum():
             for p in n.presence.values()
         )
         assert total_strength(hearts) > start, "unopposed momentum should outpace pure development"
+
+
+@pytest.mark.xfail(
+    strict=False,
+    reason="instrument lands v0.5; enforcement waits for a winnable balanced path "
+    "(durable Local-building, negotiation, exposure — v0.7). Today every policy "
+    "loses and the cheapest loser wins on cost; asserting mixed-dominance would "
+    "be false, and tuning costs to fake it is the dishonesty this suite prevents.",
+)
+def test_no_pure_strategy_dominates_the_mixed_baseline():
+    """§19.7. Pillar 3 as a number: a balanced doctrine portfolio should outscore
+    every pure archetype on the arc. The MixedPolicy instrument ships at v0.5;
+    this becomes enforced when the systems that make balance pay off land (v0.7),
+    so a real dominant-strategy regression will fail CI then."""
+    mixed = mean_final(MixedPolicy)
+    for pure in (PureKineticPolicy, PureHeartsMindsPolicy, EmergencyPowersPolicy):
+        assert mixed >= mean_final(pure), (
+            f"{pure.__name__} matches/beats the mixed baseline — dominant strategy"
+        )
 
 
 @pytest.mark.xfail(

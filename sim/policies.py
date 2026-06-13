@@ -99,6 +99,24 @@ class EmergencyPowersPolicy(PureKineticPolicy):
     preferences = ["surveillance_expansion", *PureKineticPolicy.preferences]
 
 
+class MixedPolicy(_BudgetedPolicy):
+    """A doctrine portfolio — security with restraint, paired with governance
+    and intel where grievance is worst. The §19.7 dominance baseline: if any
+    *pure* archetype matches or beats this, Pillar 3 ('every tool cuts both
+    ways; no dominant strategy') has sprung a leak, and CI says so."""
+
+    name = "mixed"
+    preferences = ["humint_network", "development_program", "presence_patrols",
+                   "partnered_raids", "amnesty_reintegration", "un_mandate"]
+
+    def _rank_nodes(self, briefing: dict) -> list[str]:
+        # worst-grievance regions first — meet the recruitment pool where it fills
+        ranked = sorted(
+            briefing["estimates"].items(), key=lambda kv: kv[1]["grievance"], reverse=True
+        )
+        return [node_id for node_id, _ in ranked[:4]]
+
+
 class RandomPolicy(Policy):
     """Seeded chaos for fuzzing. Owns its own RNG — player input is not
     world entropy, so the engine's determinism stream stays clean."""
@@ -130,5 +148,6 @@ class RandomPolicy(Policy):
 
 POLICIES = {
     cls.name: cls
-    for cls in (PassivePolicy, PureKineticPolicy, PureHeartsMindsPolicy, EmergencyPowersPolicy)
+    for cls in (PassivePolicy, PureKineticPolicy, PureHeartsMindsPolicy,
+                EmergencyPowersPolicy, MixedPolicy)
 }

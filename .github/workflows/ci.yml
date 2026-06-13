@@ -35,6 +35,9 @@ jobs:
       - name: Kinetic comparison run
         run: python harness/run.py --runs 10 --turns 60 --policy pure_kinetic --out artifacts-kinetic
 
+      - name: History calibration battery (Scenario 1 "The Arc")
+        run: python harness/calibrate.py --runs 10 --out artifacts-calibration
+
       - name: Upload balance artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -42,4 +45,5 @@ jobs:
           path: |
             artifacts/
             artifacts-kinetic/
+            artifacts-calibration/
           retention-days: 30
