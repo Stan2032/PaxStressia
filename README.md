@@ -6,7 +6,11 @@
 
 You lead a real-world democracy holding the line against insurgencies that grow, network, and — left untended — capture states and weld them into authoritarian blocs. Your constraints are your own: voters, allies, law, and a free press. Every lever that wins faster abroad corrodes something at home. **Can you hold the line abroad without breaking the thing you're defending?**
 
-**Status: v0.3** — the greybox prototype is **playable in a phone browser**: `python3 -m http.server 8080` from the repo root, then open `http://localhost:8080/proto/`. Deployment (Cloudflare Pages, one-time setup): [`docs/DEPLOY.md`](docs/DEPLOY.md). Underneath: JSON rules + schemas, headless Python sim, thesis-test scaffold, CI with a Monte Carlo mini-harness and a proto engine smoke test. Roadmap: [`docs/DESIGN.md`](docs/DESIGN.md) §15.
+**Status: v0.5** — Scenario 1 "The Arc" (Sahel 2012–2026) is calibrated to history (a passive player reproduces the record on 10/10 seeds) and playable in any browser.
+
+**▶ Play it:** once GitHub Pages is enabled (Settings → Pages → Source: **GitHub Actions**, one time), the game is live at **https://stan2032.github.io/PaxStressia/** — no install. Locally instead: `python3 -m http.server 8080` from the repo root → `http://localhost:8080/proto/` (this needs the repo cloned onto the machine running the server). Other hosts: [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+Underneath: JSON rules + schemas, headless Python sim, **three enforced design-thesis tests**, CI with a Monte Carlo + history-calibration harness and a prototype engine smoke test. Roadmap: [`docs/DESIGN.md`](docs/DESIGN.md) §15.
 
 ## Read first
 
@@ -43,4 +47,4 @@ python harness/run.py --runs 10 --turns 60 --policy passive --out artifacts
 
 ## License
 
-Not yet chosen — open question #5 in `DESIGN.md` §16 (open-source vs. commercial-reserved). Until decided, default copyright applies; don't redistribute.
+**PolyForm Noncommercial 1.0.0** — source-available; read, run, mod, and share for any noncommercial purpose; commercial rights reserved (so the Steam/itch path stays open). Full terms and rationale in [`LICENSE.md`](LICENSE.md). Reversible toward more-open later.
