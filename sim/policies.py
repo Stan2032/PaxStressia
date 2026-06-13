@@ -106,8 +106,9 @@ class MixedPolicy(_BudgetedPolicy):
     ways; no dominant strategy') has sprung a leak, and CI says so."""
 
     name = "mixed"
-    preferences = ["humint_network", "development_program", "presence_patrols",
-                   "partnered_raids", "amnesty_reintegration", "un_mandate"]
+    preferences = ["humint_network", "development_program", "fund_research",
+                   "presence_patrols", "negotiate_settlement", "partnered_raids",
+                   "targeted_sanctions", "amnesty_reintegration", "un_mandate"]
 
     def _rank_nodes(self, briefing: dict) -> list[str]:
         # worst-grievance regions first — meet the recruitment pool where it fills

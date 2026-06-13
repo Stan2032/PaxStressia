@@ -175,6 +175,92 @@
     "sources": ["MINUSMA record"]
   },
   {
+    "id": "fund_research",
+    "name": "Fund Independent Research",
+    "family": "diplomatic",
+    "target": "node",
+    "mandate_cost": 1,
+    "treasury_cost": 3,
+    "effects": [
+      { "op": "exposure", "delta": 6 }
+    ],
+    "backfire": {
+      "channel": "funders_paradox",
+      "probability": 0.2,
+      "effects": [
+        { "op": "international_legitimacy", "delta": -2 },
+        { "op": "domestic_legitimacy", "delta": -1 }
+      ],
+      "note": "Endow think tanks and academics to document a regime — slow, durable Exposure that raises the price of its no-strings patron. But state money is an attack surface: 'foreign puppet' discrediting can blunt the very credibility you bought (the OCCRP funding paradox)."
+    },
+    "notes": "The empirical backbone of the §20 Exposure system: research that survives denial.",
+    "sources": ["Global Witness / The Sentry → Magnitsky designation pipeline", "OCCRP funding-independence FAQ"]
+  },
+  {
+    "id": "support_exile_media",
+    "name": "Support Exile Media",
+    "family": "intelligence",
+    "target": "node",
+    "mandate_cost": 1,
+    "treasury_cost": 2,
+    "effects": [
+      { "op": "exposure", "delta": 10 }
+    ],
+    "backfire": {
+      "channel": "transnational_repression",
+      "probability": 0.25,
+      "effects": [
+        { "op": "international_legitimacy", "delta": -1 },
+        { "op": "local_legitimacy", "delta": -2 }
+      ],
+      "note": "Exile journalists move faster than think tanks — but the regime reaches their families and local fixers (transnational repression, Pegasus). The human cost is real, and the game does not flinch from it."
+    },
+    "notes": "Faster Exposure, carried by people the regime can hurt (§20.4).",
+    "sources": ["Freedom House, Transnational Repression", "Forbidden Stories / Amnesty — Pegasus Project"]
+  },
+  {
+    "id": "targeted_sanctions",
+    "name": "Targeted Designations",
+    "family": "diplomatic",
+    "target": "node",
+    "mandate_cost": 2,
+    "treasury_cost": 1,
+    "effects": [
+      { "op": "designate" }
+    ],
+    "backfire": {
+      "channel": "patron_retaliation",
+      "probability": 0.3,
+      "effects": [
+        { "op": "partner_capacity", "delta": -2 }
+      ],
+      "note": "Spend accumulated Exposure to sanction regime figures: strips patron influence and rolls back a bloc's consolidation. Needs the evidence first — a thin case (low Exposure) is dismissed and costs you credibility. The regime retaliates by expelling your people and NGOs."
+    },
+    "notes": "Converts Exposure into pressure — the documented research→designation chain (§20.4).",
+    "sources": ["US Treasury OFAC — Wagner/Mali designations 2023", "Human Rights First — Global Magnitsky dossiers"]
+  },
+  {
+    "id": "negotiate_settlement",
+    "name": "Negotiate a Settlement",
+    "family": "diplomatic",
+    "target": "node",
+    "mandate_cost": 2,
+    "treasury_cost": 1,
+    "effects": [
+      { "op": "negotiate" }
+    ],
+    "backfire": {
+      "channel": "spoiler_attack",
+      "probability": 0.25,
+      "effects": [
+        { "op": "grievance", "delta": 3 }
+      ],
+      "note": "The Rebel Inc endgame: where a faction is stalemated — too strong to crush, not strong enough to win — talks can settle it, draining its Forces and shadow control. Costs you 'soft on terror' at home, earns International respect, and is often the only clean exit. Spoilers may attack the table to break it."
+    },
+    "notes": "The negotiation endgame (§7 diplomatic). Only bites at genuine stalemate.",
+    "sources": ["RAND, How Insurgencies End — negotiated settlements", "Colombia/Havana accords model"]
+  },
+  {
     "id": "surveillance_expansion",
     "name": "Surveillance Expansion (Emergency Powers I)",
     "family": "domestic",

@@ -12,6 +12,7 @@ import hashlib
 import json
 import random
 
+from . import blocs as blocs_mod
 from . import events as events_mod
 from . import factions as factions_mod
 from . import patrons as patrons_mod
@@ -158,8 +159,73 @@ class Engine:
                  "node": node_id}
             )
             log.append({"event": "suppressed", "source": source, "severity": op_dict["severity"]})
+        elif op == "exposure":
+            # §20: fund documentation of a regime. Node target → that country;
+            # global → every regime out of civilian rule.
+            targets = (
+                [world.nodes[node_id].country] if node_id
+                else [c for c in world.countries()
+                      if (cap := world.capital_of(c)) is not None
+                      and cap.government != "civilian"]
+            )
+            for country in targets:
+                world.exposure[country] = clamp(
+                    world.exposure.get(country, 0.0) + op_dict["delta"]
+                )
+            if targets:
+                log.append({"event": "exposure", "countries": targets, "source": source})
+        elif op == "designate":
+            self._designate(node_id, source, log)
+        elif op == "negotiate":
+            self._negotiate(node_id, source, log)
         else:
             raise ValueError(f"unknown op: {op}")
+
+    def _designate(self, node_id: str | None, source: str, log: list) -> None:
+        """Targeted-sanctions op (§20.4): spend Exposure to bite a regime. A thin
+        case (low Exposure) is dismissed and costs a little credibility."""
+        world, consts = self.world, self.consts
+        country = world.nodes[node_id].country if node_id else None
+        if country is None:
+            return
+        if world.exposure.get(country, 0.0) >= consts["sanctions_exposure_min"]:
+            world.exposure[country] -= consts["sanctions_exposure_cost"]
+            self.ledger.apply(world, INTERNATIONAL, source, consts["sanctions_intl"])
+            for node in world.country_nodes(country):
+                node.patron_influence["mercenary"] = max(
+                    0.0, node.patron_influence.get("mercenary", 0.0) - consts["sanctions_patron"]
+                )
+            for bloc in world.blocs:
+                if country in bloc["countries"]:
+                    bloc["stage"] = max(1.0, bloc["stage"] - consts["sanctions_bloc_slow"])
+            log.append({"event": "designation", "country": country, "source": source})
+        else:
+            self.ledger.apply(world, INTERNATIONAL, f"{source}:thin_case", -1.0)
+            log.append({"event": "designation_failed", "country": country, "source": source})
+
+    def _negotiate(self, node_id: str | None, source: str, log: list) -> None:
+        """Negotiation endgame (§7): settle a *stalemated* faction. Outside the
+        stalemate band, talks fail and cost a little at home."""
+        world, consts = self.world, self.consts
+        if node_id is None:
+            return
+        node = world.nodes[node_id]
+        target = max(
+            sorted(node.presence), key=lambda f: node.presence[f].strength, default=None
+        )
+        if target is None:
+            return
+        pres = node.presence[target]
+        if consts["negotiate_min"] <= pres.strength <= consts["negotiate_max"]:
+            pres.strength = clamp(pres.strength - consts["negotiate_strength_drain"])
+            pres.entrenchment = clamp(pres.entrenchment - consts["negotiate_strength_drain"] / 2.0)
+            self.ledger.apply(world, DOMESTIC, source, -consts["negotiate_domestic_cost"])
+            self.ledger.apply(world, INTERNATIONAL, source, consts["negotiate_international_gain"])
+            log.append({"event": "negotiated", "node": node_id, "faction": target,
+                        "source": source})
+        else:
+            self.ledger.apply(world, DOMESTIC, f"{source}:talks_failed", -1.0)
+            log.append({"event": "negotiate_failed", "node": node_id, "source": source})
 
     def _process_suppress_clocks(self, log: list) -> None:
         """Consequence-phase substep (§6, §18.5). Each buried scandal rolls to
@@ -266,9 +332,11 @@ class Engine:
         turn_log += factions_mod.networking_check(world, consts, attrition_dealt)
         # f) state-capture collapse rolls
         turn_log += factions_mod.collapse_rolls(world, consts, self.rng, self.ledger)
-        turn_log += factions_mod.detect_proto_blocs(world)
-        # g) patron drift (stub)
-        turn_log += patrons_mod.drift(world, consts)
+        # f2) bloc formation + consolidation clock (§5.4)
+        turn_log += blocs_mod.update_blocs(world, consts, self.ledger)
+        # g) patron allegiance market + exposure decay (§8, §20)
+        turn_log += patrons_mod.market(world, consts)
+        patrons_mod.decay_exposure(world, consts)
         # h) event draw
         card = events_mod.draw(world, consts, self.rng, self.deck)
         if card is not None:
@@ -331,7 +399,7 @@ class Engine:
         order_mult = 1.0 / (
             1.0
             + consts["order_junta_weight"] * world.junta_count()
-            + consts["order_bloc_weight"] * len(world.proto_blocs)
+            + consts["order_bloc_weight"] * blocs_mod.bloc_containment_term(world, consts)
         )
         integrity_mult = max(
             consts["integrity_floor"],

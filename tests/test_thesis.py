@@ -114,10 +114,12 @@ def test_pure_hearts_minds_without_security_loses_to_momentum():
 
 @pytest.mark.xfail(
     strict=False,
-    reason="instrument lands v0.5; enforcement waits for a winnable balanced path "
-    "(durable Local-building, negotiation, exposure — v0.7). Today every policy "
-    "loses and the cheapest loser wins on cost; asserting mixed-dominance would "
-    "be false, and tuning costs to fake it is the dishonesty this suite prevents.",
+    reason="the systems a balanced path needs now exist (v0.7: exposure, "
+    "negotiation, patron market, bloc clock) — but their *balance* doesn't yet "
+    "pay back their cost on the arc, so every policy still loses and the cheapest "
+    "loser wins. This becomes a hard gate at v0.8 (balance/playtest tuning makes "
+    "the mixed path actually outscore pure play). Faking it by tuning costs now "
+    "is the dishonesty this suite exists to prevent.",
 )
 def test_no_pure_strategy_dominates_the_mixed_baseline():
     """§19.7. Pillar 3 as a number: a balanced doctrine portfolio should outscore
