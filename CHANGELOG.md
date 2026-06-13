@@ -2,6 +2,18 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.7.0 — 2026-06-13
+
+**The endgame layer — the milestone where the game gains contest and clean exits, and Stan's expose-the-regime feature comes alive.** Four interlocking systems, in both the Python sim and the JS prototype, doc-code in lockstep.
+
+- **Bloc consolidation clock (§5.4, `sim/blocs.py`):** adjacent non-civilian states federate and consolidate by stage over time, draining International via pooled propaganda and exporting grievance to civilian neighbours — *left alone, it grows.* Scoring's OrderMultiplier now weights blocs by consolidation, not just count.
+- **Patron allegiance market (§8, `sim/patrons.py:market`):** the no-strings mercenary patron's capture of a regime is resisted by your International standing and the regime's Exposure — a credible offer competes; a weak one loses by default.
+- **The Exposure system (§20, first cut):** `world.exposure[country]`, the `exposure`/`designate` ops, and four new initiatives — **Fund Independent Research**, **Support Exile Media**, **Targeted Designations**, **Negotiate a Settlement** — each with a documented backfire (funder's paradox, transnational repression, patron retaliation, spoiler attack). Exposure raises the patron's price, blunts bloc propaganda, and unlocks sanctions that strip patron influence and roll back consolidation.
+- **Negotiation endgame (§7):** the `negotiate` op settles a *stalemated* faction (drains Forces, costs Domestic, earns International) — often the only clean exit.
+- New constants for all four systems; new world state (`exposure`, `blocs`) serialized so determinism holds. `tests/test_endgame.py` (10 tests) covers each; **the history calibration still passes 10/10** after the changes. 57 tests pass / 2 xfail.
+- The §19.7 dominance check stays `xfail` — honestly: the systems exist but their balance doesn't yet out-earn its cost (every policy still loses the arc). Making the balanced path win is the v0.8 tuning/playtest job; faking it would betray the thesis suite.
+- Prototype: regime **Exposure** and **Foreign patron** readouts in the region detail, bloc-consolidation / designation / settlement headlines, the four new initiatives auto-listed, and a Key-glossary section on blocs/patrons/exposure.
+
 ## v0.6.0 — 2026-06-13
 
 **The Transparency Dial — the thesis in one mechanic.** Plus a documented answer to "can we use newer tech?"

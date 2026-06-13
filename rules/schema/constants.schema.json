@@ -20,7 +20,13 @@
     "order_junta_weight", "order_bloc_weight", "integrity_floor", "drift_per_tier",
     "cost_per_casualty", "cost_spend_norm", "domestic_hit_per_casualty",
     "edge_interdiction_cap", "event_chance", "patron_drift_junta",
-    "press_freedom", "leak_base", "leak_age_factor", "leak_clock_turns", "leak_multiplier"
+    "press_freedom", "leak_base", "leak_age_factor", "leak_clock_turns", "leak_multiplier",
+    "bloc_consolidate_rate", "bloc_max_stage", "bloc_pressure", "bloc_expansion_grievance",
+    "exposure_decay", "exposure_patron_relief", "exposure_bloc_relief",
+    "patron_competitiveness_intl", "patron_competitiveness_exposure",
+    "sanctions_exposure_min", "sanctions_intl", "sanctions_patron", "sanctions_bloc_slow",
+    "sanctions_exposure_cost", "negotiate_min", "negotiate_max", "negotiate_strength_drain",
+    "negotiate_domestic_cost", "negotiate_international_gain"
   ],
   "properties": {
     "turn_scale": { "type": "string", "enum": ["month", "quarter"] },
@@ -91,6 +97,25 @@
     "leak_age_factor": { "type": "number", "minimum": 0, "description": "Added leak chance per turn the suppression ages." },
     "leak_clock_turns": { "type": "integer", "minimum": 1, "description": "Turns a suppressed scandal can survive before it is buried for good." },
     "leak_multiplier": { "type": "number", "minimum": 1, "description": "A leak costs this multiple of the honest disclosure — the gamble's downside." },
+    "bloc_consolidate_rate": { "type": "number", "minimum": 0, "description": "Stage gained per turn by an authoritarian bloc (§5.4)." },
+    "bloc_max_stage": { "type": "number", "minimum": 1, "description": "Cap on bloc consolidation stage." },
+    "bloc_pressure": { "type": "number", "minimum": 0, "description": "International-legitimacy drain per bloc stage per turn (pooled propaganda)." },
+    "bloc_expansion_grievance": { "type": "number", "minimum": 0, "description": "Grievance a consolidated bloc exports to adjacent civilian regions per turn." },
+    "exposure_decay": { "type": "number", "minimum": 0, "description": "Exposure lost per turn without upkeep — the truth fades (§20)." },
+    "exposure_patron_relief": { "type": "number", "minimum": 0, "maximum": 1, "description": "How much full exposure raises the price of the rival patron's offer." },
+    "exposure_bloc_relief": { "type": "number", "minimum": 0, "maximum": 1, "description": "How much full exposure blunts a bloc's propaganda pressure." },
+    "patron_competitiveness_intl": { "type": "number", "minimum": 0, "maximum": 1, "description": "Weight of your International standing in resisting patron capture." },
+    "patron_competitiveness_exposure": { "type": "number", "minimum": 0, "maximum": 1, "description": "Weight of regime Exposure in resisting patron capture." },
+    "sanctions_exposure_min": { "type": "number", "minimum": 0, "maximum": 100, "description": "Exposure needed before a targeted designation bites (§20.4)." },
+    "sanctions_intl": { "type": "number", "minimum": 0, "description": "International gained by a well-evidenced designation." },
+    "sanctions_patron": { "type": "number", "minimum": 0, "description": "Patron influence stripped by a designation." },
+    "sanctions_bloc_slow": { "type": "number", "minimum": 0, "description": "Bloc stage rolled back by a designation." },
+    "sanctions_exposure_cost": { "type": "number", "minimum": 0, "description": "Exposure spent to mount a designation." },
+    "negotiate_min": { "type": "number", "minimum": 0, "maximum": 100, "description": "Lower strength bound for a faction to be negotiable (stalemate band, §7)." },
+    "negotiate_max": { "type": "number", "minimum": 0, "maximum": 100, "description": "Upper strength bound for negotiability." },
+    "negotiate_strength_drain": { "type": "number", "minimum": 0, "description": "Strength a successful settlement removes." },
+    "negotiate_domestic_cost": { "type": "number", "minimum": 0, "description": "Domestic cost of negotiating ('soft on terror')." },
+    "negotiate_international_gain": { "type": "number", "minimum": 0, "description": "International gained by a negotiated settlement." },
     "notes": { "type": "object", "additionalProperties": { "type": "string" } }
   }
 }

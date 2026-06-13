@@ -147,5 +147,27 @@ check(passive.state.player.drift === 0, "passive: no drift");
   }
 }
 
+// v0.7 endgame systems: exposure builds, blocs/exposure serialize, determinism holds.
+{
+  const runExpose = (seed) => {
+    const g = PaxEngine.Game(arcRules, seed);
+    for (let t = 0; t < 120; t++) {
+      let r = g.endTurn([
+        { initiative: "fund_research", node: "bamako" },
+        { initiative: "negotiate_settlement", node: "gao" },
+      ]);
+      if (r.phase === "event") r = g.resolveEvent(0);
+    }
+    return g;
+  };
+  const a = runExpose(1), b = runExpose(1);
+  check(a.serialize() === b.serialize(), "v0.7: same seed identical with exposure/negotiate");
+  check(a.serialize().includes('"exposure"'), "v0.7: exposure serialized");
+  check(a.serialize().includes('"blocs"'), "v0.7: blocs serialized");
+  check((a.state.exposure.ML || 0) > 10, "v0.7: funded research builds exposure on ML");
+  for (const c of Object.keys(a.state.exposure))
+    check(a.state.exposure[c] >= 0 && a.state.exposure[c] <= 100, "v0.7: exposure in range " + c);
+}
+
 if (failures) { console.error(failures + " smoke failures"); process.exit(1); }
-console.log("proto smoke ok — determinism, ranges, ledger, save/restore, scoring, arc, dial");
+console.log("proto smoke ok — determinism, ranges, ledger, save/restore, scoring, arc, dial, endgame");

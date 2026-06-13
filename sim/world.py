@@ -193,6 +193,8 @@ class WorldState:
     collapsed: dict[str, bool]
     proto_blocs: list[list[str]] = field(default_factory=list)
     fired_events: set[str] = field(default_factory=set)  # `once` beats already played
+    exposure: dict[str, float] = field(default_factory=dict)  # per-country regime exposure (§20)
+    blocs: list[dict] = field(default_factory=list)  # consolidating authoritarian blocs (§5.4)
 
     def nodes_sorted(self) -> list[Node]:
         return [self.nodes[k] for k in sorted(self.nodes)]
@@ -236,6 +238,12 @@ class WorldState:
             "collapsed": dict(sorted(self.collapsed.items())),
             "proto_blocs": sorted(self.proto_blocs),
             "fired_events": sorted(self.fired_events),
+            "exposure": {k: round(v, 4) for k, v in sorted(self.exposure.items())},
+            "blocs": [
+                {"countries": b["countries"], "stage": round(b["stage"], 4),
+                 "formed_turn": b["formed_turn"]}
+                for b in sorted(self.blocs, key=lambda b: b["countries"])
+            ],
         }
 
 
@@ -295,4 +303,5 @@ def build_world(rules: dict) -> WorldState:
         player=player,
         coup_risk={c: 0.0 for c in countries},
         collapsed={c: False for c in countries},
+        exposure={c: 0.0 for c in countries},
     )
