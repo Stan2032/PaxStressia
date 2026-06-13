@@ -19,7 +19,7 @@ from .policies import (
 )
 from .world import WorldState, build_world, load_rules
 
-__version__ = "0.5.2"
+__version__ = "0.6.0"
 
 __all__ = [
     "POLICIES",

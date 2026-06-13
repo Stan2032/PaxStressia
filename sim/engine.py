@@ -149,8 +149,45 @@ class Engine:
             node.patron_influence[pid] = clamp(
                 node.patron_influence.get(pid, 0.0) + op_dict["delta"]
             )
+        elif op == "suppress_clock":
+            # Transparency Dial (§6): the player chose to bury an incident with
+            # their fingerprints. No cost now; a leak clock starts (resolved in
+            # the consequence phase). In a free press, the truth tends to out.
+            world.player.suppress_clocks.append(
+                {"severity": op_dict["severity"], "age": 0, "source": source,
+                 "node": node_id}
+            )
+            log.append({"event": "suppressed", "source": source, "severity": op_dict["severity"]})
         else:
             raise ValueError(f"unknown op: {op}")
+
+    def _process_suppress_clocks(self, log: list) -> None:
+        """Consequence-phase substep (§6, §18.5). Each buried scandal rolls to
+        leak; press freedom raises the odds and age compounds them. A leak costs
+        a multiple of honest disclosure, spread across all three gauges; survive
+        long enough and it's buried for good."""
+        world, consts = self.world, self.consts
+        survivors = []
+        for clock in world.player.suppress_clocks:
+            leak_p = (
+                (consts["leak_base"] + consts["leak_age_factor"] * clock["age"])
+                * consts["press_freedom"]
+            )
+            if self.rng.random() < leak_p:
+                sev = clock["severity"] * consts["leak_multiplier"]
+                src = f"leak:{clock['source']}"
+                self.ledger.apply(world, DOMESTIC, src, -sev)
+                self.ledger.apply(world, INTERNATIONAL, src, -sev * 0.7)
+                if clock["node"] is not None and clock["node"] in world.nodes:
+                    self.ledger.apply(world, local_gauge(clock["node"]), src, -sev * 0.5)
+                log.append({"event": "leak", "source": clock["source"],
+                            "age": clock["age"], "cost": round(sev, 2)})
+            elif clock["age"] + 1 >= consts["leak_clock_turns"]:
+                log.append({"event": "buried_safely", "source": clock["source"]})
+            else:
+                clock["age"] += 1
+                survivors.append(clock)
+        world.player.suppress_clocks = survivors
 
     # ------------------------------------------------------------------ the loop
 
@@ -250,6 +287,7 @@ class Engine:
                 world, DOMESTIC, "casualties",
                 -consts["domestic_hit_per_casualty"] * new_casualties,
             )
+        self._process_suppress_clocks(turn_log)
         election = election_tick(world, consts, self.rng, self.ledger)
         if election is not None:
             turn_log.append(election)
