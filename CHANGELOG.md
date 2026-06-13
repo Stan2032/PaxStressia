@@ -2,6 +2,14 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.5.1 — 2026-06-13
+
+**License resolved + the prototype is actually reachable.**
+
+- **LICENSE.md — PolyForm Noncommercial 1.0.0** (canonical text + plain-English summary and rationale): source-available for any noncommercial use — play, modding, study, journalism — with commercial rights reserved so the Steam/itch.io path stays open; reversible toward more-open later. Resolves DESIGN.md open question #5.
+- **GitHub Pages deploy** (`.github/workflows/pages.yml`) + a root `index.html` redirect → the game is live at `https://stan2032.github.io/PaxStressia/` (redirects to `/proto/`) once Pages is set to "GitHub Actions" (one-time toggle). The whole repo root is published so the proto fetches `rules/*.json` live — same source of truth as the sim. Fixes the earlier dead `localhost` instruction, which assumed a local clone + server that didn't exist.
+- No engine/rules changes; constants and calibration unchanged.
+
 ## v0.5.0 — 2026-06-13
 
 **History calibration — reality is the baseline, and now it's enforced.** Tuned the constants until a passive player reproduces the Sahel arc 2012–2026 on 10/10 seeds.

@@ -1,0 +1,46 @@
+name: pages
+
+# Publishes the playable prototype to GitHub Pages.
+# ONE-TIME SETUP (Stan): repo Settings → Pages → Build and deployment →
+# Source: "GitHub Actions". After that, every push to main redeploys, and the
+# game is live at https://stan2032.github.io/PaxStressia/ (redirects to /proto/).
+#
+# The whole repo root is published so the proto can fetch ../rules/*.json live —
+# the same single source of truth the sim uses. Nothing here is secret; the repo
+# is public.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One concurrent deploy; let an in-progress run finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify proto rules snapshot is fresh
+        run: python3 proto/build.py --check
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
