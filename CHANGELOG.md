@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.5.2 — 2026-06-13
+
+**Legibility pass on the prototype** — first playtest feedback was "too collated, words too specific, can't tell how the numbers relate." All UI; no engine/rules/calibration change.
+
+- **Plain language, doctrine kept as gloss:** the insurgent axes now read **Forces / Dug-in / Activity** (Strength/Entrenchment/Visibility in the tooltip); gauges read **Home / Allies / Local**; **Mandate / Funds** instead of M/T.
+- **Number relationships made visible:** every region stat is a labelled meter, coloured green/red for whether high is good or bad *for you*, with its ± uncertainty shown; a "dug-in but quiet" region is flagged with the deceptive-calm warning in plain words.
+- **A "Key" tab** (always reachable): full plain-language glossary, the causal loop (grievance→forces; control+support→resist; unwatched→dug-in; region→capital→junta), and the map legend. Plus a one-time first-run orientation card and a header **?** button.
+- De-cluttered map labels (forces estimate only); actions dim when unaffordable.
+- DESIGN §13.3 gains two recorded directions: the long-horizon **3D/production-presentation goal** (Godot-leaning) and the **legibility principle** (readable without a manual; jargon-without-explanation = bug).
+
 ## v0.5.1 — 2026-06-13
 
 **License resolved + the prototype is actually reachable.**
