@@ -577,19 +577,48 @@
         "effects": [
           {
             "op": "local_legitimacy",
-            "delta": -4
+            "delta": -2
           },
           {
-            "op": "grievance",
-            "delta": 3
+            "op": "suppress_clock",
+            "severity": 7
           }
         ]
       }
     ],
-    "notes": "Generic deck, shared with Sahel-lite. Transparency Dial prototype; leak clocks land v0.6.",
+    "notes": "The Transparency Dial (§6). Disclose: pay now, less Local damage (honesty registers). Bury: nothing now, but a leak clock starts — and a free press tends to find out, at a multiple of the honest cost.",
     "sources": [
       "Sahel partner-force abuse reporting",
       "DESIGN §6 Transparency Dial"
+    ]
+  },
+  {
+    "id": "errant_strike",
+    "title": "The Strike Hit a Wedding",
+    "text": "Your strike cell is certain the convoy was a target. The village is certain it was a wedding. Both cannot be right, and only one of them will hold a press conference. Your name is on the authorization.",
+    "weight": 1.0,
+    "requires": {
+      "min_casualties": 1
+    },
+    "choices": [
+      {
+        "label": "Own it: release the assessment, pay compensation",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": -3 },
+          { "op": "international_legitimacy", "delta": -1 },
+          { "op": "local_legitimacy", "delta": -2 }
+        ]
+      },
+      {
+        "label": "Classify it",
+        "effects": [
+          { "op": "suppress_clock", "severity": 9 }
+        ]
+      }
+    ],
+    "notes": "The Transparency Dial again, harder: classifying costs nothing today and risks an election-shock leak later. The disclose branch is cheaper on average — if you can stomach paying every time.",
+    "sources": [
+      "Drone-strike collateral reporting; DESIGN §6 Transparency Dial"
     ]
   },
   {

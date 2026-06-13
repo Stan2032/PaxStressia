@@ -125,5 +125,27 @@ check(passive.state.player.drift === 0, "passive: no drift");
   check(ignited.length > 0, "arc: spread should ignite at least one empty region");
 }
 
+// Transparency Dial (v0.6): driving the "bury" branch must register leak clocks,
+// stay deterministic, and keep gauges in range as leaks resolve.
+{
+  const runBury = (seed) => {
+    const g = PaxEngine.Game(arcRules, seed);
+    let everBuried = false;
+    for (let t = 0; t < 120; t++) {
+      let r = g.endTurn([{ initiative: "partnered_raids", node: "mopti" }]);
+      if (r.phase === "event") r = g.resolveEvent(1);  // prefer the suppress/decline branch
+      if (g.state.player.suppressClocks.length) everBuried = true;
+    }
+    return { g, everBuried };
+  };
+  const a = runBury(2), b = runBury(2);
+  check(a.g.serialize() === b.g.serialize(), "dial: same seed identical with bury branch");
+  check(Array.isArray(a.g.state.player.suppressClocks), "dial: suppressClocks present");
+  for (const p of [a.g.state.player]) {
+    check(p.domestic >= 0 && p.domestic <= 100, "dial: domestic in range");
+    check(p.international >= 0 && p.international <= 100, "dial: international in range");
+  }
+}
+
 if (failures) { console.error(failures + " smoke failures"); process.exit(1); }
-console.log("proto smoke ok — determinism, ranges, ledger, save/restore, scoring, arc");
+console.log("proto smoke ok — determinism, ranges, ledger, save/restore, scoring, arc, dial");

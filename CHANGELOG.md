@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.6.0 — 2026-06-13
+
+**The Transparency Dial — the thesis in one mechanic.** Plus a documented answer to "can we use newer tech?"
+
+- **Disclose vs. suppress** (DESIGN §6): incidents with your fingerprints (partner atrocity, errant strike) now offer honesty (a reduced cost now) or burial (nothing now — but a **leak clock**). Each turn a buried scandal may leak; the chance rises with **press freedom** and the scandal's age, and a leak costs `leak_multiplier ×` the buried severity across all three gauges. A free press is what makes suppression dangerous — Merom, mechanized.
+- New `suppress_clock` op and `press_freedom` / `leak_base` / `leak_age_factor` / `leak_clock_turns` / `leak_multiplier` constants, in both the Python sim and the JS prototype; leak-clock state is serialized so determinism holds.
+- `tests/test_transparency.py` (6 tests) enforces the economics: suppression costs more on average than disclosure, yet sometimes costs nothing (the gamble is real), and more press freedom yields more leaks. 47 tests pass / 2 xfail.
+- Prototype: a **Buried** counter in the header, leak/buried-safely headlines, and a Key-glossary entry; JS smoke now exercises the bury branch.
+- **DESIGN §13.4 — presentation-technology evaluation:** Godot 4 as the primary production-client recommendation (Vulkan/OpenGL, real 3D, web+Android+Steam exports, Python-like GDScript), WebGPU+Babylon.js as the stay-on-web fallback that reuses the existing JS engine, raw OpenGL/Bevy/Unity assessed and declined. The JSON core makes the eventual 3D client a re-skin, not a rewrite.
+
 ## v0.5.2 — 2026-06-13
 
 **Legibility pass on the prototype** — first playtest feedback was "too collated, words too specific, can't tell how the numbers relate." All UI; no engine/rules/calibration change.

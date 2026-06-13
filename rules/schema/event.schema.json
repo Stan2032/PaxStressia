@@ -16,7 +16,7 @@
             "domestic_legitimacy", "international_legitimacy",
             "governance", "development", "grievance", "amnesty",
             "partner_capacity", "coup_seed", "drift", "intl_umbrella",
-            "presence", "patron"
+            "presence", "patron", "suppress_clock"
           ]
         },
         "amount": { "type": "number" },
@@ -24,6 +24,7 @@
         "turns": { "type": "integer", "minimum": 1 },
         "rate": { "type": "number", "minimum": 0, "maximum": 1 },
         "tiers": { "type": "integer", "minimum": 1 },
+        "severity": { "type": "number", "description": "suppress_clock op (v0.6): scale of the hidden scandal; a leak applies this across all three gauges, multiplied." },
         "node": { "type": "string", "description": "Optional explicit node target; defaults to the event's drawn context node." },
         "faction": { "type": "string", "description": "presence op: which faction to seed/boost." },
         "strength": { "type": "number", "description": "presence op: strength added (floor-seeded if absent)." },

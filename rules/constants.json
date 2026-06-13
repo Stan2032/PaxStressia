@@ -65,6 +65,12 @@
   "event_chance": 0.45,
   "patron_drift_junta": 1.5,
 
+  "press_freedom": 0.8,
+  "leak_base": 0.05,
+  "leak_age_factor": 0.02,
+  "leak_clock_turns": 12,
+  "leak_multiplier": 2.2,
+
   "notes": {
     "status": "CALIBRATED at v0.5 against Scenario 1 'The Arc': passive player reproduces 2012-2026 on 10/10 seeds — Mali junta in window, cascade ML->BF->NE, bloc forms, insurgency still growing at the horizon (harness/calibrate.py, enforced by tests/test_thesis.py). Values remain open to refinement as v0.6+ systems land.",
     "formulas": "Each key is referenced by name in DESIGN.md §18.5. Change values here, never in code.",

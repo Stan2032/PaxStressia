@@ -174,6 +174,11 @@ class PlayerState:
             "turns_since_election": self.turns_since_election,
             "honeymoon_left": self.honeymoon_left,
             "spent_total": round(self.spent_total, 4),
+            "suppress_clocks": [
+                {"severity": round(c["severity"], 4), "age": c["age"],
+                 "source": c["source"], "node": c["node"]}
+                for c in self.suppress_clocks
+            ],
         }
 
 

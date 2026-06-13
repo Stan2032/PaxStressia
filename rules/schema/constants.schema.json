@@ -19,7 +19,8 @@
     "fog_sigma_max", "fog_calm_bias", "fog_entrench_mult",
     "order_junta_weight", "order_bloc_weight", "integrity_floor", "drift_per_tier",
     "cost_per_casualty", "cost_spend_norm", "domestic_hit_per_casualty",
-    "edge_interdiction_cap", "event_chance", "patron_drift_junta"
+    "edge_interdiction_cap", "event_chance", "patron_drift_junta",
+    "press_freedom", "leak_base", "leak_age_factor", "leak_clock_turns", "leak_multiplier"
   ],
   "properties": {
     "turn_scale": { "type": "string", "enum": ["month", "quarter"] },
@@ -85,6 +86,11 @@
     "edge_interdiction_cap": { "type": "number", "minimum": 0, "maximum": 1 },
     "event_chance": { "type": "number", "minimum": 0, "maximum": 1 },
     "patron_drift_junta": { "type": "number", "minimum": 0 },
+    "press_freedom": { "type": "number", "minimum": 0, "maximum": 1, "description": "Strength of the free press (v0.6): higher makes suppression more likely to leak — democracies can't hide things (§6 Transparency Dial)." },
+    "leak_base": { "type": "number", "minimum": 0, "maximum": 1, "description": "Base per-turn leak chance for a suppressed scandal." },
+    "leak_age_factor": { "type": "number", "minimum": 0, "description": "Added leak chance per turn the suppression ages." },
+    "leak_clock_turns": { "type": "integer", "minimum": 1, "description": "Turns a suppressed scandal can survive before it is buried for good." },
+    "leak_multiplier": { "type": "number", "minimum": 1, "description": "A leak costs this multiple of the honest disclosure — the gamble's downside." },
     "notes": { "type": "object", "additionalProperties": { "type": "string" } }
   }
 }
