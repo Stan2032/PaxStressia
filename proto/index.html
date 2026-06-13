@@ -79,6 +79,27 @@
   table{width:100%; border-collapse:collapse; font-size:12px}
   td{padding:2px 4px; border-bottom:1px solid #2a323b}
   td:last-child{text-align:right}
+  /* v0.5.2 legibility */
+  .hint{color:var(--dim); font-weight:normal}
+  .gd{color:var(--green)} .bd{color:var(--red)}
+  #helpBtn{margin-left:auto; background:var(--panel2); border:1px solid #000;
+    color:var(--amber); border-radius:50%; width:24px; height:24px; font:inherit;
+    font-weight:bold; cursor:pointer; flex:none}
+  .kv{display:flex; justify-content:space-between; gap:8px; align-items:center;
+    font-size:12px; padding:3px 0; border-bottom:1px solid #232b33}
+  .kv .lbl{color:var(--dim)} .kv .val{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .meter{height:6px; background:#000; border-radius:3px; overflow:hidden; width:90px}
+  .meter i{display:block; height:100%}
+  .fcard{background:#191f26; border-radius:5px; padding:5px 7px; margin:5px 0}
+  .fcard .nm{font-weight:bold}
+  .legend{display:flex; flex-wrap:wrap; gap:5px 12px; font-size:11px; color:var(--dim);
+    padding:5px 0}
+  .swatch{display:inline-block; width:9px; height:9px; border-radius:50%;
+    vertical-align:middle; margin-right:3px; border:1px solid #000}
+  .help h3{color:var(--amber); margin:11px 0 2px; font-size:13px}
+  .help p{margin:3px 0; font-size:12.5px}
+  .help .term{color:var(--ink); font-weight:bold}
+  .help .arrow{color:var(--amber)}
 </style>
 </head>
 <body>
@@ -86,18 +107,18 @@
   <header>
     <div class="row">
       <span class="date" id="hDate">—</span>
-      <span class="chip">Mandate <b id="hMandate">0</b></span>
-      <span class="chip">Treasury <b id="hTreasury">0</b></span>
+      <span class="chip" title="Political capital — spend it each month on actions. Comes from voter support.">Mandate <b id="hMandate">0</b></span>
+      <span class="chip" title="Money for programmes this month.">Funds <b id="hTreasury">0</b></span>
       <span class="chip" id="hElection">—</span>
-      <span class="chip" id="hDrift" style="display:none">Drift <b>0</b></span>
-      <span class="chip src" id="hSource">rules: …</span>
+      <span class="chip" id="hDrift" style="display:none" title="Authoritarian Drift — emergency powers you've used. Permanently lowers your final score.">Drift <b>0</b></span>
+      <button id="helpBtn" title="What am I looking at?">?</button>
     </div>
     <div class="gauges">
-      <div class="gauge"><label>Domestic <span id="vDom"></span></label>
+      <div class="gauge"><label><span>Home <span class="hint">voters</span></span> <span id="vDom"></span></label>
         <div class="bar"><i id="bDom" style="background:var(--blue)"></i></div></div>
-      <div class="gauge"><label>International <span id="vIntl"></span></label>
+      <div class="gauge"><label><span>Allies <span class="hint">world</span></span> <span id="vIntl"></span></label>
         <div class="bar"><i id="bIntl" style="background:var(--teal)"></i></div></div>
-      <div class="gauge"><label>Local avg <span id="vLoc"></span></label>
+      <div class="gauge"><label><span>Local <span class="hint">on the ground</span></span> <span id="vLoc"></span></label>
         <div class="bar"><i id="bLoc" style="background:var(--green)"></i></div></div>
     </div>
   </header>
@@ -107,6 +128,7 @@
       <button id="tabBrief" class="on">Briefing</button>
       <button id="tabAct">Act</button>
       <button id="tabReport">Report</button>
+      <button id="tabKey">Key</button>
     </nav>
     <div id="panel"></div>
   </div>
@@ -824,9 +846,9 @@ if (typeof document !== "undefined") (function () {
         ((n.patron.mercenary || 0) >= 50
           ? `<circle class="patron" cx="${x + r}" cy="${y - r}" r="1.4"/>` : "") +
         `<text x="${x + r + 1.2}" y="${y + 1}">${n.name.split(" ")[0]}</text>` +
-        (Object.keys(est.factions).length
+        (tot >= 1
           ? `<text class="est" x="${x + r + 1.2}" y="${y + 5}" opacity="${op}">` +
-            `≈${Math.round(tot)}±${Math.round(band)}</text>` : "") +
+            `~${Math.round(tot)}</text>` : "") +
         (pips ? `<text class="pips" x="${x - r - 3.5}" y="${y + 1}">${pips}</text>` : "") +
         `</g>`;
     }
@@ -847,7 +869,7 @@ if (typeof document !== "undefined") (function () {
 
   // ---------- panels ----------
   function setTab(t) { tab = t;
-    for (const x of ["Brief", "Act", "Report"])
+    for (const x of ["Brief", "Act", "Report", "Key"])
       $("tab" + x).classList.toggle("on", t === x.toLowerCase());
     renderPanel();
   }
@@ -892,35 +914,122 @@ if (typeof document !== "undefined") (function () {
       text: "A quiet month on the wires. Quiet is not peace." });
     return out.slice(0, 3);
   }
+  // A 0–100 stat as a labelled meter. dir=+1 means high is GOOD for you (green),
+  // dir=-1 means high is BAD (red). `est` shows a ± band when it's an estimate.
+  function statRow(label, hint, val, dir, band) {
+    const v = Math.round(val);
+    const frac = Math.max(0, Math.min(100, val));
+    const good = dir > 0 ? frac >= 50 : frac <= 50;
+    const col = good ? "var(--green)" : "var(--red)";
+    const bandTxt = band !== undefined ? ` <span class="band">±${Math.round(band)}</span>` : "";
+    return `<div class="kv"><span class="lbl" title="${hint}">${label}</span>` +
+      `<span class="val">${v}${bandTxt}<span class="meter" style="display:inline-block;` +
+      `margin-left:6px;vertical-align:middle"><i style="width:${frac}%;background:${col}"></i>` +
+      `</span></span></div>`;
+  }
+  function govWord(g) {
+    return { civilian: "elected government", junta: "military junta",
+      emirate: "insurgent emirate", failed: "collapsed / no government" }[g] || g;
+  }
   function nodeCard(id) {
     const n = game.state.nodes[id], est = game.state.estimates[id];
-    let rows = "";
+    const COUNTRY = { ML: "Mali", BF: "Burkina Faso", NE: "Niger", GLF: "coast" };
+    let facts = "";
     for (const fid of Object.keys(est.factions).sort()) {
       const f = est.factions[fid], name = game.state.factions[fid].name;
-      rows += `<div class="frow"><span>${name}</span>` +
-        `<span>str ≈${f.s} <span class="band">±${f.sBand}</span> · ` +
-        `entr ≈${f.e} <span class="band">±${f.eBand}</span> · vis ${f.v}</span></div>`;
+      const quiet = f.e > 35 && f.v < 25;
+      facts += `<div class="fcard"><div class="nm">${name}</div>` +
+        statRow("Forces", "Fighters — how dangerous right now (Strength). Your estimate; ± is the uncertainty.", f.s, -1, f.sBand) +
+        statRow("Dug-in", "Shadow government — taxes, courts, control. Hard to remove (Entrenchment).", f.e, -1, f.eBand) +
+        statRow("Activity", "Visible violence. Low can mean beaten — or quietly in control (Visibility).", f.v, -1) +
+        (quiet ? `<div class="sub bd">⚠ dug-in but quiet — may be running this area, not losing it</div>` : "") +
+        `</div>`;
     }
-    if (!rows) rows = '<div class="sub">No tracked insurgent presence. (Tracked ≠ none.)</div>';
-    return `<div class="card"><b>${n.name}</b> · ${n.country} · ${n.government}` +
-      (n.capital ? " · capital" : "") +
-      `<div class="frow"><span>governance ${Math.round(n.governance)}</span>` +
-      `<span>grievance ${Math.round(n.grievance)}</span>` +
-      `<span>local legit ${Math.round(n.local)}</span></div>` +
-      `<div class="frow"><span>intel coverage ${est.coverage}</span>` +
-      `<span>ops ${Math.round(n.opsPressure)}</span>` +
-      `<span>partner ${Math.round(n.partnerCap)}</span></div>${rows}</div>`;
+    if (!facts) facts = '<div class="sub">No insurgents detected here — but thin intel can hide them.</div>';
+    return `<div class="card"><b>${n.name}</b> <span class="hint">${COUNTRY[n.country] || n.country}` +
+      `${n.capital ? " · capital" : ""} · ${govWord(n.government)}</span>` +
+      statRow("Govt control", "How firmly the state runs this region (Governance). Higher resists insurgents.", n.governance, 1) +
+      statRow("Local support", "Whether the population backs you (Local legitimacy). The real win condition — and the only thing that permanently starves insurgents.", n.local, 1) +
+      statRow("Grievance", "Anger at the state. High grievance is what insurgents recruit from.", n.grievance, -1) +
+      statRow("Your visibility", "How clearly your intelligence sees this region. Low = the numbers above are guesses.", est.coverage * 100, 1) +
+      (n.opsPressure > 0 ? statRow("Military pressure", "Your forces' pressure here right now (suppresses Forces while active).", n.opsPressure, 1) : "") +
+      facts + `</div>`;
+  }
+  function helpHTML() {
+    return '<div class="help">' +
+      '<div class="head">What is this?</div>' +
+      '<p>You run a democracy trying to stabilise a region without becoming the ' +
+      'thing you are fighting. Each month you spend <span class="term">Mandate</span> ' +
+      '(political capital) and <span class="term">Funds</span> on actions, then end the month ' +
+      'and the world reacts.</p>' +
+      '<h3>Your three standings (top bars, 0–100, higher is better)</h3>' +
+      '<p><span class="term">Home</span> — your voters\' patience. It sets how much ' +
+      'Mandate you get. Body bags and scandals drain it.</p>' +
+      '<p><span class="term">Allies</span> — the world\'s trust. Unlocks coalitions and ' +
+      'cover; civilian harm and hypocrisy drain it.</p>' +
+      '<p><span class="term">Local</span> — whether the population on the ground backs you. ' +
+      'The slowest to raise and the <b>only</b> thing that permanently starves an insurgency.</p>' +
+      '<h3>A region\'s numbers (tap any region)</h3>' +
+      '<p><span class="term">Govt control</span> / <span class="term">Local support</span> ' +
+      '— high is good (green). <span class="term">Grievance</span> — high is bad (red): it is ' +
+      'the fuel insurgents recruit from.</p>' +
+      '<p>For each insurgent group: <span class="term">Forces</span> = how dangerous now · ' +
+      '<span class="term">Dug-in</span> = shadow control, hard to remove · ' +
+      '<span class="term">Activity</span> = visible violence. ' +
+      '<b>Dug-in + low Activity = quiet but captured</b> — the trap this game is about.</p>' +
+      '<h3>The numbers are guesses</h3>' +
+      '<p>Insurgent figures show a <span class="term">± band</span> — your uncertainty. ' +
+      'Where <span class="term">Your visibility</span> (intel) is low, a region can look calm ' +
+      'while it is quietly lost. Intelligence actions narrow the guesses.</p>' +
+      '<h3>How it all connects</h3>' +
+      '<p>Grievance <span class="arrow">→</span> grows insurgent Forces. ' +
+      'Govt control + Local support <span class="arrow">→</span> resist them. ' +
+      'Unwatched Forces <span class="arrow">→</span> become Dug-in. ' +
+      'A region overrun <span class="arrow">→</span> can topple its capital into a junta, ' +
+      'which makes things <i>worse</i>, not better.</p>' +
+      '<p><span class="term">Every action cuts both ways</span> — each one lists its risk and ' +
+      'its chance. There are no free moves.</p>' +
+      '<h3>Map key</h3>' +
+      '<p><span class="swatch" style="background:var(--civ)"></span>elected · ' +
+      '<span class="swatch" style="background:var(--junta)"></span>military junta · ' +
+      '<span class="swatch" style="background:var(--emirate)"></span>insurgent-run · ' +
+      '<span class="swatch" style="background:var(--failed)"></span>collapsed</p>' +
+      '<p>★ capital · red <b>!</b> = visible violence · ' +
+      '<span class="swatch" style="background:#ff7043"></span> = rival foreign patron entrenched · ' +
+      'brown dashed line = smuggling route.</p>' +
+      '<h3>Goal</h3>' +
+      '<p>Reach the end with regions stabilised, allies onside, and your own democracy intact. ' +
+      'Winning by force or emergency powers is possible — and the score will say so.</p>' +
+      '</div>';
+  }
+  function showIntro() {
+    $("modalPaper").innerHTML = '<h2>PaxStressia — quick orientation</h2>' +
+      '<p>You lead a democracy trying to hold a region together. Each month, spend ' +
+      '<b>Mandate</b> on <b>actions</b>, then <b>End month</b>.</p>' +
+      '<p>Watch three standings up top — <b>Home</b> (voters), <b>Allies</b> (world), ' +
+      '<b>Local</b> (the population). Tap a region to see who runs it and how strong the ' +
+      'insurgents are. Those insurgent numbers are <b>estimates</b> — the ± is your uncertainty.</p>' +
+      '<p>The trap to watch: a region that looks <b>quiet</b> may be quietly <b>captured</b>. ' +
+      'Every action has a downside, listed on it.</p>' +
+      '<p class="sub">Full plain-language glossary any time: the <b>Key</b> tab.</p>' +
+      '<button class="choice" id="introOk" style="text-align:center;color:var(--amber)">Got it</button>';
+    $("modal").classList.add("show");
+    $("introOk").addEventListener("click", () => $("modal").classList.remove("show"));
   }
   function renderPanel() {
     const P = $("panel");
+    if (tab === "key") { P.innerHTML = helpHTML(); return; }
     if (tab === "brief") {
       const rep = game.state.reports[game.state.reports.length - 1];
-      let html = '<div class="head">Morning folder</div>';
+      let html = '<div class="head">This month\'s news</div>';
       for (const h of headlines(rep)) html += `<div class="${sevClass(h)}">${h.text}</div>`;
-      html += `<div class="sub">Mandate income ${game.state.lastIncome}` +
-        ` · estimates carry ±90% bands · coverage buys narrower lies</div>`;
-      html += '<div class="head">' + (selNode ? "Selected region" : "Tap a region") + "</div>";
+      html += `<div class="sub">+${game.state.lastIncome} Mandate this month. ` +
+        `Insurgent numbers are <b>estimates</b> (the ± shows how unsure) — better intel narrows them. ` +
+        `New here? Tap <b>Key</b> below.</div>`;
+      html += '<div class="head">' + (selNode ? "Region detail" : "Tap a region on the map") + "</div>";
       if (selNode) html += nodeCard(selNode);
+      else html += '<div class="sub">Circle colour = who runs it (green elected, red junta). ' +
+        'Red <b>!</b> marks = visible violence. Number by a region = estimated insurgent forces.</div>';
       P.innerHTML = html;
     } else if (tab === "act") {
       const p = game.state.player;
@@ -928,15 +1037,23 @@ if (typeof document !== "undefined") (function () {
         s + game.initiatives[q.initiative].mandate_cost, 0);
       const tLeft = p.treasury - queue.reduce((s, q) =>
         s + game.initiatives[q.initiative].treasury_cost, 0);
-      let html = `<div class="sub">Queue orders, then end the month. ` +
-        `Budget left: <b>${mLeft}</b> mandate, <b>${Math.round(tLeft)}</b> treasury.</div>`;
+      const FAM = { military: "Military", governance: "Build / govern",
+        intelligence: "Intelligence", diplomatic: "Diplomacy", domestic: "At home" };
+      let html = `<div class="sub">Pick an action, then (if it needs a target) tap a region. ` +
+        `End the month to resolve. Left to spend: <b>${mLeft}</b> Mandate, ` +
+        `<b>${Math.round(tLeft)}</b> Funds.</div>`;
       for (const id of Object.keys(game.initiatives).sort()) {
         const i = game.initiatives[id];
         const cls = armed === id ? "card init armed" : "card init";
-        html += `<div class="${cls}" data-init="${id}"><div><b>${i.name}</b>` +
-          `<small>${i.family} · ${i.target} · backfire: ${i.backfire.channel.replace(/_/g, " ")}` +
-          ` (${Math.round(i.backfire.probability * 100)}%)</small></div>` +
-          `<span class="cost">${i.mandate_cost}M ${i.treasury_cost}T</span></div>`;
+        const affordable = i.mandate_cost <= mLeft && i.treasury_cost <= tLeft;
+        html += `<div class="${cls}" data-init="${id}" style="${affordable ? "" : "opacity:.5"}">` +
+          `<div><b>${i.name}</b>` +
+          `<small>${FAM[i.family] || i.family}` +
+          (i.target === "node" ? " · needs a region" : " · nationwide") +
+          ` · risk: ${i.backfire.channel.replace(/_/g, " ")} ` +
+          `(${Math.round(i.backfire.probability * 100)}%)</small></div>` +
+          `<span class="cost" title="costs ${i.mandate_cost} Mandate and ${i.treasury_cost} Funds">` +
+          `${i.mandate_cost} Mandate<br>${i.treasury_cost} Funds</span></div>`;
       }
       if (queue.length) {
         html += '<div class="head">Queued</div>';
@@ -1100,7 +1217,16 @@ if (typeof document !== "undefined") (function () {
     $("tabBrief").addEventListener("click", () => setTab("brief"));
     $("tabAct").addEventListener("click", () => setTab("act"));
     $("tabReport").addEventListener("click", () => setTab("report"));
+    $("tabKey").addEventListener("click", () => setTab("key"));
+    $("helpBtn").addEventListener("click", showIntro);
     if (game.state.turn >= horizon) { showEnd(); } else renderAll();
+    // First-ever load: orient the player once (tracked separately from the game save).
+    try {
+      if (!localStorage.getItem("paxstressia_seen_intro")) {
+        showIntro();
+        localStorage.setItem("paxstressia_seen_intro", "1");
+      }
+    } catch (e) { /* private mode: just skip the one-time intro */ }
   })();
 })();
 </script>
