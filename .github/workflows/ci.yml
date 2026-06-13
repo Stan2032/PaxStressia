@@ -38,6 +38,9 @@ jobs:
       - name: History calibration battery (Scenario 1 "The Arc")
         run: python harness/calibrate.py --runs 10 --out artifacts-calibration
 
+      - name: Competent-player run (the win path)
+        run: python harness/run.py --runs 10 --turns 120 --policy competent --out artifacts-competent
+
       - name: Upload balance artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -46,4 +49,5 @@ jobs:
             artifacts/
             artifacts-kinetic/
             artifacts-calibration/
+            artifacts-competent/
           retention-days: 30

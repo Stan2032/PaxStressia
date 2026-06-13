@@ -393,8 +393,20 @@ class Engine:
         """Final Score = Stabilization × OrderMult × IntegrityMult − Costs (§11, §18.5)."""
         world, consts, player = self.world, self.consts, self.world.player
         nodes = world.nodes_sorted()
+
+        def grip(n) -> float:
+            # insurgent shadow-control of a region (Pillar 4): a region painted
+            # with services but run by an entrenched insurgency is NOT stabilized.
+            if not n.presence:
+                return 0.0
+            return clamp(
+                max((0.5 * p.strength + 0.5 * p.entrenchment) for p in n.presence.values()),
+                0.0, 100.0,
+            ) / 100.0
+
         stabilization = 100.0 * sum(
-            (n.local_legitimacy / 100.0) * (n.governance / 100.0) for n in nodes
+            (n.local_legitimacy / 100.0) * (n.governance / 100.0) * (1.0 - grip(n))
+            for n in nodes
         ) / len(nodes)
         order_mult = 1.0 / (
             1.0

@@ -2,6 +2,17 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.8.0 — 2026-06-13
+
+**The game is winnable — and the design thesis is now fully enforced by CI.** Tuned the **player's tools and the scoring only**, never the passive world dynamics, so the Sahel history calibration held **10/10 throughout** while a genuine win path opened (the discipline honoured, not gamed).
+
+- **Insurgent-grip discount (§11):** a region's stabilization is multiplied by `(1 − max(0.5·strength + 0.5·entrenchment)/100)` — a region painted with services but run by an entrenched insurgency counts as *unstabilized*. Pillar 4 (quiet ≠ peace) in the score itself; this is what makes hearts-minds-without-security lose on the scoreboard, not just on the strength axis.
+- **Rebalance:** OrderMultiplier weights bloc *consolidation* and bites harder per junta; programmes made affordable (lower spend/casualty cost weights; Development cheaper and stronger, now also cuts grievance); treasury income up slightly. All player-facing or score-only — calibration-safe by construction.
+- **`CompetentPolicy`** — the §3.7 "reasonable player": triages the capital nearest collapse, negotiates stalemates, sees-and-suppresses the worst regions, keeps an umbrella up, exposes blocs, and avoids casualty/drift-heavy tools. The balanced benchmark.
+- **Outcome (mean final, arc):** Competent ≈ 12 > Passive ≈ 2 > every pure strategy (all negative-to-single-digit).
+- **Two thesis tests promoted xfail → ENFORCED:** `test_no_pure_strategy_dominates_the_balanced_baseline` (§19.7) and `test_a_reasonable_player_can_beat_history` (§3.7). Emergency-powers stays xfail honestly — scored-worse holds but tier-1 surveillance isn't yet *genuinely tempting* (§3.5; awaits the full track).
+- Grip discount ported to the prototype so both engines score alike. 60 tests pass / 1 xfail; calibration 10/10.
+
 ## v0.7.0 — 2026-06-13
 
 **The endgame layer — the milestone where the game gains contest and clean exits, and Stan's expose-the-regime feature comes alive.** Four interlocking systems, in both the Python sim and the JS prototype, doc-code in lockstep.
