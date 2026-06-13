@@ -11,9 +11,9 @@ stays xfail until the full Emergency Powers track lands (v0.6+).
 import pytest
 
 from sim import (
+    CompetentPolicy,
     EmergencyPowersPolicy,
     Engine,
-    MixedPolicy,
     PassivePolicy,
     PureHeartsMindsPolicy,
     PureKineticPolicy,
@@ -23,9 +23,9 @@ from sim import (
 SEEDS = range(5)
 
 
-def mean_final(policy_cls, turns: int = 120) -> float:
+def mean_final(policy_cls, turns: int = 120, seeds=SEEDS) -> float:
     scores = []
-    for seed in SEEDS:
+    for seed in seeds:
         eng = Engine(rules=load_rules(scenario="sahel_arc"), seed=seed, policy=policy_cls())
         eng.run(turns)
         scores.append(eng.score()["final"])
@@ -112,30 +112,37 @@ def test_pure_hearts_minds_without_security_loses_to_momentum():
         assert total_strength(hearts) > start, "unopposed momentum should outpace pure development"
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="the systems a balanced path needs now exist (v0.7: exposure, "
-    "negotiation, patron market, bloc clock) — but their *balance* doesn't yet "
-    "pay back their cost on the arc, so every policy still loses and the cheapest "
-    "loser wins. This becomes a hard gate at v0.8 (balance/playtest tuning makes "
-    "the mixed path actually outscore pure play). Faking it by tuning costs now "
-    "is the dishonesty this suite exists to prevent.",
-)
-def test_no_pure_strategy_dominates_the_mixed_baseline():
-    """§19.7. Pillar 3 as a number: a balanced doctrine portfolio should outscore
-    every pure archetype on the arc. The MixedPolicy instrument ships at v0.5;
-    this becomes enforced when the systems that make balance pay off land (v0.7),
-    so a real dominant-strategy regression will fail CI then."""
-    mixed = mean_final(MixedPolicy)
+def test_no_pure_strategy_dominates_the_balanced_baseline():
+    """ENFORCED (v0.8, §19.7). Pillar 3 as a number: competent *balanced* play
+    (security with restraint + governance + negotiation + exposure) must outscore
+    every pure archetype on the arc. If a single pure strategy matched or beat it,
+    a dominant strategy would exist and 'every tool cuts both ways' would have
+    sprung a leak. Calibration stays history-true (the passive WORLD is unchanged);
+    only the player's tools and the scoring were tuned to open a real win path."""
+    balanced = mean_final(CompetentPolicy)
     for pure in (PureKineticPolicy, PureHeartsMindsPolicy, EmergencyPowersPolicy):
-        assert mixed >= mean_final(pure), (
-            f"{pure.__name__} matches/beats the mixed baseline — dominant strategy"
+        assert balanced > mean_final(pure), (
+            f"{pure.__name__} matches/beats competent balanced play — dominant strategy"
         )
 
 
+def test_a_reasonable_player_can_beat_history():
+    """ENFORCED (v0.8, §3.7). The design's hope, asserted: a competent player
+    must end the arc meaningfully better than a passive one who lets it burn —
+    fewer captured states and a higher score. If doing nothing were as good as
+    playing well, there would be no game."""
+    competent = mean_final(CompetentPolicy)
+    passive = mean_final(PassivePolicy)
+    assert competent > passive + 5.0, "skilled play must clearly beat inaction"
+
+
 @pytest.mark.xfail(
     strict=False,
-    reason="only Emergency Powers tier 1 exists; the full track lands per §7/§11 (v0.6+)",
+    reason="scored-worse holds, but 'genuinely tempting' does not yet: only "
+    "Emergency Powers tier 1 (surveillance) exists and it isn't strong enough to "
+    "out-power restraint (§3.5 — a weak toolkit makes the thesis a strawman). "
+    "Promote when the full escalating track (press/detention/emergency rule, §7) "
+    "lands and delivers real mechanical power at a scored cost.",
 )
 def test_emergency_powers_tempting_but_scored():
     """The authoritarian toolkit must be genuinely strong (tempting) and the

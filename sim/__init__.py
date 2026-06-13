@@ -9,6 +9,7 @@ from .engine import Engine
 from .legitimacy import Ledger, LedgerEntry
 from .policies import (
     POLICIES,
+    CompetentPolicy,
     EmergencyPowersPolicy,
     MixedPolicy,
     PassivePolicy,
@@ -19,10 +20,11 @@ from .policies import (
 )
 from .world import WorldState, build_world, load_rules
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 __all__ = [
     "POLICIES",
+    "CompetentPolicy",
     "EmergencyPowersPolicy",
     "Engine",
     "Ledger",

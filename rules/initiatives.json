@@ -94,11 +94,12 @@
     "family": "governance",
     "target": "node",
     "mandate_cost": 2,
-    "treasury_cost": 4,
+    "treasury_cost": 3,
     "effects": [
       { "op": "development", "delta": 3 },
-      { "op": "local_legitimacy", "delta": 2 },
-      { "op": "governance", "delta": 1 }
+      { "op": "local_legitimacy", "delta": 3 },
+      { "op": "governance", "delta": 2 },
+      { "op": "grievance", "delta": -2 }
     ],
     "backfire": {
       "channel": "insurgent_taxation",
