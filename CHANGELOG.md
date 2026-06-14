@@ -2,6 +2,14 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.9.1 — 2026-06-14
+
+**Playtest fixes from Stan's first real session on the deployed build.**
+
+- **Fixed: the map (and panel) showed nothing.** Root cause: a stale `localStorage` save from an older build was being restored into the current engine — the save format changed enormously across v0.3→v0.9 and `restore()` blindly merged it, so `renderMap()` threw and aborted the rest of the render (header survived, board went black). Fix: the save is now **version-gated** (`SAVE_VERSION`) and old-shape saves are discarded; rendering is **defensive** (unmapped nodes/edges and missing estimates can no longer throw); and the three panels render independently so a fault in one never blanks the others. *(Returning players may need one hard refresh to pick up the new build.)*
+- **Less wordy / easier to read:** every event choice now shows a plain, colour-coded **preview of what it does** ("Home −4 · Local −2", "buries it (may leak later)") — the trade-off is legible without parsing prose. Flavor text on the base events trimmed to one or two punchy lines; the cryptic "Context: gao" is now "Where: Gao" (region name, not id).
+- No engine/rules-logic or calibration change; 68 tests pass / 1 xfail.
+
 ## v0.9.0 — 2026-06-14
 
 **Scenario 1 becomes a story you finish and learn from — endings, post-mortem, and the Sources screen** (the roadmap's v0.9). Preceded by a deliberate audit + bibliography-verification pass (per Stan's "ensure nothing obvious is overlooked, and more than enough research is done").
