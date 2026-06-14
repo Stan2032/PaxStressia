@@ -2,6 +2,14 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.9.2 — 2026-06-14
+
+**Map legibility fix** (from Stan's playtest screenshot: region names rendered huge and ran off the right edge).
+
+- SVG map text resized from ~11 to ~4 map-units, so names fit the board.
+- Labels **flip to the left** for right-side nodes (`text-anchor:end`) so they can't overflow the edge; over-long names truncate (e.g. "Ouagadou…").
+- Node radii trimmed; estimate/pip placement follows the flipped side. Proto-only; no state-shape change (saves stay valid).
+
 ## v0.9.1 — 2026-06-14
 
 **Playtest fixes from Stan's first real session on the deployed build.**

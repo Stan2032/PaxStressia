@@ -29,12 +29,12 @@
   #map svg{width:100%; height:100%}
   .edge{stroke:#3a4750; stroke-width:1.5}
   .edge.smuggling{stroke-dasharray:5 4; stroke:#5d4037}
-  .node circle.body{stroke:#000; stroke-width:1.5; cursor:pointer}
-  .node.sel circle.body{stroke:var(--amber); stroke-width:3}
-  .node text{fill:var(--ink); font-size:11px; pointer-events:none}
-  .node .est{fill:var(--amber); font-size:10px}
-  .node .pips{fill:var(--red); font-size:9px}
-  .node .star{fill:var(--amber); font-size:10px}
+  .node circle.body{stroke:#000; stroke-width:1.2; cursor:pointer}
+  .node.sel circle.body{stroke:var(--amber); stroke-width:2.5}
+  .node text{fill:var(--ink); font-size:4px; pointer-events:none}
+  .node .est{fill:var(--amber); font-size:3.6px}
+  .node .pips{fill:var(--red); font-size:4px}
+  .node .star{fill:var(--amber); font-size:4.5px}
   .node .patron{fill:#ff7043}
   #sheet{background:var(--panel); border-top:2px solid #000; height:46%; display:flex;
     flex-direction:column}
@@ -950,7 +950,7 @@ if (typeof document !== "undefined") (function () {
     }
     for (const n of game.nodesSorted()) {
       const [x, y] = POS[n.id] || [50, 50];
-      const r = 3 + Math.sqrt(n.population_k) / 18;
+      const r = 2.4 + Math.sqrt(n.population_k) / 26;
       const est = game.state.estimates[n.id] || { factions: {} };
       const facs = Object.values(est.factions || {});
       const tot = facs.reduce((s, f) => s + f.s, 0);
@@ -958,16 +958,25 @@ if (typeof document !== "undefined") (function () {
       const pips = "!".repeat(maxV > 60 ? 3 : maxV > 35 ? 2 : maxV > 15 ? 1 : 0);
       const sel = selNode === n.id ? " sel" : "";
       const op = (0.45 + n.intel * 0.55).toFixed(2);
+      // Flip the label to the left for right-side nodes so it can't run off-edge.
+      const right = x > 62;
+      const lx = right ? x - r - 1.5 : x + r + 1.5;
+      const anchor = right ? "end" : "start";
+      let label = n.name.split(/[ /]/)[0];
+      if (label.length > 9) label = label.slice(0, 8) + "…";
+      const estStr = tot >= 1 ? `~${Math.round(tot)}` : "";
       svg += `<g class="node${sel}" data-node="${n.id}">` +
         `<circle class="body" cx="${x}" cy="${y}" r="${r}" fill="${GOV_FILL[n.government]}"/>` +
-        (n.capital ? `<text class="star" x="${x - 1.6}" y="${y - r - 1.5}">★</text>` : "") +
+        (n.capital ? `<text class="star" x="${x - 1.8}" y="${y - r - 1}">★</text>` : "") +
         ((n.patron.mercenary || 0) >= 50
-          ? `<circle class="patron" cx="${x + r}" cy="${y - r}" r="1.4"/>` : "") +
-        `<text x="${x + r + 1.2}" y="${y + 1}">${n.name.split(" ")[0]}</text>` +
-        (tot >= 1
-          ? `<text class="est" x="${x + r + 1.2}" y="${y + 5}" opacity="${op}">` +
-            `~${Math.round(tot)}</text>` : "") +
-        (pips ? `<text class="pips" x="${x - r - 3.5}" y="${y + 1}">${pips}</text>` : "") +
+          ? `<circle class="patron" cx="${x + r}" cy="${y - r}" r="1.2"/>` : "") +
+        `<text x="${lx}" y="${y - 0.3}" text-anchor="${anchor}">${label}</text>` +
+        (estStr
+          ? `<text class="est" x="${lx}" y="${y + 3.6}" text-anchor="${anchor}" ` +
+            `opacity="${op}">${estStr}</text>` : "") +
+        (pips
+          ? `<text class="pips" x="${right ? x + r + 1 : x - r - 1}" y="${y - 0.3}" ` +
+            `text-anchor="${right ? "start" : "end"}">${pips}</text>` : "") +
         `</g>`;
     }
     svg += "</svg>";
