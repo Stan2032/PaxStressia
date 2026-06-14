@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "paxstressia-sim"
-version = "0.9.1"
+version = "0.9.2"
 description = "PaxStressia — headless simulation core for a turn-based strategy game about being the world police in a world that keeps score."
 requires-python = ">=3.10"
 # The sim package itself is stdlib-only by design: it must run in bare Termux Python.
