@@ -17,6 +17,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 HTML = Path(__file__).resolve().parent / "index.html"
 RULE_FILES = ("nodes", "edges", "factions", "initiatives", "events", "constants")
+# Presentation-only data bundled into the snapshot but not part of the sim rules.
+EXTRA_FILES = ("sources",)
 BLOCK = re.compile(
     r'(<script id="rules-snapshot" type="application/json">)(.*?)(</script>)', re.DOTALL
 )
@@ -27,6 +29,11 @@ def snapshot() -> str:
     for name in RULE_FILES:
         with open(ROOT / "rules" / f"{name}.json", encoding="utf-8") as fh:
             base[name] = json.load(fh)
+    for name in EXTRA_FILES:
+        path = ROOT / "rules" / f"{name}.json"
+        if path.exists():
+            with open(path, encoding="utf-8") as fh:
+                base[name] = json.load(fh)
     scenarios = {}
     scen_root = ROOT / "rules" / "scenarios"
     for sdir in sorted(p for p in scen_root.iterdir() if (p / "scenario.json").exists()):

@@ -1,0 +1,154 @@
+{
+  "disclaimer": "PaxStressia is grounded in real counterinsurgency scholarship and the documented Sahel crisis of 2012–2023, then diverges into alt-history. Insurgent factions are composites modeled on real groups, not the groups themselves. Entries below are flagged: VERIFIED (checked against reporting), ESTABLISHED (canonical scholarship/record), or ALT-HISTORY (the game's projection beyond the reliable record — not presented as fact). The game has a point of view; it does not invent its evidence.",
+  "entries": [
+    {
+      "id": "merom",
+      "category": "doctrine",
+      "citation": "Gil Merom, How Democracies Lose Small Wars (Cambridge University Press, 2003).",
+      "note": "The game's central thesis: democracies lose counterinsurgencies at home, when domestic tolerance for cost and brutality collapses before the insurgency does. This is the Domestic gauge and the Mandate coupling.",
+      "confidence": "established"
+    },
+    {
+      "id": "galula",
+      "category": "doctrine",
+      "citation": "David Galula, Counterinsurgency Warfare: Theory and Practice (1964).",
+      "note": "COIN is ~80% political, 20% military; the population is the prize. This is why Local legitimacy, not attrition, is the win condition.",
+      "confidence": "established"
+    },
+    {
+      "id": "fm324",
+      "category": "doctrine",
+      "citation": "U.S. Army / Marine Corps, FM 3-24 Counterinsurgency (2006).",
+      "note": "Legitimacy as the objective, and the paradoxes ('the more force you use, the less effective you may be') — the law behind every initiative having a backfire channel.",
+      "confidence": "established"
+    },
+    {
+      "id": "kilcullen",
+      "category": "doctrine",
+      "citation": "David Kilcullen, The Accidental Guerrilla (Oxford University Press, 2009).",
+      "note": "Heavy-handed presence creates insurgents; occupation past a welcome threshold generates antibodies. The occupation-duration decay on Local legitimacy.",
+      "confidence": "established"
+    },
+    {
+      "id": "rand_end",
+      "category": "doctrine",
+      "citation": "Ben Connable & Martin Libicki, How Insurgencies End (RAND, 2010); Paul, Clarke, Grill, Paths to Victory (RAND, 2013).",
+      "note": "Sanctuaries and external sponsors are the decisive survival variables; leadership decapitation rarely ends an insurgency; insurgencies average ~a decade. Why edges matter more than nodes, and decapitation is deliberately weak.",
+      "confidence": "established"
+    },
+    {
+      "id": "sahel_coups",
+      "category": "case",
+      "citation": "Mali coups (Aug 2020, May 2021); Burkina Faso coups (Jan 2022, Sept 2022); Niger coup (July 2023).",
+      "note": "The coup cascade the scenario reproduces — each junta claiming only it could defeat the insurgency. The collapse-roll's junta path.",
+      "confidence": "established"
+    },
+    {
+      "id": "aes",
+      "category": "case",
+      "citation": "Alliance of Sahel States, founded 16 Sept 2023 (Liptako-Gourma Charter); Mali, Burkina Faso, Niger; announced ECOWAS withdrawal Jan 2024.",
+      "note": "An authoritarian bloc manufactured by insurgency pressure, aligned with a rival patron — the bloc-consolidation clock.",
+      "confidence": "established"
+    },
+    {
+      "id": "wagner",
+      "category": "case",
+      "citation": "Wagner Group deployment to Mali (from ~Dec 2021), later rebranded 'Africa Corps' under Russian state control.",
+      "note": "The mercenary patron: coup-proofing with no human-rights strings, paid in mining concessions — the allegiance market's no-strings offer.",
+      "confidence": "established"
+    },
+    {
+      "id": "moura",
+      "category": "case",
+      "citation": "Moura massacre, central Mali, 27–31 March 2022. UN/OHCHR fact-finding (report 12 May 2023): 500+ killed by Malian armed forces and 'foreign military personnel' (widely identified as Wagner); 58 women and girls subjected to sexual violence.",
+      "note": "The atrocity that quiet hides — the partner-force and errant-strike events, and the Transparency Dial.",
+      "confidence": "verified",
+      "url": "https://news.un.org/en/story/2023/05/1136607"
+    },
+    {
+      "id": "quiet_not_peace",
+      "category": "case",
+      "citation": "International Crisis Group and ACLED analyses of the Sahel: falling attack counts can reflect insurgent entrenchment into local political and economic life (shadow taxation, courts), not improved security.",
+      "note": "Pillar 4 (quiet ≠ peace): the Visibility axis, deceptive-calm fog, and the insurgent-grip discount in scoring.",
+      "confidence": "established"
+    },
+    {
+      "id": "train_blowback",
+      "category": "case",
+      "citation": "Several Sahel coup leaders were Western-trained officers (widely reported across the 2020–2023 coups).",
+      "note": "Train-and-equip blowback: the coup-seed backfire on the Train & Equip initiative.",
+      "confidence": "established"
+    },
+    {
+      "id": "sahel_post2023",
+      "category": "case",
+      "citation": "AES deepening (joint force, common-currency plans, party dissolutions) and 2024–2026 events depicted in the scenario.",
+      "note": "ALT-HISTORY: the scenario projects the trajectory past the reliable record. Treated as the game's extrapolation from documented trends, not as established fact. Confirm specifics before citing them as history.",
+      "confidence": "alt_history"
+    },
+    {
+      "id": "cfr_tracker",
+      "category": "data_org",
+      "citation": "Council on Foreign Relations — Global Conflict Tracker.",
+      "note": "Conflict-status reference used to set starting conditions.",
+      "confidence": "established"
+    },
+    {
+      "id": "acled",
+      "category": "data_org",
+      "citation": "ACLED — Armed Conflict Location & Event Data Project.",
+      "note": "Incident-level data informing regional contestation and the tri-border focus.",
+      "confidence": "established"
+    },
+    {
+      "id": "icg",
+      "category": "data_org",
+      "citation": "International Crisis Group — Sahel reporting.",
+      "note": "Field analysis behind the central-Mali and Burkina spillover modeling.",
+      "confidence": "established"
+    },
+    {
+      "id": "freedom_house",
+      "category": "data_org",
+      "citation": "Freedom House — Freedom in the World; Transnational Repression reports.",
+      "note": "The closed-society and exposure layer (§20): transnational repression as a documented pattern.",
+      "confidence": "established"
+    },
+    {
+      "id": "rebel_inc",
+      "category": "precedent",
+      "citation": "Rebel Inc. (Ndemic Creations / James Vaughan, 2018).",
+      "note": "Reputation, intel fog, civ/mil balance, negotiated endings — the closest design precedent. PaxStressia splits its single reputation into three legitimacies.",
+      "confidence": "established"
+    },
+    {
+      "id": "coin_series",
+      "category": "precedent",
+      "citation": "GMT Games COIN series, designed by Volko Ruhnke (Fire in the Lake, 2014; A Distant Plain).",
+      "note": "Existence proof that asymmetric COIN is fun turn-based; asymmetry of goals and dual-use event cards.",
+      "confidence": "established"
+    },
+    {
+      "id": "twilight_struggle",
+      "category": "precedent",
+      "citation": "Twilight Struggle (Ananda Gupta & Jason Matthews, GMT Games, 2005).",
+      "note": "Global influence at node scale, two-bloc tug — the map's scale model.",
+      "confidence": "established"
+    },
+    {
+      "id": "afghanistan11",
+      "category": "precedent",
+      "citation": "Afghanistan '11 (Every Single Soldier / Slitherine, 2017). Removed from Apple's iOS App Store in 2018 for depicting 'a specific government or other real entity as the enemies.'",
+      "note": "The cautionary platform tale driving the distribution order (web → Android → Steam/itch → iOS last).",
+      "confidence": "verified",
+      "url": "https://www.gamedeveloper.com/game-platforms/using-a-real-entity-as-enemies-got-i-afghanistan-11-i-pulled-from-the-app-store"
+    },
+    {
+      "id": "monte_carlo_balance",
+      "category": "method",
+      "citation": "Procedural-persona / self-play automated game balancing (MCTS personas; iterative tuning for asymmetric games).",
+      "note": "The policy archetypes and the Monte-Carlo + history-calibration harness — the design's claims asserted as regression tests.",
+      "confidence": "established"
+    }
+  ]
+}

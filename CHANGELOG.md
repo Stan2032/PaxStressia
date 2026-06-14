@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.9.0 — 2026-06-14
+
+**Scenario 1 becomes a story you finish and learn from — endings, post-mortem, and the Sources screen** (the roadmap's v0.9). Preceded by a deliberate audit + bibliography-verification pass (per Stan's "ensure nothing obvious is overlooked, and more than enough research is done").
+
+- **Endings matrix (§11), both engines:** `Engine.ending()` resolves Pax / Fortress / Retreat / Collapse on two data-driven axes — ABROAD (Stabilization × Order, so juntas/blocs count) and HOME (Integrity). Tests enforce that a passive player never earns Pax, that drift forces Fortress over Pax, and that a competent player reaches a held-line ending on some seeds (endings are reachable, not decorative).
+- **Post-mortem reveal (§9):** `Engine.post_mortem()` and the proto end-screen surface the regions where the calm most lied — true vs last-believed insurgent strength — the deceptive-calm lesson made concrete, alongside the believed-vs-true chart.
+- **Sources screen (§14/§17):** `rules/sources.json` ships the bibliography as schema-validated data, every entry carrying an honest confidence flag — `verified` (live-checked), `established` (canonical), or `alt_history` (the game's projection, explicitly not fact) — behind a disclaimer. Rendered in the proto's Key tab. Integrity is test-enforced: near-future material is labelled, not passed off as record. Live-verified this build: the Moura massacre figures (UN, May 2023) and the *Afghanistan '11* App-Store removal (2018).
+- **Audit:** removed dead `detect_proto_blocs` (superseded by `sim/blocs.py` at v0.7); confirmed all 20 effect-ops are handled in both the Python and JS engines; sim/proto scoring and endings kept in lockstep.
+- 68 tests pass / 1 xfail (emergency-powers, honestly deferred); calibration 10/10; lint + smoke + snapshot-drift green.
+
 ## v0.8.0 — 2026-06-13
 
 **The game is winnable — and the design thesis is now fully enforced by CI.** Tuned the **player's tools and the scoring only**, never the passive world dynamics, so the Sahel history calibration held **10/10 throughout** while a genuine win path opened (the discipline honoured, not gamed).

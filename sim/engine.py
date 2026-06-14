@@ -433,6 +433,59 @@ class Engine:
             "final": round(stabilization * order_mult * integrity_mult - costs, 4),
         }
 
+    # ------------------------------------------------------------------ endings
+
+    def ending(self) -> dict:
+        """The §11 endings matrix on two axes: ABROAD (did you hold the line —
+        Stabilization × OrderMultiplier, so juntas/blocs count against you) and
+        HOME (did you stay clean — the IntegrityMultiplier). Thresholds are
+        data-driven (`pax_abroad_min`, `integrity_clean_min`)."""
+        s = self.score()
+        abroad_ok = s["stabilization"] * s["order_mult"] >= self.consts["pax_abroad_min"]
+        home_ok = s["integrity_mult"] >= self.consts["integrity_clean_min"]
+        if abroad_ok and home_ok:
+            name, text = "Pax", (
+                "Stabilized abroad, intact at home, allies still answer the phone. "
+                "The hard ending — and you found it."
+            )
+        elif abroad_ok and not home_ok:
+            name, text = "Fortress", (
+                "You kept the peace and lost the thing it was for. The republic still "
+                "stands; ask it what it has become."
+            )
+        elif not abroad_ok and home_ok:
+            name, text = "Retreat", (
+                "Clean hands, burning world. The blocs write the next chapter; your "
+                "conscience writes the footnotes."
+            )
+        else:
+            name, text = "Collapse", (
+                "Quagmire abroad, exhaustion at home. The terms are set elsewhere now."
+            )
+        return {"name": name, "text": text,
+                "abroad": round(s["stabilization"] * s["order_mult"], 4),
+                "home": s["integrity_mult"], "score": s}
+
+    def post_mortem(self) -> dict:
+        """The signature learning loop (§9): at run's end, surface where the fog
+        hid the most — the regions whose true insurgent strength most exceeded
+        what your last briefing believed. Deceptive calm, revealed."""
+        est = briefing_estimates(self.world, self.consts, random.Random(self.seed))
+        gaps = []
+        for nid in sorted(self.world.nodes):
+            node = self.world.nodes[nid]
+            true_total = sum(p.strength for p in node.presence.values())
+            believed_total = sum(f["strength_est"] for f in est[nid]["factions"].values())
+            if true_total > 0:
+                gaps.append({
+                    "node": nid,
+                    "true": round(true_total, 1),
+                    "believed": round(believed_total, 1),
+                    "gap": round(true_total - believed_total, 1),
+                })
+        gaps.sort(key=lambda g: g["gap"], reverse=True)
+        return {"worst_fog_gaps": gaps[:5], "turns": len(self.reports)}
+
     # ------------------------------------------------------------------ determinism
 
     def checkpoint(self) -> str:
