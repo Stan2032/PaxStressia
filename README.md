@@ -6,11 +6,13 @@
 
 You lead a real-world democracy holding the line against insurgencies that grow, network, and — left untended — capture states and weld them into authoritarian blocs. Your constraints are your own: voters, allies, law, and a free press. Every lever that wins faster abroad corrodes something at home. **Can you hold the line abroad without breaking the thing you're defending?**
 
-**Status: v0.5** — Scenario 1 "The Arc" (Sahel 2012–2026) is calibrated to history (a passive player reproduces the record on 10/10 seeds) and playable in any browser.
+**Status: v0.9** — Scenario 1 "The Arc" (Sahel 2012–2026) is calibrated to history (a passive player reproduces the record on 10/10 seeds) and playable in any browser.
 
 **▶ Play it:** once GitHub Pages is enabled (Settings → Pages → Source: **GitHub Actions**, one time), the game is live at **https://stan2032.github.io/PaxStressia/** — no install. Locally instead: `python3 -m http.server 8080` from the repo root → `http://localhost:8080/proto/` (this needs the repo cloned onto the machine running the server). Other hosts: [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
-Underneath: JSON rules + schemas, headless Python sim, **three enforced design-thesis tests**, CI with a Monte Carlo + history-calibration harness and a prototype engine smoke test. Roadmap: [`docs/DESIGN.md`](docs/DESIGN.md) §15.
+Play it through to one of four endings (Pax / Fortress / Retreat / Collapse), then read the post-mortem (what you believed vs. what was true) and the in-game **Sources** screen — the bibliography, cited and confidence-flagged.
+
+Underneath: JSON rules + schemas, headless Python sim, **five enforced design-thesis tests** (history calibration, force-loses-local, development-loses-to-momentum, no-dominant-strategy, reasonable-player-beats-history), CI with a Monte Carlo + history-calibration harness and a prototype engine smoke test. Roadmap: [`docs/DESIGN.md`](docs/DESIGN.md) §15.
 
 ## Read first
 

@@ -26,7 +26,8 @@
     "patron_competitiveness_intl", "patron_competitiveness_exposure",
     "sanctions_exposure_min", "sanctions_intl", "sanctions_patron", "sanctions_bloc_slow",
     "sanctions_exposure_cost", "negotiate_min", "negotiate_max", "negotiate_strength_drain",
-    "negotiate_domestic_cost", "negotiate_international_gain"
+    "negotiate_domestic_cost", "negotiate_international_gain",
+    "pax_abroad_min", "integrity_clean_min"
   ],
   "properties": {
     "turn_scale": { "type": "string", "enum": ["month", "quarter"] },
@@ -116,6 +117,8 @@
     "negotiate_strength_drain": { "type": "number", "minimum": 0, "description": "Strength a successful settlement removes." },
     "negotiate_domestic_cost": { "type": "number", "minimum": 0, "description": "Domestic cost of negotiating ('soft on terror')." },
     "negotiate_international_gain": { "type": "number", "minimum": 0, "description": "International gained by a negotiated settlement." },
+    "pax_abroad_min": { "type": "number", "minimum": 0, "description": "Abroad score (Stabilization × OrderMultiplier) needed to count as holding the line, for the endings matrix (§11)." },
+    "integrity_clean_min": { "type": "number", "minimum": 0, "maximum": 1, "description": "IntegrityMultiplier at/above which you count as having kept clean hands (endings matrix)." },
     "notes": { "type": "object", "additionalProperties": { "type": "string" } }
   }
 }

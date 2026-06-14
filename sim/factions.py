@@ -302,23 +302,3 @@ def collapse_rolls(
         )
     return log
 
-
-def detect_proto_blocs(world: WorldState) -> list[dict]:
-    """v0.2 stub of §5.4: adjacent non-civilian states are *detected and logged*
-    as a proto-bloc. The consolidation clock itself lands at v0.7."""
-    log: list[dict] = []
-    non_civilian = {
-        c for c in world.countries()
-        if (cap := world.capital_of(c)) is not None and cap.government != "civilian"
-    }
-    if len(non_civilian) < 2:
-        return log
-    for edge in sorted(world.edges, key=lambda e: e.id):
-        ca = world.nodes[edge.a].country
-        cb = world.nodes[edge.b].country
-        if ca != cb and ca in non_civilian and cb in non_civilian:
-            pair = sorted((ca, cb))
-            if pair not in world.proto_blocs:
-                world.proto_blocs.append(pair)
-                log.append({"event": "proto_bloc_detected", "countries": pair, "turn": world.turn})
-    return log

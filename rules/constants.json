@@ -91,6 +91,9 @@
   "negotiate_domestic_cost": 3,
   "negotiate_international_gain": 2,
 
+  "pax_abroad_min": 8,
+  "integrity_clean_min": 0.85,
+
   "notes": {
     "status": "CALIBRATED at v0.5 against Scenario 1 'The Arc': passive player reproduces 2012-2026 on 10/10 seeds — Mali junta in window, cascade ML->BF->NE, bloc forms, insurgency still growing at the horizon (harness/calibrate.py, enforced by tests/test_thesis.py). Values remain open to refinement as v0.6+ systems land.",
     "formulas": "Each key is referenced by name in DESIGN.md §18.5. Change values here, never in code.",
