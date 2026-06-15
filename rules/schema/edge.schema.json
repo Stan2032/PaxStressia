@@ -16,7 +16,7 @@
       "types": {
         "type": "array",
         "minItems": 1,
-        "items": { "type": "string", "enum": ["border", "road", "river", "smuggling", "ethnic", "sea", "diaspora"] }
+        "items": { "type": "string", "enum": ["border", "road", "river", "smuggling", "ethnic", "sea", "diaspora", "ideology", "arms"] }
       },
       "capacity": { "type": "number", "minimum": 0, "maximum": 1, "description": "Flow capacity for fighters/arms/funding (0–1); feeds ExternalSupport route_factor (§18.5)." },
       "notes": { "type": "string" },

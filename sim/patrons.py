@@ -13,6 +13,7 @@ per-turn decay of Exposure (the truth fades without upkeep).
 
 from __future__ import annotations
 
+from . import norms as norms_mod
 from .world import WorldState, clamp
 
 MERCENARY = "mercenary"
@@ -23,15 +24,18 @@ def market(world: WorldState, consts: dict) -> list[dict]:
     resisted by your International standing and the regime's Exposure."""
     log: list[dict] = []
     intl = world.player.international
+    norm_bonus = norms_mod.patron_norm_bonus(world, consts)  # autocratic precedent aids the patron
     for country in world.countries():
         capital = world.capital_of(country)
         if capital is None or capital.government == "civilian":
             continue
         exposure = world.exposure.get(country, 0.0)
-        # Your competitiveness: a strong, credible offer slows the capture.
+        # Your competitiveness: a strong, credible offer slows the capture; a
+        # world that has normalised autocracy (norm_bonus) erodes it everywhere.
         competitiveness = clamp(
             consts["patron_competitiveness_intl"] * (intl / 100.0)
-            + consts["patron_competitiveness_exposure"] * (exposure / 100.0),
+            + consts["patron_competitiveness_exposure"] * (exposure / 100.0)
+            - norm_bonus,
             0.0, 0.9,
         )
         delta = consts["patron_drift_junta"] * (1.0 - competitiveness)

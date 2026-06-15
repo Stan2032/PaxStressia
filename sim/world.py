@@ -195,6 +195,9 @@ class WorldState:
     fired_events: set[str] = field(default_factory=set)  # `once` beats already played
     exposure: dict[str, float] = field(default_factory=dict)  # per-country regime exposure (§20)
     blocs: list[dict] = field(default_factory=list)  # consolidating authoritarian blocs (§5.4)
+    norms: dict[str, float] = field(  # global precedent layer (§21, grand mode)
+        default_factory=lambda: {"kinetic": 50.0, "rule_of_law": 50.0, "autocracy": 50.0}
+    )
 
     def nodes_sorted(self) -> list[Node]:
         return [self.nodes[k] for k in sorted(self.nodes)]
@@ -239,6 +242,7 @@ class WorldState:
             "proto_blocs": sorted(self.proto_blocs),
             "fired_events": sorted(self.fired_events),
             "exposure": {k: round(v, 4) for k, v in sorted(self.exposure.items())},
+            "norms": {k: round(v, 4) for k, v in sorted(self.norms.items())},
             "blocs": [
                 {"countries": b["countries"], "stage": round(b["stage"], 4),
                  "formed_turn": b["formed_turn"]}

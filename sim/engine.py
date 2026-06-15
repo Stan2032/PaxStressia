@@ -15,6 +15,7 @@ import random
 from . import blocs as blocs_mod
 from . import events as events_mod
 from . import factions as factions_mod
+from . import norms as norms_mod
 from . import patrons as patrons_mod
 from .elections import election_tick, mandate_income
 from .fog import briefing_estimates
@@ -262,6 +263,7 @@ class Engine:
         turn_log: list[dict] = []
         fired_events: list[dict] = []
         casualties_before = player.casualties
+        drift_before = player.authoritarian_drift
 
         # Phase 1 — Briefing
         self._refresh_actives()
@@ -322,8 +324,11 @@ class Engine:
         amnesty_rates, umbrella = self._refresh_actives()
         if umbrella > 0:
             self.ledger.apply(world, INTERNATIONAL, "un_umbrella", umbrella)
-        # c) faction growth, itemized
-        growth_log, attrition_dealt = factions_mod.apply_growth(world, consts, amnesty_rates)
+        # c) faction growth, itemized — scaled by the global precedent layer (§21)
+        recruit_mult = norms_mod.recruit_multiplier(world, consts)
+        growth_log, attrition_dealt = factions_mod.apply_growth(
+            world, consts, amnesty_rates, recruit_mult
+        )
         # c2) spread over edges (v0.4)
         turn_log += factions_mod.apply_spread(world, consts)
         # d) entrenchment conversion + visibility
@@ -348,7 +353,14 @@ class Engine:
             world.fired_events.add(card["id"])
             fired_events.append({"id": card["id"], "choice": choice["label"], "node": ctx})
 
+        # i) global norms: this turn's choices set a worldwide precedent (§21)
+        norms_mod.update_norms(
+            world, consts, executed, self.initiatives,
+            player.authoritarian_drift - drift_before,
+        )
+
         # Phase 4 — Consequence
+        norms_mod.apply_feedback(world, consts, self.ledger)
         new_casualties = player.casualties - casualties_before
         if new_casualties:
             self.ledger.apply(

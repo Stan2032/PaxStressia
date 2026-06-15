@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.10.0 — 2026-06-15
+
+**Grand mode — the world scale, and the layer that makes every choice ripple everywhere** (per Stan: "go fully global now"). The v2.0 vision pulled forward; this is the tested foundation, with markets/multi-patron/more-nations to follow.
+
+- **A world, not a region** (`rules/scenarios/grand/`): ~20 nations across ~11 theaters (Sahel, Maghreb, Horn, Gulf, Levant, AfPak, Caucasus, Central Asia, SE Asia, Andes, E/W Africa), composited *global* faction families (al-Qaeda-network, IS-lineage, ethno-separatist, narco-insurgency), and **inter-theater edges** (ideology, diaspora, sea lane, arms route) so contagion and blocs cross theaters. Quarter turns, 2001 start, 100-turn horizon.
+- **The global norms / precedent layer** (`sim/norms.py`) — the keystone: how you fight (kinetic / lawful / autocratic) accumulates into three world norms that feed back into **every theater at once** — insurgent recruitment worldwide, your International standing, and rival-patron appeal. Verified ripple: pure-kinetic world → global recruitment ×1.25; pure development → ×0.76; emergency powers → ×1.49.
+- **Calibration-safe by construction:** the layer is gated by `norm_feedback` — 0 in single-theater scenarios (so a passive Sahel never moves a norm; **history calibration still 10/10**), >0 in grand mode.
+- Ported to both the Python sim and the JS prototype (grand in the scenario picker, world map layout, a "World precedent" readout); leak/exposure/bloc/norms state all serialized. `tests/test_grand.py` (8 tests) enforces the worldwide ripple and the single-theater gating. 76 tests pass / 1 xfail; smoke covers grand determinism.
+- Honest scope (DESIGN §21.3): grand mode is the systems at world scale, **not yet history-calibrated**; node count toward ~45, arms/commodity markets, and multi-patron rivalry are the backlog.
+
 ## v0.9.2 — 2026-06-14
 
 **Map legibility fix** (from Stan's playtest screenshot: region names rendered huge and ran off the right edge).

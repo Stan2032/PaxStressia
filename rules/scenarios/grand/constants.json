@@ -1,0 +1,10 @@
+{
+  "turn_scale": "quarter",
+  "start_date": "2001-09",
+  "horizon_turns": 100,
+  "election_period_turns": 16,
+  "norm_feedback": 1.0,
+  "notes": {
+    "grand": "Quarter turns, 25-year horizon, US presidential cadence (16q). norm_feedback=1 turns on the global precedent layer (§21)."
+  }
+}

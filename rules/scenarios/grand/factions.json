@@ -1,0 +1,71 @@
+[
+  {
+    "id": "aq_global",
+    "name": "al-Qaeda network (composite)",
+    "composite_of": "Composite of al-Qaeda core and its regional affiliates (AQIM, AQAP, al-Shabaab lineage).",
+    "ideology": [
+      "salafi-jihadist",
+      "transnational"
+    ],
+    "sponsor": "aq_network",
+    "capability_tier": 3,
+    "relations": {
+      "is_global": -0.4
+    },
+    "notes": "The franchising network the post-2001 story is about.",
+    "sources": [
+      "RAND How Insurgencies End"
+    ]
+  },
+  {
+    "id": "is_global",
+    "name": "Islamic State lineage (composite)",
+    "composite_of": "Composite of the IS lineage and its 'provinces' (emerges from the AQI split; Levant, Sahel, Lake Chad, Khorasan).",
+    "ideology": [
+      "salafi-jihadist",
+      "transnational",
+      "territorial"
+    ],
+    "sponsor": "is_core",
+    "capability_tier": 3,
+    "relations": {
+      "aq_global": -0.4
+    },
+    "notes": "Higher-tempo, territory-claiming franchise; historically post-2013.",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "ethno_separatist",
+    "name": "Ethno-nationalist separatists (composite)",
+    "composite_of": "Composite of ethno-territorial separatist movements (Caucasus, Mindanao, southern Thailand, Kurdish lineages).",
+    "ideology": [
+      "separatist",
+      "ethno-nationalist"
+    ],
+    "sponsor": null,
+    "capability_tier": 2,
+    "relations": {},
+    "notes": "Locally rooted; bargains and fights by turns.",
+    "sources": [
+      "ACLED"
+    ]
+  },
+  {
+    "id": "narco_insurgency",
+    "name": "Narco-insurgency (composite)",
+    "composite_of": "Composite of revenue-driven armed groups funded by illicit economies (FARC-lineage, cartel-adjacent).",
+    "ideology": [
+      "revenue",
+      "local-control"
+    ],
+    "sponsor": null,
+    "capability_tier": 2,
+    "relations": {},
+    "notes": "Funded by the trade it protects; the Andes/Plan-Colombia archetype.",
+    "sources": [
+      "RAND Paths to Victory"
+    ]
+  }
+]

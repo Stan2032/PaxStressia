@@ -1,0 +1,12 @@
+{
+  "id": "grand",
+  "name": "Grand Mode — the world, 2001 onward",
+  "description": "The whole board: ~20 fragile and contested states across every theater, the post-2001 age of franchising insurgency and consolidating autocracy. The global norms layer is LIVE here (DESIGN §21): your way of war — kinetic, lawful, or authoritarian — sets a precedent that ripples into every theater at once. Systems sandbox at world scale; not history-calibrated like Scenario 1 (that's a later milestone).",
+  "seat": "United States (global reach) — France/EU seat and others to follow",
+  "notes": "v0.10 foundation: a meaningful global slice, not yet all ~45 nodes. Node count, markets, and multi-patron rivalry deepen in follow-up milestones.",
+  "sources": [
+    "CFR Global Conflict Tracker",
+    "ACLED",
+    "RAND Paths to Victory (cross-conflict baseline)"
+  ]
+}

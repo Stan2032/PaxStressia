@@ -27,7 +27,9 @@
     "sanctions_exposure_min", "sanctions_intl", "sanctions_patron", "sanctions_bloc_slow",
     "sanctions_exposure_cost", "negotiate_min", "negotiate_max", "negotiate_strength_drain",
     "negotiate_domestic_cost", "negotiate_international_gain",
-    "pax_abroad_min", "integrity_clean_min"
+    "pax_abroad_min", "integrity_clean_min",
+    "norm_feedback", "norm_decay", "norm_kinetic_per_use", "norm_law_per_use",
+    "norm_autocracy_per_tier", "norm_recruit_weight", "norm_intl_weight", "norm_patron_weight"
   ],
   "properties": {
     "turn_scale": { "type": "string", "enum": ["month", "quarter"] },
@@ -119,6 +121,14 @@
     "negotiate_international_gain": { "type": "number", "minimum": 0, "description": "International gained by a negotiated settlement." },
     "pax_abroad_min": { "type": "number", "minimum": 0, "description": "Abroad score (Stabilization × OrderMultiplier) needed to count as holding the line, for the endings matrix (§11)." },
     "integrity_clean_min": { "type": "number", "minimum": 0, "maximum": 1, "description": "IntegrityMultiplier at/above which you count as having kept clean hands (endings matrix)." },
+    "norm_feedback": { "type": "number", "minimum": 0, "description": "Master gain on the global norms/precedent layer (§21). 0 = off (single-theater scenarios); >0 in grand mode so choices ripple worldwide." },
+    "norm_decay": { "type": "number", "minimum": 0, "description": "Per-turn pull of each world norm back toward neutral (50) — the world forgets." },
+    "norm_kinetic_per_use": { "type": "number", "minimum": 0, "description": "How much each military initiative raises the global kinetic norm." },
+    "norm_law_per_use": { "type": "number", "minimum": 0, "description": "How much each governance/diplomatic/exposure initiative raises the global rule-of-law norm." },
+    "norm_autocracy_per_tier": { "type": "number", "minimum": 0, "description": "How much each Emergency-Powers (drift) tier raises the global autocracy norm." },
+    "norm_recruit_weight": { "type": "number", "minimum": 0, "description": "How strongly a kinetic/autocratic world precedent fuels recruitment in every theater." },
+    "norm_intl_weight": { "type": "number", "minimum": 0, "description": "How strongly world norms move International each turn (law rewarded, force/autocracy punished)." },
+    "norm_patron_weight": { "type": "number", "minimum": 0, "description": "How strongly an autocratic world norm raises rival-patron appeal everywhere." },
     "notes": { "type": "object", "additionalProperties": { "type": "string" } }
   }
 }
