@@ -20,6 +20,14 @@ for (const f of ["nodes", "edges", "factions", "events"]) {
   arcRules[f] = JSON.parse(readFileSync(
     new URL(`../rules/scenarios/sahel_arc/${f}.json`, import.meta.url), "utf8"));
 }
+// Grand scenario: replace nodes/edges/factions, MERGE constants (§18.9, §21).
+const grandRules = Object.assign({}, rules);
+for (const f of ["nodes", "edges", "factions"]) {
+  grandRules[f] = JSON.parse(readFileSync(
+    new URL(`../rules/scenarios/grand/${f}.json`, import.meta.url), "utf8"));
+}
+grandRules.constants = Object.assign({}, rules.constants, JSON.parse(readFileSync(
+  new URL("../rules/scenarios/grand/constants.json", import.meta.url), "utf8")));
 
 let failures = 0;
 const check = (cond, msg) => {
@@ -169,5 +177,29 @@ check(passive.state.player.drift === 0, "passive: no drift");
     check(a.state.exposure[c] >= 0 && a.state.exposure[c] <= 100, "v0.7: exposure in range " + c);
 }
 
+// Grand mode (§21): world-scale board + global norms ripple, both deterministic.
+{
+  const runGrand = (seed, kinetic) => {
+    const g = PaxEngine.Game(grandRules, seed);
+    for (let t = 0; t < 60; t++) {
+      const orders = kinetic ? [{ initiative: "drone_strike", node: "afghanistan" },
+        { initiative: "presence_patrols", node: "somalia" }] : [];
+      let r = g.endTurn(orders);
+      if (r.phase === "event") r = g.resolveEvent(0);
+    }
+    return g;
+  };
+  const a = runGrand(4, true), b = runGrand(4, true);
+  check(a.serialize() === b.serialize(), "grand: same seed identical");
+  check(Object.keys(a.state.nodes).length >= 18, "grand: many nations");
+  check(a.serialize().includes('"norms"'), "grand: norms serialized");
+  check(a.state.norms.kinetic > 60, "grand: kinetic play raises the world kinetic norm");
+  const passive = runGrand(4, false);
+  check(Math.abs(passive.state.norms.kinetic - 50) < 0.01,
+    "grand: passive leaves norms neutral");
+  for (const n of a.nodesSorted()) for (const f of Object.keys(n.presence))
+    check(n.presence[f].s >= 0 && n.presence[f].s <= 100, "grand: presence in range @" + n.id);
+}
+
 if (failures) { console.error(failures + " smoke failures"); process.exit(1); }
-console.log("proto smoke ok — determinism, ranges, ledger, save/restore, scoring, arc, dial, endgame");
+console.log("proto smoke ok — determinism, ranges, ledger, save/restore, scoring, arc, dial, endgame, grand");

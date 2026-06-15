@@ -44,6 +44,7 @@
           }
         }
       },
+      "theater": { "type": "string", "description": "Grand-mode grouping (e.g. sahel, levant, andes) for layout and theater-level reporting. Optional." },
       "notes": { "type": "string" },
       "sources": { "type": "array", "items": { "type": "string" } }
     }

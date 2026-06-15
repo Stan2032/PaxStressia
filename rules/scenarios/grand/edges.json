@@ -1,0 +1,264 @@
+[
+  {
+    "id": "mali_niger",
+    "a": "mali",
+    "b": "niger",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.6,
+    "notes": ""
+  },
+  {
+    "id": "niger_nigeria",
+    "a": "niger",
+    "b": "nigeria",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.55,
+    "notes": ""
+  },
+  {
+    "id": "mali_algeria",
+    "a": "mali",
+    "b": "algeria",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "algeria_libya",
+    "a": "algeria",
+    "b": "libya",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "libya_sudan",
+    "a": "libya",
+    "b": "sudan",
+    "types": [
+      "smuggling",
+      "arms"
+    ],
+    "capacity": 0.4,
+    "notes": ""
+  },
+  {
+    "id": "sudan_somalia",
+    "a": "sudan",
+    "b": "somalia",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "somalia_yemen",
+    "a": "somalia",
+    "b": "yemen",
+    "types": [
+      "sea",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "yemen_iraq",
+    "a": "yemen",
+    "b": "iraq",
+    "types": [
+      "arms",
+      "ideology"
+    ],
+    "capacity": 0.4,
+    "notes": ""
+  },
+  {
+    "id": "iraq_syria",
+    "a": "iraq",
+    "b": "syria",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.6,
+    "notes": ""
+  },
+  {
+    "id": "syria_ncaucasus",
+    "a": "syria",
+    "b": "ncaucasus",
+    "types": [
+      "ideology",
+      "diaspora"
+    ],
+    "capacity": 0.35,
+    "notes": ""
+  },
+  {
+    "id": "iraq_afghanistan",
+    "a": "iraq",
+    "b": "afghanistan",
+    "types": [
+      "ideology",
+      "arms"
+    ],
+    "capacity": 0.35,
+    "notes": ""
+  },
+  {
+    "id": "afghanistan_pakistan",
+    "a": "afghanistan",
+    "b": "pakistan",
+    "types": [
+      "border",
+      "ideology"
+    ],
+    "capacity": 0.7,
+    "notes": ""
+  },
+  {
+    "id": "pakistan_ferghana",
+    "a": "pakistan",
+    "b": "ferghana",
+    "types": [
+      "ideology",
+      "smuggling"
+    ],
+    "capacity": 0.4,
+    "notes": ""
+  },
+  {
+    "id": "ferghana_ncaucasus",
+    "a": "ferghana",
+    "b": "ncaucasus",
+    "types": [
+      "ideology",
+      "diaspora"
+    ],
+    "capacity": 0.35,
+    "notes": ""
+  },
+  {
+    "id": "pakistan_mindanao",
+    "a": "pakistan",
+    "b": "mindanao",
+    "types": [
+      "ideology",
+      "sea"
+    ],
+    "capacity": 0.3,
+    "notes": ""
+  },
+  {
+    "id": "mindanao_sthailand",
+    "a": "mindanao",
+    "b": "sthailand",
+    "types": [
+      "sea",
+      "ideology"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "mindanao_philippines_marker",
+    "a": "mindanao",
+    "b": "philippines_marker",
+    "types": [
+      "sea",
+      "smuggling"
+    ],
+    "capacity": 0.55,
+    "notes": ""
+  },
+  {
+    "id": "colombia_peru",
+    "a": "colombia",
+    "b": "peru",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.6,
+    "notes": ""
+  },
+  {
+    "id": "nigeria_mozambique",
+    "a": "nigeria",
+    "b": "mozambique",
+    "types": [
+      "ideology",
+      "arms"
+    ],
+    "capacity": 0.3,
+    "notes": ""
+  },
+  {
+    "id": "yemen_somalia",
+    "a": "yemen",
+    "b": "somalia",
+    "types": [
+      "sea",
+      "ideology"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "libya_mali",
+    "a": "libya",
+    "b": "mali",
+    "types": [
+      "arms",
+      "smuggling"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "syria_iraq",
+    "a": "syria",
+    "b": "iraq",
+    "types": [
+      "ideology"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "afghanistan_yemen",
+    "a": "afghanistan",
+    "b": "yemen",
+    "types": [
+      "ideology"
+    ],
+    "capacity": 0.3,
+    "notes": ""
+  },
+  {
+    "id": "nigeria_mali",
+    "a": "nigeria",
+    "b": "mali",
+    "types": [
+      "ideology",
+      "diaspora"
+    ],
+    "capacity": 0.35,
+    "notes": ""
+  }
+]

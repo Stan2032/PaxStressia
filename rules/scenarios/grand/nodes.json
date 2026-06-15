@@ -1,0 +1,572 @@
+[
+  {
+    "id": "mali",
+    "name": "Mali",
+    "country": "ML",
+    "capital": true,
+    "theater": "sahel",
+    "governance": 45,
+    "development": 30,
+    "grievance": 60,
+    "population_k": 19000,
+    "access": 0.55,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 42,
+    "intel_coverage": 0.35,
+    "patron_influence": {},
+    "presence": {
+      "aq_global": {
+        "strength": 22,
+        "entrenchment": 12,
+        "visibility": 40
+      }
+    },
+    "notes": "Mali — sahel theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "niger",
+    "name": "Niger",
+    "country": "NE",
+    "capital": true,
+    "theater": "sahel",
+    "governance": 48,
+    "development": 28,
+    "grievance": 55,
+    "population_k": 21000,
+    "access": 0.55,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 44,
+    "intel_coverage": 0.35,
+    "patron_influence": {},
+    "presence": {
+      "aq_global": {
+        "strength": 8,
+        "entrenchment": 5,
+        "visibility": 30
+      }
+    },
+    "notes": "Niger — sahel theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "nigeria",
+    "name": "Nigeria",
+    "country": "NG",
+    "capital": true,
+    "theater": "west_africa",
+    "governance": 46,
+    "development": 40,
+    "grievance": 58,
+    "population_k": 160000,
+    "access": 0.6,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 40,
+    "intel_coverage": 0.4,
+    "patron_influence": {},
+    "presence": {
+      "is_global": {
+        "strength": 18,
+        "entrenchment": 10,
+        "visibility": 50
+      }
+    },
+    "notes": "Nigeria — west_africa theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "algeria",
+    "name": "Algeria",
+    "country": "DZ",
+    "capital": true,
+    "theater": "maghreb",
+    "governance": 55,
+    "development": 50,
+    "grievance": 45,
+    "population_k": 36000,
+    "access": 0.7,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 48,
+    "intel_coverage": 0.5,
+    "patron_influence": {},
+    "presence": {
+      "aq_global": {
+        "strength": 12,
+        "entrenchment": 8,
+        "visibility": 35
+      }
+    },
+    "notes": "Algeria — maghreb theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "libya",
+    "name": "Libya",
+    "country": "LY",
+    "capital": true,
+    "theater": "maghreb",
+    "governance": 50,
+    "development": 55,
+    "grievance": 40,
+    "population_k": 6000,
+    "access": 0.6,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 45,
+    "intel_coverage": 0.4,
+    "patron_influence": {},
+    "presence": {},
+    "notes": "Libya — maghreb theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "somalia",
+    "name": "Somalia",
+    "country": "SO",
+    "capital": true,
+    "theater": "horn",
+    "governance": 18,
+    "development": 15,
+    "grievance": 75,
+    "population_k": 12000,
+    "access": 0.35,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 25,
+    "intel_coverage": 0.2,
+    "patron_influence": {},
+    "presence": {
+      "aq_global": {
+        "strength": 34,
+        "entrenchment": 26,
+        "visibility": 45
+      }
+    },
+    "notes": "Somalia — horn theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "sudan",
+    "name": "Sudan",
+    "country": "SD",
+    "capital": true,
+    "theater": "horn",
+    "governance": 35,
+    "development": 28,
+    "grievance": 62,
+    "population_k": 40000,
+    "access": 0.5,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 35,
+    "intel_coverage": 0.3,
+    "patron_influence": {},
+    "presence": {},
+    "notes": "Sudan — horn theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "yemen",
+    "name": "Yemen",
+    "country": "YE",
+    "capital": true,
+    "theater": "gulf",
+    "governance": 30,
+    "development": 25,
+    "grievance": 70,
+    "population_k": 28000,
+    "access": 0.45,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 30,
+    "intel_coverage": 0.3,
+    "patron_influence": {},
+    "presence": {
+      "aq_global": {
+        "strength": 24,
+        "entrenchment": 16,
+        "visibility": 45
+      }
+    },
+    "notes": "Yemen — gulf theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "iraq",
+    "name": "Iraq",
+    "country": "IQ",
+    "capital": true,
+    "theater": "levant",
+    "governance": 40,
+    "development": 45,
+    "grievance": 60,
+    "population_k": 33000,
+    "access": 0.6,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 35,
+    "intel_coverage": 0.45,
+    "patron_influence": {},
+    "presence": {
+      "is_global": {
+        "strength": 10,
+        "entrenchment": 5,
+        "visibility": 40
+      }
+    },
+    "notes": "Iraq — levant theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "syria",
+    "name": "Syria",
+    "country": "SY",
+    "capital": true,
+    "theater": "levant",
+    "governance": 45,
+    "development": 42,
+    "grievance": 55,
+    "population_k": 21000,
+    "access": 0.6,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 38,
+    "intel_coverage": 0.4,
+    "patron_influence": {},
+    "presence": {},
+    "notes": "Syria — levant theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "afghanistan",
+    "name": "Afghanistan",
+    "country": "AF",
+    "capital": true,
+    "theater": "afpak",
+    "governance": 20,
+    "development": 15,
+    "grievance": 78,
+    "population_k": 30000,
+    "access": 0.35,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 22,
+    "intel_coverage": 0.3,
+    "patron_influence": {},
+    "presence": {
+      "aq_global": {
+        "strength": 40,
+        "entrenchment": 30,
+        "visibility": 50
+      }
+    },
+    "notes": "Afghanistan — afpak theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "pakistan",
+    "name": "Pakistan",
+    "country": "PK",
+    "capital": true,
+    "theater": "afpak",
+    "governance": 42,
+    "development": 38,
+    "grievance": 58,
+    "population_k": 200000,
+    "access": 0.55,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 36,
+    "intel_coverage": 0.45,
+    "patron_influence": {},
+    "presence": {
+      "aq_global": {
+        "strength": 16,
+        "entrenchment": 12,
+        "visibility": 40
+      }
+    },
+    "notes": "Pakistan — afpak theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "ncaucasus",
+    "name": "North Caucasus",
+    "country": "RUC",
+    "capital": true,
+    "theater": "caucasus",
+    "governance": 38,
+    "development": 40,
+    "grievance": 60,
+    "population_k": 10000,
+    "access": 0.5,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 30,
+    "intel_coverage": 0.35,
+    "patron_influence": {},
+    "presence": {
+      "ethno_separatist": {
+        "strength": 26,
+        "entrenchment": 18,
+        "visibility": 45
+      }
+    },
+    "notes": "North Caucasus — caucasus theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "ferghana",
+    "name": "Ferghana Valley",
+    "country": "UZ",
+    "capital": true,
+    "theater": "central_asia",
+    "governance": 40,
+    "development": 35,
+    "grievance": 55,
+    "population_k": 14000,
+    "access": 0.45,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 34,
+    "intel_coverage": 0.3,
+    "patron_influence": {},
+    "presence": {},
+    "notes": "Ferghana Valley — central_asia theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "mindanao",
+    "name": "Mindanao",
+    "country": "PH",
+    "capital": true,
+    "theater": "se_asia",
+    "governance": 44,
+    "development": 42,
+    "grievance": 58,
+    "population_k": 22000,
+    "access": 0.55,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 38,
+    "intel_coverage": 0.4,
+    "patron_influence": {},
+    "presence": {
+      "ethno_separatist": {
+        "strength": 18,
+        "entrenchment": 14,
+        "visibility": 40
+      }
+    },
+    "notes": "Mindanao — se_asia theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "sthailand",
+    "name": "Southern Thailand",
+    "country": "TH",
+    "capital": true,
+    "theater": "se_asia",
+    "governance": 55,
+    "development": 55,
+    "grievance": 48,
+    "population_k": 8000,
+    "access": 0.65,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 45,
+    "intel_coverage": 0.45,
+    "patron_influence": {},
+    "presence": {
+      "ethno_separatist": {
+        "strength": 12,
+        "entrenchment": 10,
+        "visibility": 35
+      }
+    },
+    "notes": "Southern Thailand — se_asia theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "colombia",
+    "name": "Colombia",
+    "country": "CO",
+    "capital": true,
+    "theater": "andes",
+    "governance": 50,
+    "development": 48,
+    "grievance": 55,
+    "population_k": 44000,
+    "access": 0.6,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 40,
+    "intel_coverage": 0.5,
+    "patron_influence": {},
+    "presence": {
+      "narco_insurgency": {
+        "strength": 30,
+        "entrenchment": 22,
+        "visibility": 45
+      }
+    },
+    "notes": "Colombia — andes theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "peru",
+    "name": "Peru",
+    "country": "PE",
+    "capital": true,
+    "theater": "andes",
+    "governance": 52,
+    "development": 46,
+    "grievance": 48,
+    "population_k": 28000,
+    "access": 0.6,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 44,
+    "intel_coverage": 0.45,
+    "patron_influence": {},
+    "presence": {
+      "narco_insurgency": {
+        "strength": 12,
+        "entrenchment": 9,
+        "visibility": 35
+      }
+    },
+    "notes": "Peru — andes theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "mozambique",
+    "name": "Mozambique",
+    "country": "MZ",
+    "capital": true,
+    "theater": "east_africa",
+    "governance": 44,
+    "development": 32,
+    "grievance": 52,
+    "population_k": 22000,
+    "access": 0.5,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 40,
+    "intel_coverage": 0.3,
+    "patron_influence": {},
+    "presence": {
+      "is_global": {
+        "strength": 8,
+        "entrenchment": 4,
+        "visibility": 30
+      }
+    },
+    "notes": "Mozambique — east_africa theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "philippines_marker",
+    "name": "Sulu Sea littoral",
+    "country": "SUL",
+    "capital": true,
+    "theater": "se_asia",
+    "governance": 40,
+    "development": 38,
+    "grievance": 55,
+    "population_k": 3000,
+    "access": 0.4,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 35,
+    "intel_coverage": 0.3,
+    "patron_influence": {},
+    "presence": {},
+    "notes": "Sulu Sea littoral — se_asia theater (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker"
+    ]
+  }
+]
