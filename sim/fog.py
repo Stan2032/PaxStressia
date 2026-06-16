@@ -55,6 +55,7 @@ def briefing_estimates(world: WorldState, consts: dict, rng: random.Random) -> d
             "governance": round(node.governance, 2),
             "government": node.government,
             "local_legitimacy": round(node.local_legitimacy, 2),
+            "theater": node.theater,  # public grouping (§21.1) — for Regional Commands
             "factions": per_faction,
         }
     return estimates

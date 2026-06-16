@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.14.0 — 2026-06-16
+
+**Regional Commands — the first world-scale lever, and grand mode becomes winnable** (the milestone v0.13 named). v0.13 *measured* that the player's levers were too **local** to bend a 40-nation world, so abdication scored as well as effort. This builds the lever the research points to — and reaches the win, earned, not tuned.
+
+- **The lever** (`sim/commands.py`; new `establish_command` initiative + `command` op): a **Regional Command** is a standing posture over a whole *theatre* (the real AFRICOM/CENTCOM, Operation Barkhane, the Lake-Chad MNJTF; the HoI4 garrison-template pattern) that passively **contains** insurgency across every one of its nodes each turn — light attrition on the strongest faction, a governance buffer, a local-legitimacy buffer. **Breadth, not depth:** it bends the trajectory and buys time but does not *resolve* a theatre — crises still need your hands-on actions. Posture sets the board; agency wins it.
+- **The counterweight is the thesis** (Kennedy's imperial overstretch · Merom's home front · Mueller's logarithmic casualty curve): every command bleeds treasury upkeep and, more bindingly, **home legitimacy** each turn — and the home strain is **triangular in the count**, so the 2nd/3rd theatre costs far more than the first. A hard **cap** forbids policing everywhere (triage), and withdrawal fires on **politics, not defeat** (treasury can't sustain it, or Domestic falls through the floor) — leaving a vacuum, as Barkhane did.
+- **Gated** by `commands_enabled` (0 single-theatre → dormant, inert, *filtered out of the action menu* → **Sahel calibration still 10/10 by construction**; 1 in grand).
+- **The win, measured & earned:** a new `GrandCompetentPolicy` — lead with commands over the most volatile theatres, then triage hands-on, and don't over-extend a weak home front — **out-scores a passive world on 7 of 8 seeds and is the single best strategy**, above every pure doctrine, pure-kinetic still worst. The edge is **causal** (commands ON vs OFF moves both score and junta count) and **modest by design** (bends the world ~25→~21 juntas — helps without trivialising; you hold the lines you choose, never the whole world).
+- Ported to both engines (proto: an Establish-Regional-Command action + a "Regional Commands" readout). The briefing now carries each node's `theater` and your own standing `commands` (both public). Grounded in three parallel research passes (coalition/burden-sharing COIN; grand-strategy scale mechanics; imperial-overstretch cost). `tests/test_commands.py` (7) pins the lever, the accelerating cost, the win, and the gating. **95 tests pass / 1 xfail; calibration 10/10; determinism holds on both engines.**
+
 ## v0.13.0 — 2026-06-16
 
 **Grand-mode scoring made scale-invariant — and the winnability problem measured, not faked** (the milestone the v0.12 expansion made concrete). The headline is a structural fix plus an honest finding; it deliberately does **not** claim a balanced grand mode, because the evidence says one isn't reachable by tuning yet.

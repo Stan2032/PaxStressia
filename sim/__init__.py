@@ -11,6 +11,7 @@ from .policies import (
     POLICIES,
     CompetentPolicy,
     EmergencyPowersPolicy,
+    GrandCompetentPolicy,
     MixedPolicy,
     PassivePolicy,
     Policy,
@@ -20,12 +21,13 @@ from .policies import (
 )
 from .world import WorldState, build_world, load_rules
 
-__version__ = "0.13.0"
+__version__ = "0.14.0"
 
 __all__ = [
     "POLICIES",
     "CompetentPolicy",
     "EmergencyPowersPolicy",
+    "GrandCompetentPolicy",
     "Engine",
     "Ledger",
     "LedgerEntry",

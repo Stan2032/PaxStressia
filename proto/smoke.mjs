@@ -214,6 +214,17 @@ check(passive.state.player.drift === 0, "passive: no drift");
     if (r.phase === "event") arc.resolveEvent(0); }
   check(arc.state.markets.arms === 50 && arc.state.rivalry === 0,
     "single-theater: markets/rivalry dormant");
+  // v0.14 Regional Commands: establishing one stands up that theatre's command,
+  // contains + serializes; the lever is inert in single-theater (gated).
+  const gc = PaxEngine.Game(grandRules, 7);
+  let rc = gc.endTurn([{ initiative: "establish_command", node: "mali" }]);
+  if (rc.phase === "event") gc.resolveEvent(0);
+  check(gc.state.commands.includes("sahel"), "grand: establish_command stands up a theatre command");
+  check(gc.serialize().includes('"commands"'), "grand: commands serialized");
+  for (let t = 0; t < 20; t++) { const r = gc.endTurn([]); if (r.phase === "event") gc.resolveEvent(0); }
+  check(Array.isArray(gc.state.commands), "grand: commands persist as an array");
+  arc.endTurn([{ initiative: "establish_command", node: "gao" }]);
+  check(arc.state.commands.length === 0, "single-theater: Regional Commands dormant");
 }
 
 if (failures) { console.error(failures + " smoke failures"); process.exit(1); }

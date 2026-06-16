@@ -282,5 +282,27 @@
       "note": "Tier 1 of the Emergency Powers track: real, immediate intel power everywhere — and the Authoritarian Drift is permanent either way. The track must be tempting. That is the point."
     },
     "sources": ["DESIGN §7 Domestic / §11 IntegrityMultiplier"]
+  },
+  {
+    "id": "establish_command",
+    "name": "Establish Regional Command",
+    "family": "diplomatic",
+    "target": "node",
+    "mandate_cost": 3,
+    "treasury_cost": 8,
+    "effects": [
+      { "op": "command" }
+    ],
+    "backfire": {
+      "channel": "occupation_resentment",
+      "probability": 0.15,
+      "effects": [
+        { "op": "grievance", "delta": 4 },
+        { "op": "domestic_legitimacy", "delta": -1 }
+      ],
+      "note": "A standing foreign command can read as occupation: heavy-handed presence breeds local resentment, and at home the first whiff of an open-ended commitment."
+    },
+    "notes": "World-scale lever (§21.7): a standing posture over the target's whole theatre that passively contains insurgency across all its nodes — breadth, not depth — at an accelerating home-front cost. Grand mode only.",
+    "sources": ["US AFRICOM / CENTCOM theatre commands", "Multinational Joint Task Force (Lake Chad); Operation Barkhane"]
   }
 ]

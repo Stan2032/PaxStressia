@@ -13,6 +13,7 @@ import json
 import random
 
 from . import blocs as blocs_mod
+from . import commands as commands_mod
 from . import events as events_mod
 from . import factions as factions_mod
 from . import markets as markets_mod
@@ -57,8 +58,14 @@ class Engine:
         return f"{year + total // 12}-{total % 12 + 1:02d}"
 
     def _legal_actions(self) -> dict:
+        # gate world-scale-only initiatives (Regional Commands, §21.7) out of
+        # single-theatre play, where they are inert — no dead options offered.
+        cmd_on = commands_mod.enabled(self.consts)
         return {
-            "initiatives": [self.initiatives[k] for k in sorted(self.initiatives)],
+            "initiatives": [
+                self.initiatives[k] for k in sorted(self.initiatives)
+                if cmd_on or not any(e["op"] == "command" for e in self.initiatives[k]["effects"])
+            ],
             "nodes": sorted(self.world.nodes),
         }
 
@@ -176,6 +183,13 @@ class Engine:
                 )
             if targets:
                 log.append({"event": "exposure", "countries": targets, "source": source})
+        elif op == "command":
+            # §21.7: stand up a standing Regional Command over the target node's
+            # theatre (grand-mode, capped, gated). Itemised in the turn log.
+            theater = world.nodes[node_id].theater if node_id else None
+            if commands_mod.establish(world, self.consts, theater):
+                log.append({"event": "command_established", "theater": theater,
+                            "node": node_id, "source": source})
         elif op == "designate":
             self._designate(node_id, source, log)
         elif op == "negotiate":
@@ -287,6 +301,7 @@ class Engine:
             "domestic": player.domestic,
             "international": player.international,
             "estimates": estimates,
+            "commands": sorted(world.commands),  # your own standing posture (§21.7), public
             "headlines": self.reports[-1]["log"][-3:] if self.reports else [],
         }
 
@@ -344,6 +359,9 @@ class Engine:
         factions_mod.entrench_and_visibility(world, consts)
         # e) faction networking
         turn_log += factions_mod.networking_check(world, consts, attrition_dealt)
+        # e2) standing Regional Commands contain their theatres (§21.7, grand) —
+        # before collapse, so a buffered capital can be held; bleeds the home front.
+        commands_mod.apply(world, consts, self.ledger, turn_log)
         # f) state-capture collapse rolls
         turn_log += factions_mod.collapse_rolls(world, consts, self.rng, self.ledger)
         # f2) bloc formation + consolidation clock (§5.4)

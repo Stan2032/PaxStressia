@@ -81,6 +81,7 @@ class Node:
     patron_influence: dict[str, float]
     presence: dict[str, Presence]
     resources: list[str] = field(default_factory=list)
+    theater: str | None = None  # grand-mode grouping (§21.1), for Regional Commands
     # runtime, engine-owned
     ops_pressure: float = 0.0
     intel_coverage: float = 0.0
@@ -204,6 +205,7 @@ class WorldState:
     patron_ids: list[str] = field(default_factory=list)  # archetype ids from rules/patrons.json
     patron_strength: dict[str, float] = field(default_factory=dict)  # global reach per patron
     rivalry: float = 0.0  # how much of the world the rival bloc holds (§8, grand mode)
+    commands: list[str] = field(default_factory=list)  # standing regional commands (§21.7, grand)
 
     def nodes_sorted(self) -> list[Node]:
         return [self.nodes[k] for k in sorted(self.nodes)]
@@ -252,6 +254,7 @@ class WorldState:
             "markets": {k: round(v, 4) for k, v in sorted(self.markets.items())},
             "patron_strength": {k: round(v, 4) for k, v in sorted(self.patron_strength.items())},
             "rivalry": round(self.rivalry, 4),
+            "commands": sorted(self.commands),
             "blocs": [
                 {"countries": b["countries"], "stage": round(b["stage"], 4),
                  "formed_turn": b["formed_turn"]}
@@ -297,6 +300,7 @@ def build_world(rules: dict) -> WorldState:
             patron_influence=dict(n.get("patron_influence", {})),
             presence=presence,
             resources=list(n.get("resources", [])),
+            theater=n.get("theater"),
         )
     edges = [
         Edge(id=e["id"], a=e["a"], b=e["b"], types=list(e["types"]), capacity=e["capacity"])
