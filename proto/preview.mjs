@@ -42,6 +42,42 @@ for (let t = 0; t < Number(turns); t++) {
 const GOV = { civilian: "#33691e", junta: "#b71c1c", emirate: "#4a148c", failed: "#37474f" };
 const commands = g.state.commands || [];
 const dense = g.nodesSorted().length > 20;
+
+function convexHull(pts) {
+  if (pts.length < 3) return pts.slice();
+  const p = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lo = [], up = [];
+  for (const q of p) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
+  for (let i = p.length - 1; i >= 0; i--) { const q = p[i]; while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
+  lo.pop(); up.pop(); return lo.concat(up);
+}
+let back = '<defs><radialGradient id="ocean" cx="50%" cy="40%" r="78%">' +
+  '<stop offset="0%" stop-color="#16323f"/><stop offset="100%" stop-color="#0b1014"/>' +
+  '</radialGradient></defs><rect x="0" y="0" width="100" height="100" fill="url(#ocean)"/>';
+for (let gl = 10; gl < 100; gl += 10)
+  back += `<line x1="${gl}" y1="0" x2="${gl}" y2="100" stroke="#33444e" stroke-width="0.25" opacity="0.5"/>` +
+    `<line x1="0" y1="${gl}" x2="100" y2="${gl}" stroke="#33444e" stroke-width="0.25" opacity="0.5"/>`;
+const groups = {};
+for (const n of g.nodesSorted()) {
+  const [x, y] = POS[n.id] || [50, 50];
+  (groups[n.theater || "_region"] = groups[n.theater || "_region"] || []).push([x, y]);
+}
+const LAND = 'fill="#36493d" stroke="#3f5446" stroke-width="5" stroke-linejoin="round" opacity="0.95"';
+for (const key of Object.keys(groups).sort()) {
+  const pts = groups[key];
+  const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length, cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
+  if (pts.length < 3) back += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="6.5" ${LAND}/>`;
+  else {
+    const hull = convexHull(pts).map(([x, y]) => {
+      const dx = x - cx, dy = y - cy, m = Math.hypot(dx, dy) || 1;
+      return `${(x + dx / m * 3).toFixed(1)},${(y + dy / m * 3).toFixed(1)}`;
+    });
+    back += `<polygon points="${hull.join(" ")}" ${LAND}/>`;
+  }
+  if (dense && key !== "_region")
+    back += `<text x="${cx.toFixed(1)}" y="${(cy - 7).toFixed(1)}" text-anchor="middle" fill="#5a6b72" font-size="2.6">${key.replace(/_/g, " ").toUpperCase()}</text>`;
+}
 let body = "";
 for (const e of g.state.edges) {
   if (!POS[e.a] || !POS[e.b]) continue;
@@ -52,14 +88,14 @@ for (const e of g.state.edges) {
 }
 for (const n of g.nodesSorted()) {
   const [x, y] = POS[n.id] || [50, 50];
-  const r = 2.2 + Math.min(2.8, Math.log10(Math.max(10, n.population_k)) * 0.55);
+  const r = 1.9 + Math.min(2.3, Math.log10(Math.max(10, n.population_k)) * 0.5);
   const est = g.state.estimates[n.id] || { factions: {} };
   const tot = Object.values(est.factions || {}).reduce((s, f) => s + f.s, 0);
-  const heatW = Math.min(3.5, tot / 20);
+  const heatW = Math.min(2.6, tot / 26);
   const right = x > 62, lx = right ? x - r - 1.5 : x + r + 1.5, anchor = right ? "end" : "start";
   let label = n.name.split(/[ /]/)[0]; if (label.length > 9) label = label.slice(0, 8) + "…";
   body += "<g>";
-  if (tot > 12) body += `<circle cx="${x}" cy="${y}" r="${(r + 1).toFixed(1)}" fill="none" stroke="#ef5350" stroke-width="${heatW.toFixed(1)}" opacity="0.85"/>`;
+  if (tot > 12) body += `<circle cx="${x}" cy="${y}" r="${(r + 0.8).toFixed(1)}" fill="none" stroke="#ef5350" stroke-width="${heatW.toFixed(1)}" opacity="0.7"/>`;
   body += `<circle cx="${x}" cy="${y}" r="${r}" fill="${GOV[n.government]}" stroke="#000" stroke-width="1.2"/>`;
   if (n.capital && !dense) body += `<text x="${x - 1.8}" y="${y - r - 1}" fill="#ffb300" font-size="4.5">★</text>`;
   if (commands.includes(n.theater)) {
@@ -72,7 +108,7 @@ for (const n of g.nodesSorted()) {
   body += "</g>";
 }
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1000" height="1000">` +
-  `<rect width="100" height="100" fill="#14181d"/>${body}</svg>`;
+  `${back}${body}</svg>`;
 const out = new URL("./preview.svg", import.meta.url);
 writeFileSync(out, svg);
 const png = new URL("./preview.png", import.meta.url);

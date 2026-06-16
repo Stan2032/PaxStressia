@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.18.0 — 2026-06-16
+
+**A situation map, not a void — "can we make it prettier?"** (Stan). The board stops being circles on black and becomes a strategic map.
+
+- **A real backdrop:** a deep-ocean radial gradient, a faint cartographic **graticule** (lat/long grid), and a soft **landmass under each theatre's nodes** — a padded, rounded convex hull, so adjacent theatres merge into a coastline — with faint region labels (SAHEL, MAGHREB, HORN…). The world now reads like an ops map.
+- **The 40-nation world was re-laid-out** with breathing room (rough geography, grouped by theatre) so nodes stop piling up and the land shows through; node sizes and heat-rings tuned down to match. The 12-node Arc reads as a clean regional map (the Sahel as a landmass on the ocean).
+- **The headless `proto/preview.mjs` gained the same backdrop** and drove every iteration (SVG → PNG via cairosvg) — the visual language was tuned without a browser.
+- **Honest split** (answering "or is that future plans?"): the *vector situation-map aesthetic* is doable now in the greybox; *photoreal terrain, 3D situation-room lighting, and motion* remain the production-client goal (Godot, DESIGN §13.4), kept cheap by the JSON-core / swappable-renderer split. The greybox stays a legibility-and-balance instrument, never the ship look.
+- Proto/UI only: engine, rules, and `rules/*.json` untouched, so the **103-test suite, both-engine smoke, and Sahel calibration (10/10) hold**; snapshot fresh. Next UI step: **pan/zoom** for the dense grand board.
+
 ## v0.17.0 — 2026-06-16
 
 **Show, don't tell — the map starts speaking (UI pass 1)** (per Stan: less wordy, understand the game by inference from the screen, make each "idea" a concrete object). A presentation turn, not a systems one — no engine, rules, or calibration change.

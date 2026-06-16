@@ -36,9 +36,12 @@
   .node .pips{fill:var(--red); font-size:4px}
   .node .star{fill:var(--amber); font-size:4.5px}
   .node .patron{fill:#ff7043}
-  .node .heat{fill:none; stroke:var(--red); opacity:0.85; pointer-events:none}
+  .node .heat{fill:none; stroke:var(--red); opacity:0.7; pointer-events:none}
   .node .flag{stroke:var(--teal); stroke-width:0.7; fill:none}
   .node .oil{fill:#111; stroke:#000; stroke-width:0.3}
+  .grat{stroke:#33444e; stroke-width:0.25; opacity:0.5}
+  .land{fill:#36493d; stroke:#3f5446; stroke-width:5; stroke-linejoin:round; opacity:0.95}
+  .theaterlbl{fill:#5a6b72; font-size:2.6px; letter-spacing:0.2px; pointer-events:none}
   #sheet{background:var(--panel); border-top:2px solid #000; height:46%; display:flex;
     flex-direction:column}
   nav{display:flex}
@@ -1038,18 +1041,19 @@ if (typeof document !== "undefined") (function () {
   const POS = { bamako: [12, 62], mopti: [30, 48], gao: [52, 26], kidal: [60, 8],
     menaka: [68, 30], sahel_bf: [38, 62], ouagadougou: [40, 82], tillaberi: [70, 52],
     niamey: [80, 66], tahoua: [88, 42], diffa: [93, 74], coastal_north: [58, 92],
-    // grand-mode world layout (~lon/lat projected onto 0–100)
-    mali: [30, 46], niger: [37, 47], nigeria: [34, 55], algeria: [33, 32], libya: [40, 33],
-    somalia: [55, 52], sudan: [50, 46], yemen: [55, 44], iraq: [52, 36], syria: [50, 35],
-    afghanistan: [66, 38], pakistan: [69, 40], ncaucasus: [55, 28], ferghana: [64, 31],
-    mindanao: [82, 52], sthailand: [78, 50], colombia: [20, 60], peru: [19, 66],
-    mozambique: [52, 66], philippines_marker: [84, 55],
-    // v0.12 world expansion — 20 more nations across their real theaters
-    burkina: [33, 50], chad: [44, 50], mauritania: [24, 42], cameroon: [40, 56],
-    ethiopia: [52, 50], kenya: [55, 56], south_sudan: [49, 51], drcongo: [45, 60],
-    car: [46, 55], egypt: [49, 40], tunisia: [37, 30], lebanon: [49, 37],
-    india: [73, 44], myanmar: [77, 45], bangladesh: [75, 43], indonesia: [80, 58],
-    tajikistan: [67, 33], mexico: [13, 50], haiti: [18, 52], ecuador: [18, 63] };
+    // grand-mode world layout (v0.18): spread across the canvas, rough geography,
+    // grouped so each theatre reads as its own coastline and nodes don't pile up.
+    mexico: [8, 36], haiti: [14, 44], colombia: [13, 56], ecuador: [11, 64], peru: [14, 74],
+    tunisia: [33, 26], algeria: [29, 32], libya: [40, 28], egypt: [49, 32],
+    mauritania: [23, 42], mali: [29, 48], burkina: [32, 56], niger: [38, 50],
+    nigeria: [35, 62], cameroon: [40, 68], chad: [45, 54],
+    lebanon: [53, 28], syria: [56, 26], iraq: [60, 32], yemen: [62, 42],
+    sudan: [51, 46], south_sudan: [52, 54], ethiopia: [58, 52], somalia: [63, 50],
+    kenya: [58, 60], car: [47, 62], drcongo: [50, 70], mozambique: [56, 80],
+    ncaucasus: [60, 20], ferghana: [68, 24], tajikistan: [72, 28],
+    afghanistan: [72, 36], pakistan: [75, 41], india: [80, 47], bangladesh: [85, 44],
+    myanmar: [86, 40], sthailand: [89, 50], indonesia: [90, 62], mindanao: [94, 53],
+    philippines_marker: [92, 57] };
   const SCENARIOS = { sahel_lite: "Sahel-lite (6 nodes, dev)",
     sahel_arc: "The Arc — Sahel 2012–2026 (12 nodes)",
     grand: "Grand Mode — the world, 2001 (40 nations)" };
@@ -1150,9 +1154,53 @@ if (typeof document !== "undefined") (function () {
   }
 
   // ---------- map ----------
+  function convexHull(pts) {
+    if (pts.length < 3) return pts.slice();
+    const p = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    const lo = [], up = [];
+    for (const q of p) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
+    for (let i = p.length - 1; i >= 0; i--) { const q = p[i]; while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
+    lo.pop(); up.pop(); return lo.concat(up);
+  }
+  // A situation map, not a void: deep ocean, a faint graticule, and a soft
+  // landmass under each theatre's nodes (adjacent theatres merge into coastline).
+  function mapBackdrop() {
+    let bg = '<defs><radialGradient id="ocean" cx="50%" cy="40%" r="78%">' +
+      '<stop offset="0%" stop-color="#16323f"/><stop offset="100%" stop-color="#0b1014"/>' +
+      '</radialGradient></defs><rect x="0" y="0" width="100" height="100" fill="url(#ocean)"/>';
+    for (let g = 10; g < 100; g += 10)
+      bg += `<line class="grat" x1="${g}" y1="0" x2="${g}" y2="100"/>` +
+        `<line class="grat" x1="0" y1="${g}" x2="100" y2="${g}"/>`;
+    const groups = {};
+    for (const n of game.nodesSorted()) {
+      const [x, y] = POS[n.id] || [50, 50];
+      (groups[n.theater || "_region"] = groups[n.theater || "_region"] || []).push([x, y]);
+    }
+    const dense = game.nodesSorted().length > 20;
+    for (const key of Object.keys(groups).sort()) {
+      const pts = groups[key];
+      const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length;
+      const cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
+      if (pts.length < 3) {
+        bg += `<circle class="land" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="6.5"/>`;
+      } else {
+        const hull = convexHull(pts).map(([x, y]) => {
+          const dx = x - cx, dy = y - cy, m = Math.hypot(dx, dy) || 1;
+          return `${(x + dx / m * 3).toFixed(1)},${(y + dy / m * 3).toFixed(1)}`;
+        });
+        bg += `<polygon class="land" points="${hull.join(" ")}"/>`;
+      }
+      if (dense && key !== "_region")
+        bg += `<text class="theaterlbl" x="${cx.toFixed(1)}" y="${(cy - 7).toFixed(1)}" ` +
+          `text-anchor="middle">${key.replace(/_/g, " ").toUpperCase()}</text>`;
+    }
+    return bg;
+  }
   function renderMap() {
     const W = 100, H = 100;
     let svg = '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">';
+    svg += mapBackdrop();
     for (const e of game.state.edges) {
       if (!POS[e.a] || !POS[e.b]) continue;  // defensive: never throw on an unmapped node
       const [ax, ay] = POS[e.a], [bx, by] = POS[e.b];
@@ -1167,7 +1215,7 @@ if (typeof document !== "undefined") (function () {
       const [x, y] = POS[n.id] || [50, 50];
       // log-scaled, capped: nations span millions (India) to thousands (Haiti),
       // so a linear radius would swallow the map — bigger states read a touch larger.
-      const r = 2.2 + Math.min(2.8, Math.log10(Math.max(10, n.population_k)) * 0.55);
+      const r = 1.9 + Math.min(2.3, Math.log10(Math.max(10, n.population_k)) * 0.5);
       const est = game.state.estimates[n.id] || { factions: {} };
       const facs = Object.values(est.factions || {});
       const tot = facs.reduce((s, f) => s + f.s, 0);
@@ -1176,7 +1224,7 @@ if (typeof document !== "undefined") (function () {
       const sel = selNode === n.id ? " sel" : "";
       // The fire, read at a glance: a red ring whose thickness is the estimated
       // insurgent strength — show, don't tell (the eye finds the hot spots).
-      const heatW = Math.min(3.5, tot / 20);
+      const heatW = Math.min(2.6, tot / 26);
       const right = x > 62;
       const lx = right ? x - r - 1.5 : x + r + 1.5;
       const anchor = right ? "end" : "start";
@@ -1185,7 +1233,7 @@ if (typeof document !== "undefined") (function () {
       const commanded = commands.includes(n.theater);
       const oil = (n.resources || []).includes("oil");
       svg += `<g class="node${sel}" data-node="${n.id}">` +
-        (tot > 12 ? `<circle class="heat" cx="${x}" cy="${y}" r="${(r + 1).toFixed(1)}" ` +
+        (tot > 12 ? `<circle class="heat" cx="${x}" cy="${y}" r="${(r + 0.8).toFixed(1)}" ` +
           `stroke-width="${heatW.toFixed(1)}"/>` : "") +
         `<circle class="body" cx="${x}" cy="${y}" r="${r}" fill="${GOV_FILL[n.government]}"/>` +
         (n.capital && !dense ? `<text class="star" x="${x - 1.8}" y="${y - r - 1}">★</text>` : "") +
