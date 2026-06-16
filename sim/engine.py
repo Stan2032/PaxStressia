@@ -13,6 +13,7 @@ import json
 import random
 
 from . import blocs as blocs_mod
+from . import coalition as coalition_mod
 from . import commands as commands_mod
 from . import events as events_mod
 from . import factions as factions_mod
@@ -58,13 +59,18 @@ class Engine:
         return f"{year + total // 12}-{total % 12 + 1:02d}"
 
     def _legal_actions(self) -> dict:
-        # gate world-scale-only initiatives (Regional Commands, §21.7) out of
-        # single-theatre play, where they are inert — no dead options offered.
-        cmd_on = commands_mod.enabled(self.consts)
+        # gate world-scale-only initiatives (Regional Commands §21.7, Coalition
+        # §21.8) out of single-theatre play, where they are inert — no dead
+        # options offered.
+        gated_off = set()
+        if not commands_mod.enabled(self.consts):
+            gated_off.add("command")
+        if not coalition_mod.enabled(self.consts):
+            gated_off.add("coalition")
         return {
             "initiatives": [
                 self.initiatives[k] for k in sorted(self.initiatives)
-                if cmd_on or not any(e["op"] == "command" for e in self.initiatives[k]["effects"])
+                if not any(e["op"] in gated_off for e in self.initiatives[k]["effects"])
             ],
             "nodes": sorted(self.world.nodes),
         }
@@ -190,6 +196,14 @@ class Engine:
             if commands_mod.establish(world, self.consts, theater):
                 log.append({"event": "command_established", "theater": theater,
                             "node": node_id, "source": source})
+        elif op == "coalition":
+            # §21.8: rally partners toward their fair share — raises coalition
+            # cohesion (which then shares Regional-Command upkeep). Gated.
+            before = world.coalition
+            coalition_mod.rally(world, self.consts)
+            if world.coalition != before:
+                log.append({"event": "coalition_rallied", "cohesion": round(world.coalition, 1),
+                            "source": source})
         elif op == "designate":
             self._designate(node_id, source, log)
         elif op == "negotiate":
@@ -302,6 +316,7 @@ class Engine:
             "international": player.international,
             "estimates": estimates,
             "commands": sorted(world.commands),  # your own standing posture (§21.7), public
+            "coalition": round(world.coalition, 2),  # burden-sharing cohesion (§21.8), public
             "headlines": self.reports[-1]["log"][-3:] if self.reports else [],
         }
 
@@ -390,6 +405,7 @@ class Engine:
         # Phase 4 — Consequence
         norms_mod.apply_feedback(world, consts, self.ledger)
         markets_mod.apply_feedback(world, consts, self.ledger)
+        coalition_mod.decay(world, consts)  # partners free-ride back unless rallied (§21.8)
         new_casualties = player.casualties - casualties_before
         if new_casualties:
             self.ledger.apply(

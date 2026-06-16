@@ -16,7 +16,7 @@
             "domestic_legitimacy", "international_legitimacy",
             "governance", "development", "grievance", "amnesty",
             "partner_capacity", "coup_seed", "drift", "intl_umbrella",
-            "exposure", "designate", "negotiate", "command"
+            "exposure", "designate", "negotiate", "command", "coalition"
           ]
         },
         "amount": { "type": "number" },

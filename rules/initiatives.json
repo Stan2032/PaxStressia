@@ -304,5 +304,27 @@
     },
     "notes": "World-scale lever (§21.7): a standing posture over the target's whole theatre that passively contains insurgency across all its nodes — breadth, not depth — at an accelerating home-front cost. Grand mode only.",
     "sources": ["US AFRICOM / CENTCOM theatre commands", "Multinational Joint Task Force (Lake Chad); Operation Barkhane"]
+  },
+  {
+    "id": "rally_coalition",
+    "name": "Rally the Coalition",
+    "family": "diplomatic",
+    "target": "global",
+    "mandate_cost": 2,
+    "treasury_cost": 2,
+    "effects": [
+      { "op": "coalition" }
+    ],
+    "backfire": {
+      "channel": "burden_sharing_dispute",
+      "probability": 0.2,
+      "effects": [
+        { "op": "international_legitimacy", "delta": -2 },
+        { "op": "domestic_legitimacy", "delta": -1 }
+      ],
+      "note": "Pressing allies toward their fair share is a hard sell (NATO's 2% fight): a snubbed summit reads as discord abroad and free-riding resentment at home."
+    },
+    "notes": "World-scale lever (§21.8): rallies partners to share the upkeep of your Regional Commands. Cohesion free-rides away each turn and frays under a rising rival bloc, so it must be re-rallied. Grand mode only.",
+    "sources": ["Global Coalition to Defeat ISIS (87 members)", "Olson & Zeckhauser (1966), the economics of alliances; NATO 2% burden-sharing"]
   }
 ]

@@ -24,6 +24,7 @@ construction; 1 in grand)."""
 
 from __future__ import annotations
 
+from . import coalition as coalition_mod
 from .legitimacy import DOMESTIC, Ledger, local_gauge
 from .world import WorldState, clamp
 
@@ -65,9 +66,11 @@ def apply(world: WorldState, consts: dict, ledger: Ledger, log: list) -> None:
             node.governance = clamp(node.governance + consts["command_gov_buffer"])
             ledger.apply(world, local_gauge(node.id), "command", consts["command_local_buffer"])
 
-    # --- cost: treasury upkeep (linear) + accelerating home-front strain ---
+    # --- cost: treasury upkeep (linear) + accelerating home-front strain, both
+    # lightened by whatever share the coalition is currently carrying (§21.8) ---
+    borne = 1.0 - coalition_mod.burden_share(world, consts)
     k = len(world.commands)
-    upkeep = consts["command_upkeep"] * k
+    upkeep = consts["command_upkeep"] * k * borne
     if world.player.treasury >= upkeep:
         world.player.treasury -= upkeep
     else:
@@ -82,7 +85,7 @@ def apply(world: WorldState, consts: dict, ledger: Ledger, log: list) -> None:
     # home legitimacy is the true ceiling (Merom): strain grows triangularly with
     # the count, so the 2nd/3rd theatre costs far more than the first.
     if k:
-        strain = consts["command_home_strain"] * k * (k + 1) / 2.0
+        strain = consts["command_home_strain"] * k * (k + 1) / 2.0 * borne
         ledger.apply(world, DOMESTIC, "command_overstretch", -strain)
     # drawdown trigger: a home front past its floor rejects the over-extension and
     # forces one command home, defeat ratified at home (Merom), not on the field.

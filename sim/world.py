@@ -206,6 +206,7 @@ class WorldState:
     patron_strength: dict[str, float] = field(default_factory=dict)  # global reach per patron
     rivalry: float = 0.0  # how much of the world the rival bloc holds (§8, grand mode)
     commands: list[str] = field(default_factory=list)  # standing regional commands (§21.7, grand)
+    coalition: float = 0.0  # burden-sharing coalition cohesion 0–100 (§21.8, grand)
 
     def nodes_sorted(self) -> list[Node]:
         return [self.nodes[k] for k in sorted(self.nodes)]
@@ -255,6 +256,7 @@ class WorldState:
             "patron_strength": {k: round(v, 4) for k, v in sorted(self.patron_strength.items())},
             "rivalry": round(self.rivalry, 4),
             "commands": sorted(self.commands),
+            "coalition": round(self.coalition, 4),
             "blocs": [
                 {"countries": b["countries"], "stage": round(b["stage"], 4),
                  "formed_turn": b["formed_turn"]}

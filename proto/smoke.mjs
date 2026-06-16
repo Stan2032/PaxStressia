@@ -225,6 +225,14 @@ check(passive.state.player.drift === 0, "passive: no drift");
   check(Array.isArray(gc.state.commands), "grand: commands persist as an array");
   arc.endTurn([{ initiative: "establish_command", node: "gao" }]);
   check(arc.state.commands.length === 0, "single-theater: Regional Commands dormant");
+  // v0.15 coalition burden-sharing: rallying raises cohesion + serializes; inert on the arc
+  const gco = PaxEngine.Game(grandRules, 8);
+  let rr = gco.endTurn([{ initiative: "rally_coalition", node: null }]);
+  if (rr.phase === "event") gco.resolveEvent(0);
+  check(gco.state.coalition > 0, "grand: rally_coalition raises coalition cohesion");
+  check(gco.serialize().includes('"coalition"'), "grand: coalition serialized");
+  arc.endTurn([{ initiative: "rally_coalition", node: null }]);
+  check(arc.state.coalition === 0, "single-theater: coalition dormant");
 }
 
 if (failures) { console.error(failures + " smoke failures"); process.exit(1); }

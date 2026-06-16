@@ -11,5 +11,6 @@
   "market_feedback": 1.0,
   "rivalry_feedback": 1.0,
   "grand_scoring": 1,
-  "commands_enabled": 1
+  "commands_enabled": 1,
+  "coalition_enabled": 1
 }

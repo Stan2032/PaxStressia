@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.15.0 — 2026-06-16
+
+**Coalition burden-sharing — the second world-scale lever** (the follow-on to v0.14's Regional Commands). Allies share the upkeep so you can stretch further, but they free-ride and fray — depth, not a cost-multiplier.
+
+- **The lever** (`sim/coalition.py`; new `rally_coalition` initiative + `coalition` op): one cohesion gauge (0–100). Allies bear `coalition_max_share · cohesion/100` of both the treasury upkeep **and** the accelerating home-front strain of your Regional Commands — modeled on the 87-member Global Coalition to Defeat ISIS, NATO, and the Lake-Chad MNJTF. A strong coalition lets you sustain more theatres than your home front could carry alone.
+- **The thesis from a second angle** (Olson & Zeckhauser 1966, the economics of alliances): collective security is a public good, so partners under-provide. Cohesion **free-rides away** every turn; it frays **faster when the rival bloc is ascendant** (fair-weather members hedge toward the winning side — the §8 rivalry) and **faster the more commands you lean on it to carry** (over-extension feeds the case against you). You hold it up only by spending political capital to rally (with a burden-sharing-dispute backfire). You never escape free-riding — in play cohesion settles mid-range (NATO's 2% reality), not full.
+- **Gated** by `coalition_enabled` (0 single-theatre → dormant, menu-filtered → **Sahel calibration still 10/10**; 1 grand).
+- **Measured deepening:** giving `GrandCompetentPolicy` the coalition (rally when cohesion bleeds low) lifts it from beating passive 6/8 → **7/8 seeds**, ~19 → ~22 mean score, bending the world ~21 → ~18 juntas — a clear, **earned** improvement (cohesion costs capital and decays), still **bounded** (the world mostly burns; you hold the lines you choose). Pure doctrines still lose, kinetic worst.
+- Ported to both engines (proto: a Rally-the-Coalition action + a cohesion line in the Regional-Commands readout). The briefing carries your own coalition cohesion (public). `tests/test_coalition.py` (7) pins the burden-share, the free-riding/rival fraying, the deepened win, and the gating. Design grounded in a research pass on coalition/alliance mechanics (Vic3 power blocs, EU4 favors/trust/aggressive-expansion, Stellaris federation cohesion, Five-Eyes inner/outer tiering). **102 tests pass / 1 xfail; calibration 10/10; determinism holds on both engines.**
+
 ## v0.14.0 — 2026-06-16
 
 **Regional Commands — the first world-scale lever, and grand mode becomes winnable** (the milestone v0.13 named). v0.13 *measured* that the player's levers were too **local** to bend a 40-nation world, so abdication scored as well as effort. This builds the lever the research points to — and reaches the win, earned, not tuned.

@@ -239,6 +239,12 @@ class GrandCompetentPolicy(Policy):
                     do("establish_command", nid)
                     break
 
+        # 1b. COALITION: keep allies sharing the burden so the commands stay
+        #    affordable — rally when cohesion has bled low and a command is worth
+        #    sustaining (free-riding means it must be re-fed; §21.8).
+        if (held and briefing.get("coalition", 0.0) < 60.0 and afford("rally_coalition")):
+            do("rally_coalition", None)
+
         # 2. an international umbrella, and sanctions to strip a patron / a bloc
         if afford("un_mandate"):
             do("un_mandate", None)

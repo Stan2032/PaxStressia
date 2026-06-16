@@ -67,6 +67,12 @@
   "command_local_buffer": 0.5,
   "command_withdraw_hit": 4,
   "command_domestic_floor": 12,
+  "coalition_enabled": 0,
+  "coalition_rally_gain": 14,
+  "coalition_decay": 1.5,
+  "coalition_rivalry_erosion": 2.0,
+  "coalition_max_share": 0.6,
+  "coalition_command_strain": 0.4,
   "integrity_floor": 0.2,
   "drift_per_tier": 0.15,
 
