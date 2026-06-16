@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.12.0 — 2026-06-16
+
+**The world widens — grand mode goes from ~20 to ~40 nations** (per Stan: "such scale there are as many nations on earth"). The scale the vision keeps asking for, with every new nation wired into the connective systems so it is part of one world, not an isolated region.
+
+- **+20 nations** (`rules/scenarios/grand/nodes.json`), each grounded in a real 2001–2026 conflict: Sahel/Lake Chad (Burkina Faso, Chad, Mauritania, Cameroon), the Horn & Great Lakes (Ethiopia, Kenya, South Sudan, DR Congo, Central African Republic), MENA/Levant (Egypt, Tunisia, Lebanon), South & SE Asia (India's Naxalite belt + Kashmir, Myanmar's civil war, Bangladesh, Indonesia), Central Asia (Tajikistan), and the Americas/Caribbean (Mexico's cartels, Haiti's gang collapse, Ecuador). Now **40 nations across 15 theaters**.
+- **One connected graph, not a bigger pile of regions:** +40 inter-theater **edges** (border / smuggling / arms / sea / ideology / diaspora) thread the new nations into the existing world; **regional patron leanings** exercise the v0.11 three-archetype contest (Wagner→Sahel & CAR, Iran→Lebanon & the Gulf, China→Myanmar & the Horn); petro-states (Chad, South Sudan, Egypt, Mexico, Ecuador) feed the oil market.
+- **Realism pass:** genuinely resilient states (India, Egypt, Indonesia, Mexico, Kenya, Tunisia, Ethiopia, Bangladesh) are seeded to resist capture, so they hold while fragile states (Haiti, CAR, South Sudan, DR Congo, Myanmar) can fall — the world burns where it realistically would.
+- **Both engines:** all 40 nations placed on the proto's world-map layout; `tests/test_grand.py` and `proto/smoke.mjs` now assert the ~40-nation scale; grand determinism holds on both. **Sahel history calibration still 10/10** (grand is a separate, gated scenario — untouched by construction). The `test_the_patron_contest_is_real` assertion was rewritten to hold **across seeds** (a distributional claim — "not a mercenary monopoly" — shouldn't pin one seed; across seeds all three archetypes win reach).
+- **Honest scope (DESIGN §21.5):** scale is now done. The expansion makes the **next milestone** concrete and names it: a passive 40-node world burns (~30/40 capitals fall over 25 years — the thesis at scale), and the Sahel-tuned `CompetentPolicy` is spread too thin to out-score passive — grand mode needs its own **scoring weighting + a grand-scaled competent benchmark** (the way v0.5/v0.8 made the single-theater game winnable). Not faked here. **86 tests pass / 1 xfail; calibration 10/10.**
+
 ## v0.11.0 — 2026-06-16
 
 **Deepen the ripples — global markets and a multi-patron contest** (per Stan: "deepen the ripples" — more realistic cross-theater channels so the world is genuinely interconnected, not isolated regions sharing a score). Two new systems on the §21.2 norms template, both gated calibration-safe.

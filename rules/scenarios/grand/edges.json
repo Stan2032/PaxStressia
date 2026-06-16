@@ -260,5 +260,440 @@
     ],
     "capacity": 0.35,
     "notes": ""
+  },
+  {
+    "id": "mali_burkina",
+    "a": "mali",
+    "b": "burkina",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.6,
+    "notes": ""
+  },
+  {
+    "id": "burkina_niger",
+    "a": "burkina",
+    "b": "niger",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.58,
+    "notes": ""
+  },
+  {
+    "id": "niger_chad",
+    "a": "niger",
+    "b": "chad",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "chad_nigeria",
+    "a": "chad",
+    "b": "nigeria",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "chad_sudan",
+    "a": "chad",
+    "b": "sudan",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "chad_libya",
+    "a": "chad",
+    "b": "libya",
+    "types": [
+      "border",
+      "arms"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "nigeria_cameroon",
+    "a": "nigeria",
+    "b": "cameroon",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.55,
+    "notes": ""
+  },
+  {
+    "id": "cameroon_car",
+    "a": "cameroon",
+    "b": "car",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "mali_mauritania",
+    "a": "mali",
+    "b": "mauritania",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "mauritania_algeria",
+    "a": "mauritania",
+    "b": "algeria",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "sudan_south_sudan",
+    "a": "sudan",
+    "b": "south_sudan",
+    "types": [
+      "border",
+      "arms"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "south_sudan_drcongo",
+    "a": "south_sudan",
+    "b": "drcongo",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.4,
+    "notes": ""
+  },
+  {
+    "id": "drcongo_car",
+    "a": "drcongo",
+    "b": "car",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.4,
+    "notes": ""
+  },
+  {
+    "id": "car_sudan",
+    "a": "car",
+    "b": "sudan",
+    "types": [
+      "border",
+      "arms"
+    ],
+    "capacity": 0.42,
+    "notes": ""
+  },
+  {
+    "id": "ethiopia_somalia",
+    "a": "ethiopia",
+    "b": "somalia",
+    "types": [
+      "border",
+      "ideology"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "ethiopia_south_sudan",
+    "a": "ethiopia",
+    "b": "south_sudan",
+    "types": [
+      "border"
+    ],
+    "capacity": 0.4,
+    "notes": ""
+  },
+  {
+    "id": "kenya_somalia",
+    "a": "kenya",
+    "b": "somalia",
+    "types": [
+      "border",
+      "ideology"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "kenya_ethiopia",
+    "a": "kenya",
+    "b": "ethiopia",
+    "types": [
+      "border"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "egypt_libya",
+    "a": "egypt",
+    "b": "libya",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "egypt_sudan",
+    "a": "egypt",
+    "b": "sudan",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "tunisia_libya",
+    "a": "tunisia",
+    "b": "libya",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "tunisia_algeria",
+    "a": "tunisia",
+    "b": "algeria",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.48,
+    "notes": ""
+  },
+  {
+    "id": "lebanon_syria",
+    "a": "lebanon",
+    "b": "syria",
+    "types": [
+      "border",
+      "arms"
+    ],
+    "capacity": 0.55,
+    "notes": ""
+  },
+  {
+    "id": "india_pakistan",
+    "a": "india",
+    "b": "pakistan",
+    "types": [
+      "border",
+      "ideology"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "india_bangladesh",
+    "a": "india",
+    "b": "bangladesh",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "india_myanmar",
+    "a": "india",
+    "b": "myanmar",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.42,
+    "notes": ""
+  },
+  {
+    "id": "bangladesh_myanmar",
+    "a": "bangladesh",
+    "b": "myanmar",
+    "types": [
+      "border",
+      "diaspora"
+    ],
+    "capacity": 0.42,
+    "notes": ""
+  },
+  {
+    "id": "myanmar_sthailand",
+    "a": "myanmar",
+    "b": "sthailand",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "indonesia_mindanao",
+    "a": "indonesia",
+    "b": "mindanao",
+    "types": [
+      "sea",
+      "ideology"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "indonesia_sthailand",
+    "a": "indonesia",
+    "b": "sthailand",
+    "types": [
+      "sea",
+      "smuggling"
+    ],
+    "capacity": 0.4,
+    "notes": ""
+  },
+  {
+    "id": "tajikistan_afghanistan",
+    "a": "tajikistan",
+    "b": "afghanistan",
+    "types": [
+      "border",
+      "ideology"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "tajikistan_ferghana",
+    "a": "tajikistan",
+    "b": "ferghana",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.48,
+    "notes": ""
+  },
+  {
+    "id": "colombia_mexico",
+    "a": "colombia",
+    "b": "mexico",
+    "types": [
+      "sea",
+      "smuggling"
+    ],
+    "capacity": 0.55,
+    "notes": ""
+  },
+  {
+    "id": "colombia_ecuador",
+    "a": "colombia",
+    "b": "ecuador",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.55,
+    "notes": ""
+  },
+  {
+    "id": "ecuador_peru",
+    "a": "ecuador",
+    "b": "peru",
+    "types": [
+      "border",
+      "smuggling"
+    ],
+    "capacity": 0.5,
+    "notes": ""
+  },
+  {
+    "id": "colombia_haiti",
+    "a": "colombia",
+    "b": "haiti",
+    "types": [
+      "sea",
+      "smuggling"
+    ],
+    "capacity": 0.45,
+    "notes": ""
+  },
+  {
+    "id": "mexico_haiti",
+    "a": "mexico",
+    "b": "haiti",
+    "types": [
+      "sea",
+      "smuggling"
+    ],
+    "capacity": 0.4,
+    "notes": ""
+  },
+  {
+    "id": "burkina_somalia",
+    "a": "burkina",
+    "b": "somalia",
+    "types": [
+      "ideology"
+    ],
+    "capacity": 0.35,
+    "notes": ""
+  },
+  {
+    "id": "drcongo_syria",
+    "a": "drcongo",
+    "b": "syria",
+    "types": [
+      "ideology"
+    ],
+    "capacity": 0.3,
+    "notes": ""
+  },
+  {
+    "id": "egypt_iraq",
+    "a": "egypt",
+    "b": "iraq",
+    "types": [
+      "ideology"
+    ],
+    "capacity": 0.32,
+    "notes": ""
   }
 ]

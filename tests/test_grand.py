@@ -35,9 +35,9 @@ def test_grand_data_validates():
 
 def test_grand_is_a_world_not_a_region():
     rules = load_rules(scenario="grand")
-    assert len(rules["nodes"]) >= 18, "grand mode should span many nations"
+    assert len(rules["nodes"]) >= 36, "grand mode should span the world (v0.12: ~40 nations)"
     theaters = {n.get("theater") for n in rules["nodes"]}
-    assert len(theaters) >= 8, "nations should span many theaters"
+    assert len(theaters) >= 12, "nations should span many theaters"
     # inter-theater edges exist (the global network, not isolated regions)
     by_theater = {n["id"]: n.get("theater") for n in rules["nodes"]}
     cross = [e for e in rules["edges"] if by_theater[e["a"]] != by_theater[e["b"]]]

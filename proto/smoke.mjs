@@ -191,7 +191,7 @@ check(passive.state.player.drift === 0, "passive: no drift");
   };
   const a = runGrand(4, true), b = runGrand(4, true);
   check(a.serialize() === b.serialize(), "grand: same seed identical");
-  check(Object.keys(a.state.nodes).length >= 18, "grand: many nations");
+  check(Object.keys(a.state.nodes).length >= 36, "grand: the world (v0.12: ~40 nations)");
   check(a.serialize().includes('"norms"'), "grand: norms serialized");
   check(a.state.norms.kinetic > 60, "grand: kinetic play raises the world kinetic norm");
   const passive = runGrand(4, false);
