@@ -203,6 +203,9 @@ check(passive.state.player.drift === 0, "passive: no drift");
   check(a.serialize().includes('"markets"') && a.serialize().includes('"rivalry"'),
     "grand: markets/rivalry serialized");
   check(passive.state.markets.arms > 55, "grand: conflict heats the arms market");
+  // v0.13 scale-invariant grand scoring: order folded in, abroad on a 0–100 scale
+  check(a.score().order_mult === 1 && a.score().stabilization >= 0 &&
+    a.score().stabilization <= 100, "grand: scoring is scale-invariant (order folded)");
   const winners = Object.values(passive.state.patronStrength).filter((v) => v > 5).length;
   check(winners >= 1, "grand: the patron contest produces winners");
   // single-theater gating: markets stay neutral on the arc

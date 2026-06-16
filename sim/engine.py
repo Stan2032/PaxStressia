@@ -427,15 +427,42 @@ class Engine:
                 0.0, 100.0,
             ) / 100.0
 
-        stabilization = 100.0 * sum(
-            (n.local_legitimacy / 100.0) * (n.governance / 100.0) * (1.0 - grip(n))
-            for n in nodes
-        ) / len(nodes)
-        order_mult = 1.0 / (
-            1.0
-            + consts["order_junta_weight"] * world.junta_count()
-            + consts["order_bloc_weight"] * blocs_mod.bloc_containment_term(world, consts)
-        )
+        if consts.get("grand_scoring", 0) > 0:
+            # Grand mode (§21.5): a world police can't stabilise 40 theatres at
+            # once, so it is judged on CONTAINMENT, not omnipotence — scale-
+            # invariant by construction. (a) population-weighted QUALITY, so
+            # protecting a consequential state counts for more than a micro-
+            # state; (b) the FREE fraction of the world's capitals (1 − junta
+            # share); blended, then dragged down by consolidated authoritarian
+            # blocs (the §5.4 loss condition). order_mult is folded in here.
+            def wt(n):
+                return max(1.0, n.population_k) ** 0.5
+            wsum = sum(wt(n) for n in nodes) or 1.0
+            quality = 100.0 * sum(
+                wt(n) * (n.local_legitimacy / 100.0) * (n.governance / 100.0) * (1.0 - grip(n))
+                for n in nodes
+            ) / wsum
+            n_c = max(1, len(world.countries()))
+            free_frac = 1.0 - world.junta_count() / n_c
+            bloc_pen = 1.0 / (
+                1.0
+                + consts["order_bloc_weight_grand"]
+                * blocs_mod.bloc_containment_term(world, consts)
+                / consts["grand_bloc_ref"]
+            )
+            fw = consts["grand_free_weight"]
+            stabilization = (fw * 100.0 * free_frac + (1.0 - fw) * quality) * bloc_pen
+            order_mult = 1.0
+        else:
+            stabilization = 100.0 * sum(
+                (n.local_legitimacy / 100.0) * (n.governance / 100.0) * (1.0 - grip(n))
+                for n in nodes
+            ) / len(nodes)
+            order_mult = 1.0 / (
+                1.0
+                + consts["order_junta_weight"] * world.junta_count()
+                + consts["order_bloc_weight"] * blocs_mod.bloc_containment_term(world, consts)
+            )
         integrity_mult = max(
             consts["integrity_floor"],
             1.0 - consts["drift_per_tier"] * player.authoritarian_drift,

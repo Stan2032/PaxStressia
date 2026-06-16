@@ -103,3 +103,26 @@ def test_sahel_calibration_unbroken_by_grand_work():
     eng.run(168)
     assert eng.world.capital_of("ML").government == "junta"
     assert eng.world.norms["kinetic"] == 50.0  # untouched
+
+
+def test_grand_scoring_is_scale_invariant_and_gated():
+    """At 40 nodes the single-theatre scoring collapsed (order_mult → ~0.08 under
+    ~30 juntas, every score ≈ 0). Grand scoring (§21.5) is scale-invariant
+    containment instead: order_mult is folded in (== 1) and the score stays
+    meaningful — kinetic abdication of restraint ranks strictly worst, the one
+    robust signal at world scale. Gated, so single-theatre is byte-identical."""
+    g_pass = Engine(rules=load_rules(scenario="grand"), seed=2, policy=PassivePolicy())
+    g_kin = Engine(rules=load_rules(scenario="grand"), seed=2, policy=PureKineticPolicy())
+    g_pass.run(80)
+    g_kin.run(80)
+    s = g_pass.score()
+    assert s["order_mult"] == 1.0, "grand folds order into a scale-invariant abroad term"
+    assert 0.0 <= s["stabilization"] <= 100.0, "grand abroad stays on a 0–100 scale"
+    assert g_kin.score()["final"] < s["final"], "kinetic must score worst even at scale"
+    # gated OFF in single-theatre: the classic absolute-count order_mult still
+    # runs — a passive Mali falls to a junta (calibration), so it is < 1.
+    arc = Engine(rules=load_rules(scenario="sahel_arc"), seed=0, policy=PassivePolicy())
+    arc.run(168)
+    assert arc.consts.get("grand_scoring", 0) == 0
+    assert arc.world.junta_count() >= 1 and arc.score()["order_mult"] < 1.0, \
+        "single-theatre keeps the absolute-count order penalty"

@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.13.0 — 2026-06-16
+
+**Grand-mode scoring made scale-invariant — and the winnability problem measured, not faked** (the milestone the v0.12 expansion made concrete). The headline is a structural fix plus an honest finding; it deliberately does **not** claim a balanced grand mode, because the evidence says one isn't reachable by tuning yet.
+
+- **The bug:** at 40 nodes the single-theatre score (§11) degenerated — `order_mult = 1/(1 + junta_weight·junta_count + …)` uses an *absolute* count, so ~30 juntas drove it to ≈0.08 and crushed every policy's score to ≈0 (kinetic indistinguishable from competent). A scale bug, not a balance call.
+- **The fix (`sim/markets`-style gating):** a new `grand_scoring` constant (0 in single-theatre → **byte-identical, Sahel calibration untouched, still 10/10**; 1 in grand) switches in a **scale-invariant containment** score — a world police can't stabilise 40 theatres, so it's judged on *containment*: **population-weighted quality** (√population, so protecting a consequential state counts for more than a micro-state) blended with the **free fraction** of the world's capitals (`1 − junta_share`), dragged down by consolidated authoritarian **blocs**. Scores are interpretable again and rank **kinetic abdication-of-restraint strictly worst** at every scale. Ported to both engines.
+- **The honest finding (DESIGN §21.6), measured across seeds:** even with the corrected score, **no policy robustly out-scores passive at 40 nodes.** A benchmark containment policy (defend the capitals nearest collapse, hold the umbrella, sanction patrons) beat passive in **0–1 of 6 seeds** across a grid of scoring-weight × bandwidth settings; raising the per-turn mandate budget (a "global operation has more bandwidth" lever) let a competent player bend the world only from ~25 to ~19 juntas — a real but **marginal** edge its blood-and-treasure costs (the thesis: democracies pay at home) then erase. Diagnosis: the player's strategic levers are **too local to bend a global trajectory.**
+- **Why ship it this way:** forcing competent > passive by tuning constants is exactly the dishonesty the thesis-as-tests discipline (§3.8) exists to prevent. So v0.13 ships the scoring **foundation** and *names the real milestone* — **winnable grand mode needs new world-scale levers** (coalition-building, regional commands that multiply reach, sanctions/economic statecraft with teeth, intelligence-sharing) plus a scoring stance that letting the bloc consolidate is a failing grade. That is the next design pass.
+- `tests/test_grand.py` adds the scale-invariance + gating test; smoke checks proto parity. **87 tests pass / 1 xfail; calibration 10/10.**
+
 ## v0.12.0 — 2026-06-16
 
 **The world widens — grand mode goes from ~20 to ~40 nations** (per Stan: "such scale there are as many nations on earth"). The scale the vision keeps asking for, with every new nation wired into the connective systems so it is part of one world, not an isolated region.

@@ -9,5 +9,6 @@
     "markets": "market_feedback/rivalry_feedback=1 turn on global arms/oil markets and the multi-patron contest (§21/§8)."
   },
   "market_feedback": 1.0,
-  "rivalry_feedback": 1.0
+  "rivalry_feedback": 1.0,
+  "grand_scoring": 1
 }

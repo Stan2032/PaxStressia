@@ -54,6 +54,10 @@
 
   "order_junta_weight": 0.4,
   "order_bloc_weight": 0.6,
+  "grand_scoring": 0,
+  "grand_free_weight": 0.5,
+  "order_bloc_weight_grand": 1.0,
+  "grand_bloc_ref": 4,
   "integrity_floor": 0.2,
   "drift_per_tier": 0.15,
 
