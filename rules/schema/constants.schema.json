@@ -29,7 +29,11 @@
     "negotiate_domestic_cost", "negotiate_international_gain",
     "pax_abroad_min", "integrity_clean_min",
     "norm_feedback", "norm_decay", "norm_kinetic_per_use", "norm_law_per_use",
-    "norm_autocracy_per_tier", "norm_recruit_weight", "norm_intl_weight", "norm_patron_weight"
+    "norm_autocracy_per_tier", "norm_recruit_weight", "norm_intl_weight", "norm_patron_weight",
+    "market_feedback", "market_adjust", "arms_baseline", "arms_conflict_weight",
+    "arms_supply_weight", "oil_instability_weight", "oil_domestic_weight",
+    "rivalry_feedback", "rivalry_adjust", "patron_strength_gain", "patron_bandwagon",
+    "rivalry_bandwagon", "sanctions_patron_global"
   ],
   "properties": {
     "turn_scale": { "type": "string", "enum": ["month", "quarter"] },
@@ -129,6 +133,19 @@
     "norm_recruit_weight": { "type": "number", "minimum": 0, "description": "How strongly a kinetic/autocratic world precedent fuels recruitment in every theater." },
     "norm_intl_weight": { "type": "number", "minimum": 0, "description": "How strongly world norms move International each turn (law rewarded, force/autocracy punished)." },
     "norm_patron_weight": { "type": "number", "minimum": 0, "description": "How strongly an autocratic world norm raises rival-patron appeal everywhere." },
+    "market_feedback": { "type": "number", "minimum": 0, "description": "Master gain on the global arms/oil markets (§21). 0 = off (single-theater); >0 in grand." },
+    "market_adjust": { "type": "number", "minimum": 0, "maximum": 1, "description": "Per-turn smoothing of a market toward its conflict/instability target." },
+    "arms_baseline": { "type": "number", "minimum": 0, "description": "Mean insurgent strength treated as a neutral arms market." },
+    "arms_conflict_weight": { "type": "number", "minimum": 0, "description": "How strongly world conflict raises the arms market." },
+    "arms_supply_weight": { "type": "number", "minimum": 0, "description": "How strongly a hot arms market lifts insurgent ExternalSupport in every theater." },
+    "oil_instability_weight": { "type": "number", "minimum": 0, "description": "How strongly instability in oil-producing nations raises the oil market." },
+    "oil_domestic_weight": { "type": "number", "minimum": 0, "description": "How strongly a high oil market drags the importer-democracy's Domestic standing." },
+    "rivalry_feedback": { "type": "number", "minimum": 0, "description": "Master gain on multi-patron rivalry (§8). 0 = off (single-theater keeps mercenary-only); >0 in grand." },
+    "rivalry_adjust": { "type": "number", "minimum": 0, "maximum": 1, "description": "Per-turn smoothing of the rivalry score toward the share of the world captured." },
+    "patron_strength_gain": { "type": "number", "minimum": 0, "description": "Global reach a patron gains per turn per state aligned to it." },
+    "patron_bandwagon": { "type": "number", "minimum": 0, "description": "How strongly a globally ascendant patron captures faster everywhere." },
+    "rivalry_bandwagon": { "type": "number", "minimum": 0, "description": "How strongly a high rivalry score (much of the world captured) accelerates further captures." },
+    "sanctions_patron_global": { "type": "number", "minimum": 0, "description": "Global reach a targeted designation strips from the backing patron — deny one state, weaken it everywhere." },
     "notes": { "type": "object", "additionalProperties": { "type": "string" } }
   }
 }

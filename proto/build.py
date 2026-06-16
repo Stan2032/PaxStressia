@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 HTML = Path(__file__).resolve().parent / "index.html"
-RULE_FILES = ("nodes", "edges", "factions", "initiatives", "events", "constants")
+RULE_FILES = ("nodes", "edges", "factions", "initiatives", "events", "constants", "patrons")
 # Presentation-only data bundled into the snapshot but not part of the sim rules.
 EXTRA_FILES = ("sources",)
 BLOCK = re.compile(

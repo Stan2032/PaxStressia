@@ -19,6 +19,7 @@ PAIRS = [
     ("initiatives.json", "initiative.schema.json"),
     ("events.json", "event.schema.json"),
     ("constants.json", "constants.schema.json"),
+    ("patrons.json", "patrons.schema.json"),
 ]
 
 

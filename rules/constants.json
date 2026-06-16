@@ -103,6 +103,20 @@
   "norm_intl_weight": 0.4,
   "norm_patron_weight": 0.3,
 
+  "market_feedback": 0,
+  "market_adjust": 0.2,
+  "arms_baseline": 22,
+  "arms_conflict_weight": 0.8,
+  "arms_supply_weight": 0.6,
+  "oil_instability_weight": 0.7,
+  "oil_domestic_weight": 0.5,
+  "rivalry_feedback": 0,
+  "rivalry_adjust": 0.15,
+  "patron_strength_gain": 0.5,
+  "patron_bandwagon": 0.1,
+  "rivalry_bandwagon": 0.4,
+  "sanctions_patron_global": 8,
+
   "notes": {
     "status": "CALIBRATED at v0.5 against Scenario 1 'The Arc': passive player reproduces 2012-2026 on 10/10 seeds — Mali junta in window, cascade ML->BF->NE, bloc forms, insurgency still growing at the horizon (harness/calibrate.py, enforced by tests/test_thesis.py). Values remain open to refinement as v0.6+ systems land.",
     "formulas": "Each key is referenced by name in DESIGN.md §18.5. Change values here, never in code.",

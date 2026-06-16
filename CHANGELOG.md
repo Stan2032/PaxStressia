@@ -2,6 +2,17 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.11.0 — 2026-06-16
+
+**Deepen the ripples — global markets and a multi-patron contest** (per Stan: "deepen the ripples" — more realistic cross-theater channels so the world is genuinely interconnected, not isolated regions sharing a score). Two new systems on the §21.2 norms template, both gated calibration-safe.
+
+- **Global arms & oil markets** (`sim/markets.py`, §21.3): two world prices (0–100, neutral 50) that the whole board moves and that move it back. **Arms** rises with worldwide insurgent strength and lifts insurgent **ExternalSupport in every theater** (an `arms_mult` on the external term, sibling to the norms' `recruit_mult`) — a violent world arms every front. **Oil** rises with petro-state instability (nodes whose `resources` include `oil`) and drags the importer-democracy's **Domestic** each turn through the ledger (`oil_market`) — the home front pays at the pump.
+- **Rival patrons + global rivalry** (`rules/patrons.json` + generalized `sim/patrons.py`, §21.4): the §8 allegiance market becomes a **contest** of three real archetypes — **mercenary** (Wagner/Africa-Corps: fast, coup-proofing, oil-funded), **investor** (infrastructure-and-debt, non-interference), **proxy** (arms-and-advisers via the faction graph). Each captured state picks the highest-**appeal** patron (local standing + a bandwagon on its *global* `patron_strength` + speed + oil boost); a `rivalry` score tracks the share of the world the rival bloc holds, and a winning bloc captures faster.
+- **Every choice connects, made literal:** targeted **sanctions** (the §20 `designate` op) now also dock the dominant patron's **global** strength — deny a patron one state and it is weaker in *all* of them.
+- **Calibration-safe by construction:** both systems gated by `market_feedback` / `rivalry_feedback` — **0 in single-theater** (markets pinned at 50, `arms_mult==1`, no `oil_market` ledger line, mercenary-only pull byte-identical to v0.10 → **Sahel history still 10/10**), **>0 in grand mode**.
+- Ported to both the Python sim and the JS prototype (a "World markets & rivals" readout joins "World precedent" in grand mode); `markets`/`patron_strength`/`rivalry` serialize. Fixed two JS-port parity bugs found in verification: node state now carries `resources` (so the oil market sees petro-states) and the smoke harness loads `patrons`. `tests/test_markets.py` (9 tests) enforces the ripples and the gating. **86 tests pass / 1 xfail; calibration 10/10; grand determinism holds on both engines.**
+- Honest scope (DESIGN §21.5): this deepens the *systems* interconnection; grand mode is still **not** history-calibrated, and ~45 nodes, ideology contagion, and the map-UI pass remain the backlog.
+
 ## v0.10.0 — 2026-06-15
 
 **Grand mode — the world scale, and the layer that makes every choice ripple everywhere** (per Stan: "go fully global now"). The v2.0 vision pulled forward; this is the tested foundation, with markets/multi-patron/more-nations to follow.

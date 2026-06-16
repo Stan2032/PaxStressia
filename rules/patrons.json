@@ -1,0 +1,29 @@
+[
+  {
+    "id": "mercenary",
+    "name": "Mercenary patron",
+    "model": "Russia / Wagner–Africa Corps model: coup-proofing services, no human-rights strings, payment in mining and oil concessions, arrives fast.",
+    "speed": 1.3,
+    "oil_funded": true,
+    "notes": "The default regime-backer of the single-theater Sahel; fastest, no conditions.",
+    "sources": ["Wagner/Africa Corps Mali deployment record"]
+  },
+  {
+    "id": "investor",
+    "name": "Investor patron",
+    "model": "China model: infrastructure-for-influence, non-interference doctrine, debt leverage, plays the long game.",
+    "speed": 0.8,
+    "oil_funded": false,
+    "notes": "Slower but durable; competes hardest where governance is functional.",
+    "sources": ["Belt-and-Road / non-interference investment playbook"]
+  },
+  {
+    "id": "proxy",
+    "name": "Proxy patron",
+    "model": "Iran model: arms and ideology routed through the insurgent/faction graph itself.",
+    "speed": 1.0,
+    "oil_funded": true,
+    "notes": "Competes hardest where an aligned faction graph already exists.",
+    "sources": ["Proxy-network arms-and-ideology playbook"]
+  }
+]

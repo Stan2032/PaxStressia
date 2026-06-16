@@ -11,7 +11,7 @@ new Function("module", match[1])(mod);
 const PaxEngine = mod.exports;
 
 const rules = {};
-for (const f of ["nodes", "edges", "factions", "initiatives", "events", "constants"]) {
+for (const f of ["nodes", "edges", "factions", "initiatives", "events", "constants", "patrons"]) {
   rules[f] = JSON.parse(readFileSync(new URL(`../rules/${f}.json`, import.meta.url), "utf8"));
 }
 // Arc scenario, merged the way the UI and sim/world.py merge (§18.9)
@@ -199,6 +199,18 @@ check(passive.state.player.drift === 0, "passive: no drift");
     "grand: passive leaves norms neutral");
   for (const n of a.nodesSorted()) for (const f of Object.keys(n.presence))
     check(n.presence[f].s >= 0 && n.presence[f].s <= 100, "grand: presence in range @" + n.id);
+  // v0.11 markets + multi-patron rivalry (serialized, deterministic, ripples move)
+  check(a.serialize().includes('"markets"') && a.serialize().includes('"rivalry"'),
+    "grand: markets/rivalry serialized");
+  check(passive.state.markets.arms > 55, "grand: conflict heats the arms market");
+  const winners = Object.values(passive.state.patronStrength).filter((v) => v > 5).length;
+  check(winners >= 1, "grand: the patron contest produces winners");
+  // single-theater gating: markets stay neutral on the arc
+  const arc = PaxEngine.Game(arcRules, 2);
+  for (let t = 0; t < 40; t++) { const r = arc.endTurn([{ initiative: "drone_strike", node: "gao" }]);
+    if (r.phase === "event") arc.resolveEvent(0); }
+  check(arc.state.markets.arms === 50 && arc.state.rivalry === 0,
+    "single-theater: markets/rivalry dormant");
 }
 
 if (failures) { console.error(failures + " smoke failures"); process.exit(1); }

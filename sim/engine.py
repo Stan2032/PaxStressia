@@ -15,6 +15,7 @@ import random
 from . import blocs as blocs_mod
 from . import events as events_mod
 from . import factions as factions_mod
+from . import markets as markets_mod
 from . import norms as norms_mod
 from . import patrons as patrons_mod
 from .elections import election_tick, mandate_income
@@ -192,14 +193,21 @@ class Engine:
         if world.exposure.get(country, 0.0) >= consts["sanctions_exposure_min"]:
             world.exposure[country] -= consts["sanctions_exposure_cost"]
             self.ledger.apply(world, INTERNATIONAL, source, consts["sanctions_intl"])
+            patron = patrons_mod.dominant_patron(world, country)
             for node in world.country_nodes(country):
-                node.patron_influence["mercenary"] = max(
-                    0.0, node.patron_influence.get("mercenary", 0.0) - consts["sanctions_patron"]
+                node.patron_influence[patron] = max(
+                    0.0, node.patron_influence.get(patron, 0.0) - consts["sanctions_patron"]
+                )
+            # deny the patron one state and it is weaker in all of them (§8, grand)
+            if patron in world.patron_strength:
+                world.patron_strength[patron] = max(
+                    0.0, world.patron_strength[patron] - consts["sanctions_patron_global"]
                 )
             for bloc in world.blocs:
                 if country in bloc["countries"]:
                     bloc["stage"] = max(1.0, bloc["stage"] - consts["sanctions_bloc_slow"])
-            log.append({"event": "designation", "country": country, "source": source})
+            log.append({"event": "designation", "country": country, "patron": patron,
+                        "source": source})
         else:
             self.ledger.apply(world, INTERNATIONAL, f"{source}:thin_case", -1.0)
             log.append({"event": "designation_failed", "country": country, "source": source})
@@ -324,10 +332,11 @@ class Engine:
         amnesty_rates, umbrella = self._refresh_actives()
         if umbrella > 0:
             self.ledger.apply(world, INTERNATIONAL, "un_umbrella", umbrella)
-        # c) faction growth, itemized — scaled by the global precedent layer (§21)
+        # c) faction growth, itemized — scaled by the global precedent + arms market (§21)
         recruit_mult = norms_mod.recruit_multiplier(world, consts)
+        arms_mult = markets_mod.arms_mult(world, consts)
         growth_log, attrition_dealt = factions_mod.apply_growth(
-            world, consts, amnesty_rates, recruit_mult
+            world, consts, amnesty_rates, recruit_mult, arms_mult
         )
         # c2) spread over edges (v0.4)
         turn_log += factions_mod.apply_spread(world, consts)
@@ -339,8 +348,9 @@ class Engine:
         turn_log += factions_mod.collapse_rolls(world, consts, self.rng, self.ledger)
         # f2) bloc formation + consolidation clock (§5.4)
         turn_log += blocs_mod.update_blocs(world, consts, self.ledger)
-        # g) patron allegiance market + exposure decay (§8, §20)
-        turn_log += patrons_mod.market(world, consts)
+        # g) patron allegiance market (multi-patron in grand) + markets + exposure decay
+        turn_log += patrons_mod.market(world, consts, self.rules.get("patrons", []))
+        markets_mod.update_markets(world, consts)
         patrons_mod.decay_exposure(world, consts)
         # h) event draw
         card = events_mod.draw(world, consts, self.rng, self.deck)
@@ -361,6 +371,7 @@ class Engine:
 
         # Phase 4 — Consequence
         norms_mod.apply_feedback(world, consts, self.ledger)
+        markets_mod.apply_feedback(world, consts, self.ledger)
         new_casualties = player.casualties - casualties_before
         if new_casualties:
             self.ledger.apply(
