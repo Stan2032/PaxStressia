@@ -9,3 +9,7 @@ venv/
 .ruff_cache/
 artifacts/
 artifacts-*/
+
+# headless board-preview artifacts (proto/preview.mjs output)
+proto/preview.svg
+proto/preview*.png

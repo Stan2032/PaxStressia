@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.17.0 — 2026-06-16
+
+**Show, don't tell — the map starts speaking (UI pass 1)** (per Stan: less wordy, understand the game by inference from the screen, make each "idea" a concrete object). A presentation turn, not a systems one — no engine, rules, or calibration change.
+
+- **The board carries the state now.** Insurgent strength is a **red ring whose thickness *is* the strength** — you read the hot spots at a glance instead of parsing numbers. Node colour is who-rules (green civilian · red junta · purple emirate · grey collapsed); your standing **Regional Command is a planted flag**; a **petro-state is an oil drop**; capitals a **★**.
+- **A 40-nation board can't carry 40 labels**, so when the map is dense it drops them and you **tap a nation** to learn its name and read its detail — interactive and intuitive, not a wall of text. (The 12-node Arc stays fully labelled.)
+- **Every resource is an object, not a word:** the header reads 🏛️ Mandate · 💰 Funds · 🏠 Home · 🤝 Allies · 🛡️ Local · ⛓️ Drift, with the explanations moved to tooltips and a concise visual map legend added to the Key. (Emoji/SVG glyphs stand in for the production art; the *principle* is what's binding — DESIGN §13.3 extended.)
+- **New dev tool `proto/preview.mjs`** renders the board headlessly (SVG → PNG via cairosvg) so the visual language can be reviewed without a browser. It immediately earned its keep: it caught a real bug — the population-based node radius blew up at grand scale (India's 1.3M population drew a node covering half the map) — now **log-scaled and capped**.
+- Proto/UI only: the engine, rules, and `rules/*.json` are untouched, so the **103-test suite, both-engine smoke, and Sahel calibration (10/10) are unaffected**; the proto snapshot stays fresh. Honest scope: the 40-node board is legible but **dense** — a pan/zoom pass is the next UI step.
+
 ## v0.16.0 — 2026-06-16
 
 **The Emergency Powers track — and the thesis-as-test-suite is now complete.** The game's most central theme made fully mechanical: a democracy can win ugly with authoritarian powers, but the score knows. This promotes the **last remaining `xfail`** design-thesis test to enforced — all four of the design's load-bearing claims are now true by force.

@@ -36,6 +36,9 @@
   .node .pips{fill:var(--red); font-size:4px}
   .node .star{fill:var(--amber); font-size:4.5px}
   .node .patron{fill:#ff7043}
+  .node .heat{fill:none; stroke:var(--red); opacity:0.85; pointer-events:none}
+  .node .flag{stroke:var(--teal); stroke-width:0.7; fill:none}
+  .node .oil{fill:#111; stroke:#000; stroke-width:0.3}
   #sheet{background:var(--panel); border-top:2px solid #000; height:46%; display:flex;
     flex-direction:column}
   nav{display:flex}
@@ -107,19 +110,19 @@
   <header>
     <div class="row">
       <span class="date" id="hDate">—</span>
-      <span class="chip" title="Political capital — spend it each month on actions. Comes from voter support.">Mandate <b id="hMandate">0</b></span>
-      <span class="chip" title="Money for programmes this month.">Funds <b id="hTreasury">0</b></span>
+      <span class="chip" title="Mandate — your political capital. Spend it each month on actions; it comes from the voters' support.">🏛️ <b id="hMandate">0</b></span>
+      <span class="chip" title="Funds — money for programmes this month.">💰 <b id="hTreasury">0</b></span>
       <span class="chip" id="hElection">—</span>
-      <span class="chip" id="hDrift" style="display:none" title="Authoritarian Drift — emergency powers you've used. Permanently lowers your final score.">Drift <b>0</b></span>
-      <span class="chip" id="hSecrets" style="display:none; color:var(--red)" title="Buried scandals. Each turn there's a chance one leaks — costing far more than disclosing would have. A free press makes leaks more likely.">Buried <b>0</b></span>
+      <span class="chip" id="hDrift" style="display:none" title="Authoritarian Drift — the emergency powers you've reached for. Permanent, and it directly drags your final score: the democracy is the prize you're spending.">⛓️ <b>0</b></span>
+      <span class="chip" id="hSecrets" style="display:none; color:var(--red)" title="Buried scandals. Each turn there's a chance one leaks — costing far more than disclosing would have. A free press makes leaks more likely.">📂 <b>0</b></span>
       <button id="helpBtn" title="What am I looking at?">?</button>
     </div>
     <div class="gauges">
-      <div class="gauge"><label><span>Home <span class="hint">voters</span></span> <span id="vDom"></span></label>
+      <div class="gauge"><label><span title="Home legitimacy — the voters who can end your war at the ballot box">🏠 <span class="hint">home</span></span> <span id="vDom"></span></label>
         <div class="bar"><i id="bDom" style="background:var(--blue)"></i></div></div>
-      <div class="gauge"><label><span>Allies <span class="hint">world</span></span> <span id="vIntl"></span></label>
+      <div class="gauge"><label><span title="International legitimacy — allies and institutions standing with you">🤝 <span class="hint">allies</span></span> <span id="vIntl"></span></label>
         <div class="bar"><i id="bIntl" style="background:var(--teal)"></i></div></div>
-      <div class="gauge"><label><span>Local <span class="hint">on the ground</span></span> <span id="vLoc"></span></label>
+      <div class="gauge"><label><span title="Local legitimacy — whether the people on the ground trust you over the insurgency (the real win)">🛡️ <span class="hint">local</span></span> <span id="vLoc"></span></label>
         <div class="bar"><i id="bLoc" style="background:var(--green)"></i></div></div>
     </div>
   </header>
@@ -1156,32 +1159,47 @@ if (typeof document !== "undefined") (function () {
       const cls = e.types.includes("smuggling") ? "edge smuggling" : "edge";
       svg += `<line class="${cls}" x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}"/>`;
     }
+    const commands = game.state.commands || [];
+    // A 40-nation board can't carry 40 labels: when dense, the map speaks in
+    // colour + heat, and you tap a nation to learn its name and read its detail.
+    const dense = game.nodesSorted().length > 20;
     for (const n of game.nodesSorted()) {
       const [x, y] = POS[n.id] || [50, 50];
-      const r = 2.4 + Math.sqrt(n.population_k) / 26;
+      // log-scaled, capped: nations span millions (India) to thousands (Haiti),
+      // so a linear radius would swallow the map — bigger states read a touch larger.
+      const r = 2.2 + Math.min(2.8, Math.log10(Math.max(10, n.population_k)) * 0.55);
       const est = game.state.estimates[n.id] || { factions: {} };
       const facs = Object.values(est.factions || {});
       const tot = facs.reduce((s, f) => s + f.s, 0);
       const maxV = Math.max(0, ...facs.map((f) => f.v));
       const pips = "!".repeat(maxV > 60 ? 3 : maxV > 35 ? 2 : maxV > 15 ? 1 : 0);
       const sel = selNode === n.id ? " sel" : "";
-      const op = (0.45 + n.intel * 0.55).toFixed(2);
-      // Flip the label to the left for right-side nodes so it can't run off-edge.
+      // The fire, read at a glance: a red ring whose thickness is the estimated
+      // insurgent strength — show, don't tell (the eye finds the hot spots).
+      const heatW = Math.min(3.5, tot / 20);
       const right = x > 62;
       const lx = right ? x - r - 1.5 : x + r + 1.5;
       const anchor = right ? "end" : "start";
       let label = n.name.split(/[ /]/)[0];
       if (label.length > 9) label = label.slice(0, 8) + "…";
-      const estStr = tot >= 1 ? `~${Math.round(tot)}` : "";
+      const commanded = commands.includes(n.theater);
+      const oil = (n.resources || []).includes("oil");
       svg += `<g class="node${sel}" data-node="${n.id}">` +
+        (tot > 12 ? `<circle class="heat" cx="${x}" cy="${y}" r="${(r + 1).toFixed(1)}" ` +
+          `stroke-width="${heatW.toFixed(1)}"/>` : "") +
         `<circle class="body" cx="${x}" cy="${y}" r="${r}" fill="${GOV_FILL[n.government]}"/>` +
-        (n.capital ? `<text class="star" x="${x - 1.8}" y="${y - r - 1}">★</text>` : "") +
-        ((n.patron.mercenary || 0) >= 50
-          ? `<circle class="patron" cx="${x + r}" cy="${y - r}" r="1.2"/>` : "") +
-        `<text x="${lx}" y="${y - 0.3}" text-anchor="${anchor}">${label}</text>` +
-        (estStr
-          ? `<text class="est" x="${lx}" y="${y + 3.6}" text-anchor="${anchor}" ` +
-            `opacity="${op}">${estStr}</text>` : "") +
+        (n.capital && !dense ? `<text class="star" x="${x - 1.8}" y="${y - r - 1}">★</text>` : "") +
+        // your standing command over this theatre: a planted flag (breadth made visible)
+        (commanded ? `<path class="flag" d="M${(x + r * 0.7).toFixed(1)} ${(y - r - 2.6).toFixed(1)} ` +
+          `v3.4 M${(x + r * 0.7).toFixed(1)} ${(y - r - 2.6).toFixed(1)} ` +
+          `l2.2 0.8 -2.2 0.8"/>` : "") +
+        // a petro-state: an oil drop (what the world's markets are priced on)
+        (oil ? `<circle class="oil" cx="${(x + r * 0.8).toFixed(1)}" cy="${(y + r * 0.8).toFixed(1)}" ` +
+          `r="0.9"/>` : "") +
+        (!dense || sel ? `<text x="${lx}" y="${y - 0.3}" text-anchor="${anchor}">${label}</text>` : "") +
+        (sel && tot >= 1
+          ? `<text class="est" x="${lx}" y="${y + 3.6}" text-anchor="${anchor}">` +
+            `~${Math.round(tot)} fighters</text>` : "") +
         (pips
           ? `<text class="pips" x="${right ? x + r + 1 : x - r - 1}" y="${y - 0.3}" ` +
             `text-anchor="${right ? "start" : "end"}">${pips}</text>` : "") +
@@ -1318,6 +1336,17 @@ if (typeof document !== "undefined") (function () {
       'thing you are fighting. Each month you spend <span class="term">Mandate</span> ' +
       '(political capital) and <span class="term">Funds</span> on actions, then end the month ' +
       'and the world reacts.</p>' +
+      '<h3>Reading the map — it speaks in colour, not words</h3>' +
+      '<p><b>The dot is who rules:</b> <span style="color:#9ccc65">green</span> civilian · ' +
+      '<span style="color:#ef5350">red</span> junta · <span style="color:#9575cd">purple</span> emirate · ' +
+      '<span style="color:#90a4ae">grey</span> collapsed. <b>The red ring is the insurgency</b> — ' +
+      'the thicker it is, the stronger they are. A <span style="color:#26a69a">teal flag</span> is your ' +
+      'standing Regional Command; a dark dot is an oil state; a <span style="color:#ffb300">★</span> ' +
+      'marks a capital. <b>Tap any nation</b> for its name and its numbers.</p>' +
+      '<h3>Your standings are objects in the bar: 🏛️ 💰 🏠 🤝 🛡️</h3>' +
+      '<p>🏛️ <b>Mandate</b> (political capital you spend on actions) · 💰 <b>Funds</b> · ' +
+      '🏠 <b>Home</b> (your voters) · 🤝 <b>Allies</b> (the world) · 🛡️ <b>Local</b> (the ground). ' +
+      '⛓️ <b>Drift</b> appears once you reach for emergency powers — and never leaves.</p>' +
       '<h3>Your three standings (top bars, 0–100, higher is better)</h3>' +
       '<p><span class="term">Home</span> — your voters\' patience. It sets how much ' +
       'Mandate you get. Body bags and scandals drain it.</p>' +
