@@ -2,6 +2,15 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.16.0 — 2026-06-16
+
+**The Emergency Powers track — and the thesis-as-test-suite is now complete.** The game's most central theme made fully mechanical: a democracy can win ugly with authoritarian powers, but the score knows. This promotes the **last remaining `xfail`** design-thesis test to enforced — all four of the design's load-bearing claims are now true by force.
+
+- **The escalating ladder** (§7), each tier grounded in a real measure and built from existing ops (no new ops): **I — Surveillance Mandate** (existing; PATRIOT §215 / RIPA) → **II — Administrative Detention** (`administrative_detention`; Belmarsh, India's MISA, the French *Micas*: strong attrition + imposed governance, the threat removed without trial) → **III — Censorship & Martial Law** (`martial_law`; India 1975, Turkey's decrees: a large control/Order boost, the unrest blacked out). Each is cheap and front-loaded — **genuinely tempting**, real raw power a crisis-chasing player wants — and each adds permanent, one-way **Authoritarian Drift** (the ratchet: emergency powers are rarely repealed — France's 2017 SILT law folded the *état d'urgence* into ordinary law).
+- **The cost is mechanical, never a scold** (Frostpunk's chief criticism, avoided by design): the new `drift_score_cost` makes Drift a **direct** score cost *as well as* the IntegrityMultiplier — the democracy is the prize, and every step toward autocracy spends it; blood (casualties) and backsliding (drift) now sit on the same ledger. A modest accidental-guerrilla backfire (Kilcullen) remains on each tier, but the decisive cost is the Drift, not luck.
+- **The thesis, enforced:** `test_emergency_powers_tempting_but_scored` is promoted from `xfail` to enforced — `EmergencyPowersPolicy` now produces strictly **stronger raw** Stabilization×Order than pure kinetic (~16 vs ~10 across seeds: genuinely tempting) yet a strictly **worse final** score (~−9 vs ~−1: the game still knows). *Win ugly, score poorly.* **All four design-thesis tests are now true by force.**
+- Ported to both engines (the drift cost mirrored in the proto score; the new tiers auto-listed from the snapshot). Calibration-safe: passive, competent, and kinetic play never drift, so the cost is zero for them — **Sahel calibration still 10/10**, the other three thesis tests untouched. Grounded in a research pass on real states of emergency, the ratchet effect, and the tempting-but-losing calibration. **103 tests pass / 0 xfail; calibration 10/10; determinism holds on both engines.**
+
 ## v0.15.0 — 2026-06-16
 
 **Coalition burden-sharing — the second world-scale lever** (the follow-on to v0.14's Regional Commands). Allies share the upkeep so you can stretch further, but they free-ride and fray — depth, not a cost-multiplier.

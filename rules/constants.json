@@ -78,6 +78,7 @@
 
   "cost_per_casualty": 0.25,
   "cost_spend_norm": 0.015,
+  "drift_score_cost": 0.03,
   "domestic_hit_per_casualty": 0.8,
 
   "edge_interdiction_cap": 0.8,

@@ -93,10 +93,14 @@ class PureHeartsMindsPolicy(_BudgetedPolicy):
 
 
 class EmergencyPowersPolicy(PureKineticPolicy):
-    """Kinetic plus every drift tier on offer: tempting, scored (§11)."""
+    """Kinetic plus the full Emergency Powers ladder (§7), climbed worst-first:
+    martial law and detention deliver real, immediate raw power — the toolkit is
+    *genuinely* tempting — but the permanent Authoritarian Drift means the score
+    knows (§11). Win ugly, score poorly."""
 
     name = "emergency_powers"
-    preferences = ["surveillance_expansion", *PureKineticPolicy.preferences]
+    preferences = ["martial_law", "administrative_detention", "surveillance_expansion",
+                   *PureKineticPolicy.preferences]
 
 
 class MixedPolicy(_BudgetedPolicy):

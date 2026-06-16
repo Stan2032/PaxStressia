@@ -1,14 +1,12 @@
 """The design-thesis regression suite (DESIGN.md §13.3, PROJECT_CONTEXT §3.8) —
 the idea to protect above all others: the design's claims, asserted in pytest.
 
-As of v0.5 (the calibration milestone) three of the four are **enforced**: the
-Sahel history calibration, the pure-kinetic paradox, and hearts-minds-loses-to-
-momentum. A balance change that breaks any of them now fails CI — the design
-document stays true by force. The fourth (emergency powers tempting-but-scored)
-stays xfail until the full Emergency Powers track lands (v0.6+).
+As of v0.16 **all four are enforced**: the Sahel history calibration, the
+pure-kinetic paradox, hearts-minds-loses-to-momentum, and — once the full
+Emergency Powers track (§7) landed — emergency-powers-tempting-but-scored. A
+balance change that breaks any of them now fails CI: the design document stays
+true by force.
 """
-
-import pytest
 
 from sim import (
     CompetentPolicy,
@@ -136,17 +134,11 @@ def test_a_reasonable_player_can_beat_history():
     assert competent > passive + 5.0, "skilled play must clearly beat inaction"
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="scored-worse holds, but 'genuinely tempting' does not yet: only "
-    "Emergency Powers tier 1 (surveillance) exists and it isn't strong enough to "
-    "out-power restraint (§3.5 — a weak toolkit makes the thesis a strawman). "
-    "Promote when the full escalating track (press/detention/emergency rule, §7) "
-    "lands and delivers real mechanical power at a scored cost.",
-)
 def test_emergency_powers_tempting_but_scored():
-    """The authoritarian toolkit must be genuinely strong (tempting) and the
-    scoring must still know (IntegrityMultiplier). Win ugly, score poorly."""
+    """ENFORCED at v0.16 (the full Emergency Powers track, §7): the authoritarian
+    toolkit must be genuinely strong (tempting) and the scoring must still know
+    (IntegrityMultiplier + the direct drift cost). Win ugly, score poorly — and
+    mechanically, never by a 'you crossed the line' scold (Frostpunk's lesson)."""
     for seed in SEEDS:
         emergency = run(EmergencyPowersPolicy, seed, 96)
         kinetic = run(PureKineticPolicy, seed, 96)

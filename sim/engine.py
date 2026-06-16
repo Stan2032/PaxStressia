@@ -504,6 +504,11 @@ class Engine:
         costs = (
             player.casualties * consts["cost_per_casualty"]
             + player.spent_total * consts["cost_spend_norm"]
+            # Authoritarian Drift is a *direct* cost, not only an Integrity
+            # multiplier (§7, Emergency Powers): the democracy is the prize, and
+            # every step toward autocracy spends it — blood and backsliding on the
+            # same ledger. Zero for any player who never drifts.
+            + player.authoritarian_drift * consts["drift_score_cost"]
         )
         return {
             "stabilization": round(stabilization, 4),
