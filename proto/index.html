@@ -47,6 +47,14 @@
   .grat{stroke:#33444e; stroke-width:0.25; opacity:0.5}
   .land{fill:#36493d; stroke:#3f5446; stroke-width:5; stroke-linejoin:round; opacity:0.95}
   .theaterlbl{fill:#5a6b72; font-size:2.6px; letter-spacing:0.2px; pointer-events:none}
+  /* motion (v0.20): the map reacts to a turn — a fall flashes, a flare pulses, a flag unfurls */
+  @keyframes fellFlash{0%{stroke:#fff; stroke-width:4} 70%{stroke:#fff; stroke-width:2.4} 100%{stroke:#000; stroke-width:1.2}}
+  .node.fell circle.body{animation:fellFlash 1.1s ease-out}
+  @keyframes flarePulse{0%,100%{opacity:0.7} 45%{opacity:1; stroke-width:4.5}}
+  .node.flared .heat{animation:flarePulse 1.2s ease-in-out}
+  @keyframes plantFlag{0%{opacity:0; transform:translateY(2px) scale(0.4)} 100%{opacity:1; transform:none}}
+  .node.plant .flag{animation:plantFlag 0.6s ease-out; transform-box:fill-box; transform-origin:bottom center}
+  @media (prefers-reduced-motion:reduce){.node.fell circle.body,.node.flared .heat,.node.plant .flag{animation:none}}
   #sheet{background:var(--panel); border-top:2px solid #000; height:46%; display:flex;
     flex-direction:column}
   nav{display:flex}
@@ -1077,6 +1085,7 @@ if (typeof document !== "undefined") (function () {
   let scenario = "sahel_lite";
   let tab = "brief", selNode = null, armed = null, queue = [], horizon = 60;
   let view = { x: 0, y: 0, w: 100, h: 100 }, mapInit = false, lblZoom = false;  // map pan/zoom (v0.19)
+  let preTurn = null;  // board snapshot for animating what changed (v0.20)
   const ZMIN = 22;  // closest zoom (smaller viewBox span = nearer)
 
   async function loadAll() {
@@ -1345,6 +1354,37 @@ if (typeof document !== "undefined") (function () {
       if (b.dataset.z === "reset") resetView();
       else zoomCenter(b.dataset.z === "in" ? 1 / 1.4 : 1.4);
     }));
+  }
+  // ---------- motion: the map reacts to a turn (v0.20) ----------
+  const GOV_RANK = { civilian: 0, junta: 1, emirate: 1, failed: 2 };
+  function nodeHeat(id) {
+    const e = game.state.estimates[id] || { factions: {} };
+    return Object.values(e.factions || {}).reduce((s, f) => s + f.s, 0);
+  }
+  function snapshotBoard() {
+    const nodes = {};
+    for (const n of game.nodesSorted()) nodes[n.id] = { gov: n.government, heat: nodeHeat(n.id) };
+    return { nodes, commands: (game.state.commands || []).slice() };
+  }
+  function flashNode(svg, id, cls) {
+    const g = svg.querySelector(`.node[data-node="${id}"]`);
+    if (!g) return;
+    g.classList.add(cls);
+    setTimeout(() => g.classList.remove(cls), 1500);  // one-shot; gone before any re-render
+  }
+  // After a turn resolves, show what changed: a capital falling flashes, a theatre
+  // where the insurgency flared pulses, a newly-planted command unfurls its flag.
+  function animateChanges(pre) {
+    if (!pre) return;
+    const svg = $("map").querySelector("svg"); if (!svg) return;
+    const cmds = game.state.commands || [];
+    for (const n of game.nodesSorted()) {
+      const b = pre.nodes[n.id]; if (!b) continue;
+      if ((GOV_RANK[n.government] || 0) > (GOV_RANK[b.gov] || 0)) flashNode(svg, n.id, "fell");
+      else if (nodeHeat(n.id) - b.heat > 8) flashNode(svg, n.id, "flared");
+    }
+    for (const th of cmds) if (!pre.commands.includes(th))
+      for (const n of game.nodesSorted()) if (n.theater === th) flashNode(svg, n.id, "plant");
   }
   function onNodeTap(id) {
     if (armed) {
@@ -1746,6 +1786,7 @@ if (typeof document !== "undefined") (function () {
 
   // ---------- turn flow ----------
   function doEndTurn() {
+    preTurn = snapshotBoard();  // remember the board so we can animate what changed
     const res = game.endTurn(queue);
     queue = []; armed = null;
     if (res.phase === "event") showEvent(res.card, res.ctx);
@@ -1813,6 +1854,7 @@ if (typeof document !== "undefined") (function () {
     if (game.state.turn >= horizon ||
         Object.values(game.state.collapsed).every(Boolean)) return showEnd();
     setTab("brief"); renderAll();
+    animateChanges(preTurn); preTurn = null;  // flash what the turn did to the map
   }
   function showEnd() {
     const s = game.score(), e = game.ending();

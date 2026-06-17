@@ -2,6 +2,15 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.20.0 — 2026-06-17
+
+**Motion — the map reacts to a turn** (UI pass 4; what Stan asked for: "animate changes — a junta falling, a command planting, heat flaring"). Consequences are now *shown* on the board, not just itemised in the ledger.
+
+- The board **snapshots itself before a turn resolves**; after it re-renders, exactly the nodes that changed get a **one-shot animation**: a **capital falling** flashes white, a theatre where **the insurgency flared** pulses its heat ring, a **newly-planted command** unfurls its flag.
+- Driven by a pre/post diff (government rank worsened · estimated strength jumped >8 · a new theatre command), adding transient CSS-keyframe classes to just those node groups and auto-removing them before any later re-render — so panning/zooming never re-triggers them.
+- Honours **`prefers-reduced-motion`** (animations off for users who ask). Subtle and purposeful — legibility motion, not decoration.
+- Pure proto interaction: engine, rules, and `rules/*.json` untouched, so the **103-test suite, both-engine smoke, and calibration (10/10) hold**. This rounds out the "interactive & intuitive" UI arc (object-icons → situation-map → pan/zoom → motion).
+
 ## v0.19.0 — 2026-06-16
 
 **Pan & zoom — the 40-nation board becomes legible up close** (UI pass 3; the density gap the last two passes flagged). The intuitive fix Stan's direction asked for.
