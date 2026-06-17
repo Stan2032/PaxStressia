@@ -16,7 +16,9 @@
     "government": "civilian",
     "local_legitimacy": 42,
     "intel_coverage": 0.35,
-    "patron_influence": {},
+    "patron_influence": {
+      "mercenary": 20
+    },
     "presence": {
       "aq_global": {
         "strength": 22,
@@ -71,7 +73,8 @@
     "population_k": 160000,
     "access": 0.6,
     "resources": [
-      "administration"
+      "administration",
+      "oil"
     ],
     "government": "civilian",
     "local_legitimacy": 40,
@@ -101,7 +104,8 @@
     "population_k": 36000,
     "access": 0.7,
     "resources": [
-      "administration"
+      "administration",
+      "oil"
     ],
     "government": "civilian",
     "local_legitimacy": 48,
@@ -131,12 +135,15 @@
     "population_k": 6000,
     "access": 0.6,
     "resources": [
-      "administration"
+      "administration",
+      "oil"
     ],
     "government": "civilian",
     "local_legitimacy": 45,
     "intel_coverage": 0.4,
-    "patron_influence": {},
+    "patron_influence": {
+      "mercenary": 22
+    },
     "presence": {},
     "notes": "Libya — maghreb theater (grand-mode node).",
     "sources": [
@@ -160,7 +167,9 @@
     "government": "civilian",
     "local_legitimacy": 25,
     "intel_coverage": 0.2,
-    "patron_influence": {},
+    "patron_influence": {
+      "mercenary": 22
+    },
     "presence": {
       "aq_global": {
         "strength": 34,
@@ -185,12 +194,15 @@
     "population_k": 40000,
     "access": 0.5,
     "resources": [
-      "administration"
+      "administration",
+      "oil"
     ],
     "government": "civilian",
     "local_legitimacy": 35,
     "intel_coverage": 0.3,
-    "patron_influence": {},
+    "patron_influence": {
+      "mercenary": 24
+    },
     "presence": {},
     "notes": "Sudan — horn theater (grand-mode node).",
     "sources": [
@@ -209,12 +221,15 @@
     "population_k": 28000,
     "access": 0.45,
     "resources": [
-      "administration"
+      "administration",
+      "oil"
     ],
     "government": "civilian",
     "local_legitimacy": 30,
     "intel_coverage": 0.3,
-    "patron_influence": {},
+    "patron_influence": {
+      "proxy": 24
+    },
     "presence": {
       "aq_global": {
         "strength": 24,
@@ -239,12 +254,15 @@
     "population_k": 33000,
     "access": 0.6,
     "resources": [
-      "administration"
+      "administration",
+      "oil"
     ],
     "government": "civilian",
     "local_legitimacy": 35,
     "intel_coverage": 0.45,
-    "patron_influence": {},
+    "patron_influence": {
+      "proxy": 22
+    },
     "presence": {
       "is_global": {
         "strength": 10,
@@ -274,7 +292,9 @@
     "government": "civilian",
     "local_legitimacy": 38,
     "intel_coverage": 0.4,
-    "patron_influence": {},
+    "patron_influence": {
+      "proxy": 22
+    },
     "presence": {},
     "notes": "Syria — levant theater (grand-mode node).",
     "sources": [
@@ -298,7 +318,9 @@
     "government": "civilian",
     "local_legitimacy": 22,
     "intel_coverage": 0.3,
-    "patron_influence": {},
+    "patron_influence": {
+      "proxy": 20
+    },
     "presence": {
       "aq_global": {
         "strength": 40,
@@ -328,7 +350,9 @@
     "government": "civilian",
     "local_legitimacy": 36,
     "intel_coverage": 0.45,
-    "patron_influence": {},
+    "patron_influence": {
+      "investor": 20
+    },
     "presence": {
       "aq_global": {
         "strength": 16,
@@ -388,7 +412,9 @@
     "government": "civilian",
     "local_legitimacy": 34,
     "intel_coverage": 0.3,
-    "patron_influence": {},
+    "patron_influence": {
+      "investor": 20
+    },
     "presence": {},
     "notes": "Ferghana Valley — central_asia theater (grand-mode node).",
     "sources": [
@@ -412,7 +438,9 @@
     "government": "civilian",
     "local_legitimacy": 38,
     "intel_coverage": 0.4,
-    "patron_influence": {},
+    "patron_influence": {
+      "investor": 24
+    },
     "presence": {
       "ethno_separatist": {
         "strength": 18,
@@ -442,7 +470,9 @@
     "government": "civilian",
     "local_legitimacy": 45,
     "intel_coverage": 0.45,
-    "patron_influence": {},
+    "patron_influence": {
+      "investor": 22
+    },
     "presence": {
       "ethno_separatist": {
         "strength": 12,
@@ -472,7 +502,9 @@
     "government": "civilian",
     "local_legitimacy": 40,
     "intel_coverage": 0.5,
-    "patron_influence": {},
+    "patron_influence": {
+      "investor": 22
+    },
     "presence": {
       "narco_insurgency": {
         "strength": 30,
@@ -502,7 +534,9 @@
     "government": "civilian",
     "local_legitimacy": 44,
     "intel_coverage": 0.45,
-    "patron_influence": {},
+    "patron_influence": {
+      "investor": 22
+    },
     "presence": {
       "narco_insurgency": {
         "strength": 12,
@@ -532,7 +566,9 @@
     "government": "civilian",
     "local_legitimacy": 40,
     "intel_coverage": 0.3,
-    "patron_influence": {},
+    "patron_influence": {
+      "investor": 20
+    },
     "presence": {
       "is_global": {
         "strength": 8,
@@ -567,6 +603,670 @@
     "notes": "Sulu Sea littoral — se_asia theater (grand-mode node).",
     "sources": [
       "CFR Global Conflict Tracker"
+    ]
+  },
+  {
+    "id": "burkina",
+    "name": "Burkina Faso",
+    "country": "BF",
+    "capital": true,
+    "theater": "sahel",
+    "governance": 42,
+    "development": 28,
+    "grievance": 62,
+    "population_k": 21000,
+    "access": 0.5,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 40,
+    "intel_coverage": 0.32,
+    "patron_influence": {
+      "mercenary": 18
+    },
+    "presence": {
+      "aq_global": {
+        "strength": 24,
+        "entrenchment": 12,
+        "visibility": 42
+      }
+    },
+    "notes": "Burkina Faso — Sahel JNIM epicentre (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "chad",
+    "name": "Chad",
+    "country": "TD",
+    "capital": true,
+    "theater": "sahel",
+    "governance": 40,
+    "development": 24,
+    "grievance": 58,
+    "population_k": 17000,
+    "access": 0.45,
+    "resources": [
+      "oil"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 38,
+    "intel_coverage": 0.3,
+    "patron_influence": {
+      "mercenary": 16
+    },
+    "presence": {
+      "is_global": {
+        "strength": 14,
+        "entrenchment": 8,
+        "visibility": 32
+      }
+    },
+    "notes": "Chad — Lake Chad basin, ISWAP pressure (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "mauritania",
+    "name": "Mauritania",
+    "country": "MR",
+    "capital": true,
+    "theater": "sahel",
+    "governance": 46,
+    "development": 32,
+    "grievance": 48,
+    "population_k": 4700,
+    "access": 0.5,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 45,
+    "intel_coverage": 0.33,
+    "patron_influence": {},
+    "presence": {
+      "aq_global": {
+        "strength": 8,
+        "entrenchment": 6,
+        "visibility": 25
+      }
+    },
+    "notes": "Mauritania — former AQIM range, now comparatively held (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "cameroon",
+    "name": "Cameroon",
+    "country": "CM",
+    "capital": true,
+    "theater": "west_africa",
+    "governance": 44,
+    "development": 35,
+    "grievance": 55,
+    "population_k": 27000,
+    "access": 0.48,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 42,
+    "intel_coverage": 0.32,
+    "patron_influence": {
+      "investor": 14
+    },
+    "presence": {
+      "is_global": {
+        "strength": 12,
+        "entrenchment": 7,
+        "visibility": 30
+      },
+      "ethno_separatist": {
+        "strength": 10,
+        "entrenchment": 8,
+        "visibility": 28
+      }
+    },
+    "notes": "Cameroon — Far North (Boko Haram) plus Ambazonia separatists (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "ethiopia",
+    "name": "Ethiopia",
+    "country": "ET",
+    "capital": true,
+    "theater": "horn",
+    "governance": 60,
+    "development": 30,
+    "grievance": 58,
+    "population_k": 110000,
+    "access": 0.42,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 40,
+    "intel_coverage": 0.3,
+    "patron_influence": {
+      "investor": 18
+    },
+    "presence": {
+      "ethno_separatist": {
+        "strength": 20,
+        "entrenchment": 12,
+        "visibility": 38
+      }
+    },
+    "notes": "Ethiopia — Tigray / Oromo conflicts (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "kenya",
+    "name": "Kenya",
+    "country": "KE",
+    "capital": true,
+    "theater": "horn",
+    "governance": 64,
+    "development": 40,
+    "grievance": 45,
+    "population_k": 53000,
+    "access": 0.55,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 48,
+    "intel_coverage": 0.4,
+    "patron_influence": {
+      "investor": 16
+    },
+    "presence": {
+      "aq_global": {
+        "strength": 10,
+        "entrenchment": 6,
+        "visibility": 30
+      }
+    },
+    "notes": "Kenya — al-Shabaab cross-border spillover (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "south_sudan",
+    "name": "South Sudan",
+    "country": "SS",
+    "capital": true,
+    "theater": "east_africa",
+    "governance": 30,
+    "development": 18,
+    "grievance": 70,
+    "population_k": 11000,
+    "access": 0.35,
+    "resources": [
+      "oil"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 30,
+    "intel_coverage": 0.25,
+    "patron_influence": {
+      "mercenary": 14
+    },
+    "presence": {
+      "ethno_separatist": {
+        "strength": 22,
+        "entrenchment": 14,
+        "visibility": 40
+      }
+    },
+    "notes": "South Sudan — post-independence civil war (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "drcongo",
+    "name": "DR Congo",
+    "country": "CD",
+    "capital": true,
+    "theater": "east_africa",
+    "governance": 34,
+    "development": 22,
+    "grievance": 66,
+    "population_k": 89000,
+    "access": 0.3,
+    "resources": [
+      "minerals"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 32,
+    "intel_coverage": 0.25,
+    "patron_influence": {
+      "investor": 16
+    },
+    "presence": {
+      "is_global": {
+        "strength": 16,
+        "entrenchment": 10,
+        "visibility": 34
+      },
+      "ethno_separatist": {
+        "strength": 18,
+        "entrenchment": 12,
+        "visibility": 36
+      }
+    },
+    "notes": "DR Congo — ADF (IS-aligned) and M23 in the east (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "car",
+    "name": "Central African Republic",
+    "country": "CF",
+    "capital": true,
+    "theater": "east_africa",
+    "governance": 28,
+    "development": 16,
+    "grievance": 72,
+    "population_k": 5000,
+    "access": 0.3,
+    "resources": [
+      "minerals"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 28,
+    "intel_coverage": 0.22,
+    "patron_influence": {
+      "mercenary": 30
+    },
+    "presence": {
+      "ethno_separatist": {
+        "strength": 20,
+        "entrenchment": 12,
+        "visibility": 38
+      }
+    },
+    "notes": "Central African Republic — Wagner-anchored regime, ex-Seleka militias (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "egypt",
+    "name": "Egypt",
+    "country": "EG",
+    "capital": true,
+    "theater": "maghreb",
+    "governance": 70,
+    "development": 42,
+    "grievance": 50,
+    "population_k": 95000,
+    "access": 0.5,
+    "resources": [
+      "oil"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 44,
+    "intel_coverage": 0.42,
+    "patron_influence": {},
+    "presence": {
+      "is_global": {
+        "strength": 12,
+        "entrenchment": 8,
+        "visibility": 30
+      }
+    },
+    "notes": "Egypt — IS Sinai Province (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "tunisia",
+    "name": "Tunisia",
+    "country": "TN",
+    "capital": true,
+    "theater": "maghreb",
+    "governance": 66,
+    "development": 45,
+    "grievance": 48,
+    "population_k": 11000,
+    "access": 0.55,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 50,
+    "intel_coverage": 0.42,
+    "patron_influence": {},
+    "presence": {
+      "is_global": {
+        "strength": 8,
+        "entrenchment": 5,
+        "visibility": 25
+      }
+    },
+    "notes": "Tunisia — IS-linked cells, foreign-fighter exporter (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "lebanon",
+    "name": "Lebanon",
+    "country": "LB",
+    "capital": true,
+    "theater": "levant",
+    "governance": 40,
+    "development": 44,
+    "grievance": 55,
+    "population_k": 6000,
+    "access": 0.5,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 42,
+    "intel_coverage": 0.4,
+    "patron_influence": {
+      "proxy": 26
+    },
+    "presence": {
+      "ethno_separatist": {
+        "strength": 10,
+        "entrenchment": 8,
+        "visibility": 28
+      }
+    },
+    "notes": "Lebanon — Iran-proxy armed politics (Hezbollah), state paralysis (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "india",
+    "name": "India",
+    "country": "IN",
+    "capital": true,
+    "theater": "south_asia",
+    "governance": 74,
+    "development": 38,
+    "grievance": 50,
+    "population_k": 1300000,
+    "access": 0.45,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 46,
+    "intel_coverage": 0.4,
+    "patron_influence": {},
+    "presence": {
+      "ethno_separatist": {
+        "strength": 18,
+        "entrenchment": 12,
+        "visibility": 34
+      },
+      "narco_insurgency": {
+        "strength": 12,
+        "entrenchment": 10,
+        "visibility": 28
+      }
+    },
+    "notes": "India — Kashmir insurgency and the Naxalite (Maoist) belt (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "myanmar",
+    "name": "Myanmar",
+    "country": "MM",
+    "capital": true,
+    "theater": "se_asia",
+    "governance": 38,
+    "development": 26,
+    "grievance": 68,
+    "population_k": 54000,
+    "access": 0.35,
+    "resources": [
+      "minerals"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 32,
+    "intel_coverage": 0.28,
+    "patron_influence": {
+      "investor": 24
+    },
+    "presence": {
+      "ethno_separatist": {
+        "strength": 26,
+        "entrenchment": 16,
+        "visibility": 42
+      }
+    },
+    "notes": "Myanmar — post-coup civil war, ethnic armed organisations (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "bangladesh",
+    "name": "Bangladesh",
+    "country": "BD",
+    "capital": true,
+    "theater": "south_asia",
+    "governance": 62,
+    "development": 36,
+    "grievance": 52,
+    "population_k": 165000,
+    "access": 0.5,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 44,
+    "intel_coverage": 0.38,
+    "patron_influence": {},
+    "presence": {
+      "aq_global": {
+        "strength": 8,
+        "entrenchment": 5,
+        "visibility": 24
+      }
+    },
+    "notes": "Bangladesh — AQIS / JMB cells (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "indonesia",
+    "name": "Indonesia",
+    "country": "ID",
+    "capital": true,
+    "theater": "se_asia",
+    "governance": 68,
+    "development": 40,
+    "grievance": 46,
+    "population_k": 270000,
+    "access": 0.45,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 48,
+    "intel_coverage": 0.4,
+    "patron_influence": {
+      "investor": 14
+    },
+    "presence": {
+      "is_global": {
+        "strength": 8,
+        "entrenchment": 5,
+        "visibility": 24
+      },
+      "ethno_separatist": {
+        "strength": 10,
+        "entrenchment": 8,
+        "visibility": 26
+      }
+    },
+    "notes": "Indonesia — Jemaah Islamiyah / JAD plus Papua separatism (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "tajikistan",
+    "name": "Tajikistan",
+    "country": "TJ",
+    "capital": true,
+    "theater": "central_asia",
+    "governance": 44,
+    "development": 28,
+    "grievance": 50,
+    "population_k": 9000,
+    "access": 0.4,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 40,
+    "intel_coverage": 0.3,
+    "patron_influence": {
+      "investor": 14
+    },
+    "presence": {
+      "is_global": {
+        "strength": 10,
+        "entrenchment": 7,
+        "visibility": 26
+      }
+    },
+    "notes": "Tajikistan — ISKP / IMU pressure on the Afghan border (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "mexico",
+    "name": "Mexico",
+    "country": "MX",
+    "capital": true,
+    "theater": "north_america",
+    "governance": 64,
+    "development": 48,
+    "grievance": 52,
+    "population_k": 126000,
+    "access": 0.55,
+    "resources": [
+      "oil"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 44,
+    "intel_coverage": 0.42,
+    "patron_influence": {},
+    "presence": {
+      "narco_insurgency": {
+        "strength": 28,
+        "entrenchment": 18,
+        "visibility": 44
+      }
+    },
+    "notes": "Mexico — cartel war, contested territorial control (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "haiti",
+    "name": "Haiti",
+    "country": "HT",
+    "capital": true,
+    "theater": "caribbean",
+    "governance": 24,
+    "development": 20,
+    "grievance": 74,
+    "population_k": 11000,
+    "access": 0.35,
+    "resources": [
+      "administration"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 26,
+    "intel_coverage": 0.25,
+    "patron_influence": {},
+    "presence": {
+      "narco_insurgency": {
+        "strength": 24,
+        "entrenchment": 14,
+        "visibility": 40
+      }
+    },
+    "notes": "Haiti — gang collapse of the state, 2024-26 (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
+    ]
+  },
+  {
+    "id": "ecuador",
+    "name": "Ecuador",
+    "country": "EC",
+    "capital": true,
+    "theater": "andes",
+    "governance": 46,
+    "development": 40,
+    "grievance": 54,
+    "population_k": 17000,
+    "access": 0.5,
+    "resources": [
+      "oil"
+    ],
+    "government": "civilian",
+    "local_legitimacy": 42,
+    "intel_coverage": 0.38,
+    "patron_influence": {},
+    "presence": {
+      "narco_insurgency": {
+        "strength": 20,
+        "entrenchment": 12,
+        "visibility": 36
+      }
+    },
+    "notes": "Ecuador — narco-gang security collapse (grand-mode node).",
+    "sources": [
+      "CFR Global Conflict Tracker",
+      "ACLED"
     ]
   }
 ]

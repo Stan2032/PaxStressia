@@ -282,5 +282,100 @@
       "note": "Tier 1 of the Emergency Powers track: real, immediate intel power everywhere — and the Authoritarian Drift is permanent either way. The track must be tempting. That is the point."
     },
     "sources": ["DESIGN §7 Domestic / §11 IntegrityMultiplier"]
+  },
+  {
+    "id": "establish_command",
+    "name": "Establish Regional Command",
+    "family": "diplomatic",
+    "target": "node",
+    "mandate_cost": 3,
+    "treasury_cost": 8,
+    "effects": [
+      { "op": "command" }
+    ],
+    "backfire": {
+      "channel": "occupation_resentment",
+      "probability": 0.15,
+      "effects": [
+        { "op": "grievance", "delta": 4 },
+        { "op": "domestic_legitimacy", "delta": -1 }
+      ],
+      "note": "A standing foreign command can read as occupation: heavy-handed presence breeds local resentment, and at home the first whiff of an open-ended commitment."
+    },
+    "notes": "World-scale lever (§21.7): a standing posture over the target's whole theatre that passively contains insurgency across all its nodes — breadth, not depth — at an accelerating home-front cost. Grand mode only.",
+    "sources": ["US AFRICOM / CENTCOM theatre commands", "Multinational Joint Task Force (Lake Chad); Operation Barkhane"]
+  },
+  {
+    "id": "rally_coalition",
+    "name": "Rally the Coalition",
+    "family": "diplomatic",
+    "target": "global",
+    "mandate_cost": 2,
+    "treasury_cost": 2,
+    "effects": [
+      { "op": "coalition" }
+    ],
+    "backfire": {
+      "channel": "burden_sharing_dispute",
+      "probability": 0.2,
+      "effects": [
+        { "op": "international_legitimacy", "delta": -2 },
+        { "op": "domestic_legitimacy", "delta": -1 }
+      ],
+      "note": "Pressing allies toward their fair share is a hard sell (NATO's 2% fight): a snubbed summit reads as discord abroad and free-riding resentment at home."
+    },
+    "notes": "World-scale lever (§21.8): rallies partners to share the upkeep of your Regional Commands. Cohesion free-rides away each turn and frays under a rising rival bloc, so it must be re-rallied. Grand mode only.",
+    "sources": ["Global Coalition to Defeat ISIS (87 members)", "Olson & Zeckhauser (1966), the economics of alliances; NATO 2% burden-sharing"]
+  },
+  {
+    "id": "administrative_detention",
+    "name": "Administrative Detention (Emergency Powers II)",
+    "family": "domestic",
+    "target": "node",
+    "mandate_cost": 1,
+    "treasury_cost": 1,
+    "effects": [
+      { "op": "attrit", "amount": 14 },
+      { "op": "governance", "delta": 5 },
+      { "op": "drift", "tiers": 2 }
+    ],
+    "backfire": {
+      "channel": "wrongful_detention",
+      "probability": 0.15,
+      "effects": [
+        { "op": "grievance", "delta": 4 },
+        { "op": "local_legitimacy", "delta": -2 },
+        { "op": "domestic_legitimacy", "delta": -2 },
+        { "op": "international_legitimacy", "delta": -2 }
+      ],
+      "note": "Tier 2 of the Emergency Powers track (Belmarsh, India's MISA, the French Micas): detention without trial removes the threat *now* — cheap, immediate, strong. But it is the accidental guerrilla made mechanical (Kilcullen): every wrongful sweep manufactures the insurgents it claims to fight, and the Drift is permanent. It works. That is the trap."
+    },
+    "notes": "Emergency Powers II (§7): front-loaded raw power — strong attrition + imposed control — at a back-loaded, one-way Authoritarian Drift cost the IntegrityMultiplier never forgets.",
+    "sources": ["Belmarsh indefinite detention (UK 2001-04) → control orders → TPIMs", "India MISA (1975 Emergency); French 'Micas' administrative measures (SILT 2017)"]
+  },
+  {
+    "id": "martial_law",
+    "name": "Censorship & Martial Law (Emergency Powers III)",
+    "family": "domestic",
+    "target": "node",
+    "mandate_cost": 2,
+    "treasury_cost": 1,
+    "effects": [
+      { "op": "governance", "delta": 17 },
+      { "op": "local_legitimacy", "delta": -2 },
+      { "op": "drift", "tiers": 3 }
+    ],
+    "backfire": {
+      "channel": "marketplace_of_ideas",
+      "probability": 0.15,
+      "effects": [
+        { "op": "grievance", "delta": 5 },
+        { "op": "domestic_legitimacy", "delta": -5 },
+        { "op": "international_legitimacy", "delta": -5 }
+      ],
+      "note": "Tier 3 (India 1975, Turkey's post-coup decrees): impose control and black out the unrest — a large, immediate Order boost. But you are spending the prize to win the symptom (Merom's marketplace of ideas): the educated middle class defects, allies recoil, and the Drift is steep and permanent."
+    },
+    "notes": "Emergency Powers III (§7): the most tempting and most corrosive tier — big raw control now, the heaviest one-way Drift later. Survive, and lose the democracy you were defending.",
+    "sources": ["India's Emergency (1975-77): censorship + ~100,000 detained", "Turkey post-2016 emergency decrees; the 'ratchet effect' (Yale J. on Regulation)"]
   }
 ]

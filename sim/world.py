@@ -14,7 +14,7 @@ from pathlib import Path
 
 RULES_DIR = Path(__file__).resolve().parent.parent / "rules"
 
-RULE_FILES = ("nodes", "edges", "factions", "initiatives", "events", "constants")
+RULE_FILES = ("nodes", "edges", "factions", "initiatives", "events", "constants", "patrons")
 
 
 def load_rules(rules_dir: Path | None = None, scenario: str | None = None) -> dict:
@@ -81,6 +81,7 @@ class Node:
     patron_influence: dict[str, float]
     presence: dict[str, Presence]
     resources: list[str] = field(default_factory=list)
+    theater: str | None = None  # grand-mode grouping (§21.1), for Regional Commands
     # runtime, engine-owned
     ops_pressure: float = 0.0
     intel_coverage: float = 0.0
@@ -198,6 +199,14 @@ class WorldState:
     norms: dict[str, float] = field(  # global precedent layer (§21, grand mode)
         default_factory=lambda: {"kinetic": 50.0, "rule_of_law": 50.0, "autocracy": 50.0}
     )
+    markets: dict[str, float] = field(  # global arms/oil markets (§21, grand mode)
+        default_factory=lambda: {"arms": 50.0, "oil": 50.0}
+    )
+    patron_ids: list[str] = field(default_factory=list)  # archetype ids from rules/patrons.json
+    patron_strength: dict[str, float] = field(default_factory=dict)  # global reach per patron
+    rivalry: float = 0.0  # how much of the world the rival bloc holds (§8, grand mode)
+    commands: list[str] = field(default_factory=list)  # standing regional commands (§21.7, grand)
+    coalition: float = 0.0  # burden-sharing coalition cohesion 0–100 (§21.8, grand)
 
     def nodes_sorted(self) -> list[Node]:
         return [self.nodes[k] for k in sorted(self.nodes)]
@@ -243,6 +252,11 @@ class WorldState:
             "fired_events": sorted(self.fired_events),
             "exposure": {k: round(v, 4) for k, v in sorted(self.exposure.items())},
             "norms": {k: round(v, 4) for k, v in sorted(self.norms.items())},
+            "markets": {k: round(v, 4) for k, v in sorted(self.markets.items())},
+            "patron_strength": {k: round(v, 4) for k, v in sorted(self.patron_strength.items())},
+            "rivalry": round(self.rivalry, 4),
+            "commands": sorted(self.commands),
+            "coalition": round(self.coalition, 4),
             "blocs": [
                 {"countries": b["countries"], "stage": round(b["stage"], 4),
                  "formed_turn": b["formed_turn"]}
@@ -288,6 +302,7 @@ def build_world(rules: dict) -> WorldState:
             patron_influence=dict(n.get("patron_influence", {})),
             presence=presence,
             resources=list(n.get("resources", [])),
+            theater=n.get("theater"),
         )
     edges = [
         Edge(id=e["id"], a=e["a"], b=e["b"], types=list(e["types"]), capacity=e["capacity"])
@@ -299,6 +314,7 @@ def build_world(rules: dict) -> WorldState:
         international=consts["starting"]["international"],
         treasury=consts["starting"]["treasury"],
     )
+    patron_ids = [p["id"] for p in rules.get("patrons", [])]
     return WorldState(
         turn=0,
         nodes=nodes,
@@ -308,4 +324,6 @@ def build_world(rules: dict) -> WorldState:
         coup_risk={c: 0.0 for c in countries},
         collapsed={c: False for c in countries},
         exposure={c: 0.0 for c in countries},
+        patron_ids=patron_ids,
+        patron_strength={p: 0.0 for p in patron_ids},
     )

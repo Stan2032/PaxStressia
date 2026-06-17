@@ -93,10 +93,14 @@ class PureHeartsMindsPolicy(_BudgetedPolicy):
 
 
 class EmergencyPowersPolicy(PureKineticPolicy):
-    """Kinetic plus every drift tier on offer: tempting, scored (§11)."""
+    """Kinetic plus the full Emergency Powers ladder (§7), climbed worst-first:
+    martial law and detention deliver real, immediate raw power — the toolkit is
+    *genuinely* tempting — but the permanent Authoritarian Drift means the score
+    knows (§11). Win ugly, score poorly."""
 
     name = "emergency_powers"
-    preferences = ["surveillance_expansion", *PureKineticPolicy.preferences]
+    preferences = ["martial_law", "administrative_detention", "surveillance_expansion",
+                   *PureKineticPolicy.preferences]
 
 
 class MixedPolicy(_BudgetedPolicy):
@@ -187,6 +191,83 @@ class CompetentPolicy(Policy):
         return orders
 
 
+class GrandCompetentPolicy(Policy):
+    """The §3.7 reasonable player at WORLD scale (§21.7). Single-theatre triage
+    cannot bend a 40-nation world (v0.13's measured finding), so this one leads
+    with POSTURE — it stands up Regional Commands over its most volatile theatres
+    (breadth) — then spends its few hands on the capitals nearest collapse
+    (depth). It does not over-extend past what the home front can carry: it stops
+    standing up commands once Domestic is strained. Posture sets the board; agency
+    wins it."""
+
+    name = "grand_competent"
+
+    def __init__(self, command_target: int = 3, home_floor: float = 30.0) -> None:
+        self.command_target = command_target
+        self.home_floor = home_floor
+
+    def choose(self, briefing: dict, actions: dict) -> list[dict]:
+        inits = {i["id"]: i for i in actions["initiatives"]}
+        budget_m, budget_t = briefing["mandate"], briefing["treasury"]
+        est = briefing["estimates"]
+        orders: list[dict] = []
+
+        def afford(iid: str) -> bool:
+            i = inits.get(iid)
+            return (i is not None and i["mandate_cost"] <= budget_m
+                    and i["treasury_cost"] <= budget_t)
+
+        def do(iid: str, node: str | None) -> None:
+            nonlocal budget_m, budget_t
+            orders.append({"initiative": iid, "node": node})
+            budget_m -= inits[iid]["mandate_cost"]
+            budget_t -= inits[iid]["treasury_cost"]
+
+        def risk(nid: str) -> float:
+            e = est[nid]
+            forces = sum(f["strength_est"] for f in e["factions"].values())
+            return forces * (1.0 - e["governance"] / 100.0) * (e["grievance"] / 100.0)
+
+        civ = sorted((n for n in est if est[n]["government"] == "civilian"),
+                     key=risk, reverse=True)
+
+        # 1. POSTURE: stand up (or rebuild a lapsed) command over the most volatile
+        #    *uncommanded* theatre — but only while the home front can carry the
+        #    breadth (restraint is competence; over-extension craters Domestic).
+        held = set(briefing.get("commands", []))
+        if (len(held) < self.command_target and briefing["domestic"] > self.home_floor
+                and afford("establish_command")):
+            for nid in civ:
+                th = est[nid].get("theater")
+                if th and th not in held:
+                    do("establish_command", nid)
+                    break
+
+        # 1b. COALITION: keep allies sharing the burden so the commands stay
+        #    affordable — rally when cohesion has bled low and a command is worth
+        #    sustaining (free-riding means it must be re-fed; §21.8).
+        if (held and briefing.get("coalition", 0.0) < 60.0 and afford("rally_coalition")):
+            do("rally_coalition", None)
+
+        # 2. an international umbrella, and sanctions to strip a patron / a bloc
+        if afford("un_mandate"):
+            do("un_mandate", None)
+        if civ and afford("targeted_sanctions"):
+            do("targeted_sanctions", civ[0])
+
+        # 3. DEPTH: pour prevention into the capitals nearest collapse
+        for nid in civ:
+            if risk(nid) <= 0:
+                break
+            if afford("development_program"):
+                do("development_program", nid)
+            elif afford("presence_patrols"):
+                do("presence_patrols", nid)
+            else:
+                break
+        return orders
+
+
 class RandomPolicy(Policy):
     """Seeded chaos for fuzzing. Owns its own RNG — player input is not
     world entropy, so the engine's determinism stream stays clean."""
@@ -219,5 +300,5 @@ class RandomPolicy(Policy):
 POLICIES = {
     cls.name: cls
     for cls in (PassivePolicy, PureKineticPolicy, PureHeartsMindsPolicy,
-                EmergencyPowersPolicy, MixedPolicy, CompetentPolicy)
+                EmergencyPowersPolicy, MixedPolicy, CompetentPolicy, GrandCompetentPolicy)
 }

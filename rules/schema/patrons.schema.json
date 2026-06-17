@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "patrons.schema.json",
+  "title": "PaxStressia rival patrons (rules/patrons.json)",
+  "description": "The systemic rival patrons (DESIGN.md §8) — the regime-backers competing with you in the allegiance market. Real states modeled on documented playbooks; `model` ships the sourcing for the in-game Sources screen. Used by the multi-patron market in grand mode (gated by rivalry_feedback).",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "name", "model", "speed"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "name": { "type": "string", "minLength": 1 },
+      "model": { "type": "string", "minLength": 1, "description": "The documented playbook this archetype is modeled on." },
+      "speed": { "type": "number", "minimum": 0, "description": "Relative capture speed multiplier for this patron's offer." },
+      "oil_funded": { "type": "boolean", "default": false, "description": "Whether a high oil market enriches (and emboldens) this patron." },
+      "notes": { "type": "string" },
+      "sources": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}

@@ -11,7 +11,7 @@ new Function("module", match[1])(mod);
 const PaxEngine = mod.exports;
 
 const rules = {};
-for (const f of ["nodes", "edges", "factions", "initiatives", "events", "constants"]) {
+for (const f of ["nodes", "edges", "factions", "initiatives", "events", "constants", "patrons"]) {
   rules[f] = JSON.parse(readFileSync(new URL(`../rules/${f}.json`, import.meta.url), "utf8"));
 }
 // Arc scenario, merged the way the UI and sim/world.py merge (§18.9)
@@ -191,7 +191,7 @@ check(passive.state.player.drift === 0, "passive: no drift");
   };
   const a = runGrand(4, true), b = runGrand(4, true);
   check(a.serialize() === b.serialize(), "grand: same seed identical");
-  check(Object.keys(a.state.nodes).length >= 18, "grand: many nations");
+  check(Object.keys(a.state.nodes).length >= 36, "grand: the world (v0.12: ~40 nations)");
   check(a.serialize().includes('"norms"'), "grand: norms serialized");
   check(a.state.norms.kinetic > 60, "grand: kinetic play raises the world kinetic norm");
   const passive = runGrand(4, false);
@@ -199,6 +199,40 @@ check(passive.state.player.drift === 0, "passive: no drift");
     "grand: passive leaves norms neutral");
   for (const n of a.nodesSorted()) for (const f of Object.keys(n.presence))
     check(n.presence[f].s >= 0 && n.presence[f].s <= 100, "grand: presence in range @" + n.id);
+  // v0.11 markets + multi-patron rivalry (serialized, deterministic, ripples move)
+  check(a.serialize().includes('"markets"') && a.serialize().includes('"rivalry"'),
+    "grand: markets/rivalry serialized");
+  check(passive.state.markets.arms > 55, "grand: conflict heats the arms market");
+  // v0.13 scale-invariant grand scoring: order folded in, abroad on a 0–100 scale
+  check(a.score().order_mult === 1 && a.score().stabilization >= 0 &&
+    a.score().stabilization <= 100, "grand: scoring is scale-invariant (order folded)");
+  const winners = Object.values(passive.state.patronStrength).filter((v) => v > 5).length;
+  check(winners >= 1, "grand: the patron contest produces winners");
+  // single-theater gating: markets stay neutral on the arc
+  const arc = PaxEngine.Game(arcRules, 2);
+  for (let t = 0; t < 40; t++) { const r = arc.endTurn([{ initiative: "drone_strike", node: "gao" }]);
+    if (r.phase === "event") arc.resolveEvent(0); }
+  check(arc.state.markets.arms === 50 && arc.state.rivalry === 0,
+    "single-theater: markets/rivalry dormant");
+  // v0.14 Regional Commands: establishing one stands up that theatre's command,
+  // contains + serializes; the lever is inert in single-theater (gated).
+  const gc = PaxEngine.Game(grandRules, 7);
+  let rc = gc.endTurn([{ initiative: "establish_command", node: "mali" }]);
+  if (rc.phase === "event") gc.resolveEvent(0);
+  check(gc.state.commands.includes("sahel"), "grand: establish_command stands up a theatre command");
+  check(gc.serialize().includes('"commands"'), "grand: commands serialized");
+  for (let t = 0; t < 20; t++) { const r = gc.endTurn([]); if (r.phase === "event") gc.resolveEvent(0); }
+  check(Array.isArray(gc.state.commands), "grand: commands persist as an array");
+  arc.endTurn([{ initiative: "establish_command", node: "gao" }]);
+  check(arc.state.commands.length === 0, "single-theater: Regional Commands dormant");
+  // v0.15 coalition burden-sharing: rallying raises cohesion + serializes; inert on the arc
+  const gco = PaxEngine.Game(grandRules, 8);
+  let rr = gco.endTurn([{ initiative: "rally_coalition", node: null }]);
+  if (rr.phase === "event") gco.resolveEvent(0);
+  check(gco.state.coalition > 0, "grand: rally_coalition raises coalition cohesion");
+  check(gco.serialize().includes('"coalition"'), "grand: coalition serialized");
+  arc.endTurn([{ initiative: "rally_coalition", node: null }]);
+  check(arc.state.coalition === 0, "single-theater: coalition dormant");
 }
 
 if (failures) { console.error(failures + " smoke failures"); process.exit(1); }

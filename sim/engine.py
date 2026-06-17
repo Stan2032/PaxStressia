@@ -13,8 +13,11 @@ import json
 import random
 
 from . import blocs as blocs_mod
+from . import coalition as coalition_mod
+from . import commands as commands_mod
 from . import events as events_mod
 from . import factions as factions_mod
+from . import markets as markets_mod
 from . import norms as norms_mod
 from . import patrons as patrons_mod
 from .elections import election_tick, mandate_income
@@ -56,8 +59,19 @@ class Engine:
         return f"{year + total // 12}-{total % 12 + 1:02d}"
 
     def _legal_actions(self) -> dict:
+        # gate world-scale-only initiatives (Regional Commands §21.7, Coalition
+        # §21.8) out of single-theatre play, where they are inert — no dead
+        # options offered.
+        gated_off = set()
+        if not commands_mod.enabled(self.consts):
+            gated_off.add("command")
+        if not coalition_mod.enabled(self.consts):
+            gated_off.add("coalition")
         return {
-            "initiatives": [self.initiatives[k] for k in sorted(self.initiatives)],
+            "initiatives": [
+                self.initiatives[k] for k in sorted(self.initiatives)
+                if not any(e["op"] in gated_off for e in self.initiatives[k]["effects"])
+            ],
             "nodes": sorted(self.world.nodes),
         }
 
@@ -175,6 +189,21 @@ class Engine:
                 )
             if targets:
                 log.append({"event": "exposure", "countries": targets, "source": source})
+        elif op == "command":
+            # §21.7: stand up a standing Regional Command over the target node's
+            # theatre (grand-mode, capped, gated). Itemised in the turn log.
+            theater = world.nodes[node_id].theater if node_id else None
+            if commands_mod.establish(world, self.consts, theater):
+                log.append({"event": "command_established", "theater": theater,
+                            "node": node_id, "source": source})
+        elif op == "coalition":
+            # §21.8: rally partners toward their fair share — raises coalition
+            # cohesion (which then shares Regional-Command upkeep). Gated.
+            before = world.coalition
+            coalition_mod.rally(world, self.consts)
+            if world.coalition != before:
+                log.append({"event": "coalition_rallied", "cohesion": round(world.coalition, 1),
+                            "source": source})
         elif op == "designate":
             self._designate(node_id, source, log)
         elif op == "negotiate":
@@ -192,14 +221,21 @@ class Engine:
         if world.exposure.get(country, 0.0) >= consts["sanctions_exposure_min"]:
             world.exposure[country] -= consts["sanctions_exposure_cost"]
             self.ledger.apply(world, INTERNATIONAL, source, consts["sanctions_intl"])
+            patron = patrons_mod.dominant_patron(world, country)
             for node in world.country_nodes(country):
-                node.patron_influence["mercenary"] = max(
-                    0.0, node.patron_influence.get("mercenary", 0.0) - consts["sanctions_patron"]
+                node.patron_influence[patron] = max(
+                    0.0, node.patron_influence.get(patron, 0.0) - consts["sanctions_patron"]
+                )
+            # deny the patron one state and it is weaker in all of them (§8, grand)
+            if patron in world.patron_strength:
+                world.patron_strength[patron] = max(
+                    0.0, world.patron_strength[patron] - consts["sanctions_patron_global"]
                 )
             for bloc in world.blocs:
                 if country in bloc["countries"]:
                     bloc["stage"] = max(1.0, bloc["stage"] - consts["sanctions_bloc_slow"])
-            log.append({"event": "designation", "country": country, "source": source})
+            log.append({"event": "designation", "country": country, "patron": patron,
+                        "source": source})
         else:
             self.ledger.apply(world, INTERNATIONAL, f"{source}:thin_case", -1.0)
             log.append({"event": "designation_failed", "country": country, "source": source})
@@ -279,6 +315,8 @@ class Engine:
             "domestic": player.domestic,
             "international": player.international,
             "estimates": estimates,
+            "commands": sorted(world.commands),  # your own standing posture (§21.7), public
+            "coalition": round(world.coalition, 2),  # burden-sharing cohesion (§21.8), public
             "headlines": self.reports[-1]["log"][-3:] if self.reports else [],
         }
 
@@ -324,10 +362,11 @@ class Engine:
         amnesty_rates, umbrella = self._refresh_actives()
         if umbrella > 0:
             self.ledger.apply(world, INTERNATIONAL, "un_umbrella", umbrella)
-        # c) faction growth, itemized — scaled by the global precedent layer (§21)
+        # c) faction growth, itemized — scaled by the global precedent + arms market (§21)
         recruit_mult = norms_mod.recruit_multiplier(world, consts)
+        arms_mult = markets_mod.arms_mult(world, consts)
         growth_log, attrition_dealt = factions_mod.apply_growth(
-            world, consts, amnesty_rates, recruit_mult
+            world, consts, amnesty_rates, recruit_mult, arms_mult
         )
         # c2) spread over edges (v0.4)
         turn_log += factions_mod.apply_spread(world, consts)
@@ -335,12 +374,16 @@ class Engine:
         factions_mod.entrench_and_visibility(world, consts)
         # e) faction networking
         turn_log += factions_mod.networking_check(world, consts, attrition_dealt)
+        # e2) standing Regional Commands contain their theatres (§21.7, grand) —
+        # before collapse, so a buffered capital can be held; bleeds the home front.
+        commands_mod.apply(world, consts, self.ledger, turn_log)
         # f) state-capture collapse rolls
         turn_log += factions_mod.collapse_rolls(world, consts, self.rng, self.ledger)
         # f2) bloc formation + consolidation clock (§5.4)
         turn_log += blocs_mod.update_blocs(world, consts, self.ledger)
-        # g) patron allegiance market + exposure decay (§8, §20)
-        turn_log += patrons_mod.market(world, consts)
+        # g) patron allegiance market (multi-patron in grand) + markets + exposure decay
+        turn_log += patrons_mod.market(world, consts, self.rules.get("patrons", []))
+        markets_mod.update_markets(world, consts)
         patrons_mod.decay_exposure(world, consts)
         # h) event draw
         card = events_mod.draw(world, consts, self.rng, self.deck)
@@ -361,6 +404,8 @@ class Engine:
 
         # Phase 4 — Consequence
         norms_mod.apply_feedback(world, consts, self.ledger)
+        markets_mod.apply_feedback(world, consts, self.ledger)
+        coalition_mod.decay(world, consts)  # partners free-ride back unless rallied (§21.8)
         new_casualties = player.casualties - casualties_before
         if new_casualties:
             self.ledger.apply(
@@ -416,15 +461,42 @@ class Engine:
                 0.0, 100.0,
             ) / 100.0
 
-        stabilization = 100.0 * sum(
-            (n.local_legitimacy / 100.0) * (n.governance / 100.0) * (1.0 - grip(n))
-            for n in nodes
-        ) / len(nodes)
-        order_mult = 1.0 / (
-            1.0
-            + consts["order_junta_weight"] * world.junta_count()
-            + consts["order_bloc_weight"] * blocs_mod.bloc_containment_term(world, consts)
-        )
+        if consts.get("grand_scoring", 0) > 0:
+            # Grand mode (§21.5): a world police can't stabilise 40 theatres at
+            # once, so it is judged on CONTAINMENT, not omnipotence — scale-
+            # invariant by construction. (a) population-weighted QUALITY, so
+            # protecting a consequential state counts for more than a micro-
+            # state; (b) the FREE fraction of the world's capitals (1 − junta
+            # share); blended, then dragged down by consolidated authoritarian
+            # blocs (the §5.4 loss condition). order_mult is folded in here.
+            def wt(n):
+                return max(1.0, n.population_k) ** 0.5
+            wsum = sum(wt(n) for n in nodes) or 1.0
+            quality = 100.0 * sum(
+                wt(n) * (n.local_legitimacy / 100.0) * (n.governance / 100.0) * (1.0 - grip(n))
+                for n in nodes
+            ) / wsum
+            n_c = max(1, len(world.countries()))
+            free_frac = 1.0 - world.junta_count() / n_c
+            bloc_pen = 1.0 / (
+                1.0
+                + consts["order_bloc_weight_grand"]
+                * blocs_mod.bloc_containment_term(world, consts)
+                / consts["grand_bloc_ref"]
+            )
+            fw = consts["grand_free_weight"]
+            stabilization = (fw * 100.0 * free_frac + (1.0 - fw) * quality) * bloc_pen
+            order_mult = 1.0
+        else:
+            stabilization = 100.0 * sum(
+                (n.local_legitimacy / 100.0) * (n.governance / 100.0) * (1.0 - grip(n))
+                for n in nodes
+            ) / len(nodes)
+            order_mult = 1.0 / (
+                1.0
+                + consts["order_junta_weight"] * world.junta_count()
+                + consts["order_bloc_weight"] * blocs_mod.bloc_containment_term(world, consts)
+            )
         integrity_mult = max(
             consts["integrity_floor"],
             1.0 - consts["drift_per_tier"] * player.authoritarian_drift,
@@ -432,6 +504,11 @@ class Engine:
         costs = (
             player.casualties * consts["cost_per_casualty"]
             + player.spent_total * consts["cost_spend_norm"]
+            # Authoritarian Drift is a *direct* cost, not only an Integrity
+            # multiplier (§7, Emergency Powers): the democracy is the prize, and
+            # every step toward autocracy spends it — blood and backsliding on the
+            # same ledger. Zero for any player who never drifts.
+            + player.authoritarian_drift * consts["drift_score_cost"]
         )
         return {
             "stabilization": round(stabilization, 4),

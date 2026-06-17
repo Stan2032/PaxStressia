@@ -5,6 +5,12 @@
   "election_period_turns": 16,
   "norm_feedback": 1.0,
   "notes": {
-    "grand": "Quarter turns, 25-year horizon, US presidential cadence (16q). norm_feedback=1 turns on the global precedent layer (§21)."
-  }
+    "grand": "Quarter turns, 25-year horizon, US presidential cadence (16q). norm_feedback=1 turns on the global precedent layer (§21).",
+    "markets": "market_feedback/rivalry_feedback=1 turn on global arms/oil markets and the multi-patron contest (§21/§8)."
+  },
+  "market_feedback": 1.0,
+  "rivalry_feedback": 1.0,
+  "grand_scoring": 1,
+  "commands_enabled": 1,
+  "coalition_enabled": 1
 }

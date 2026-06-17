@@ -19,34 +19,87 @@ from .world import WorldState, clamp
 MERCENARY = "mercenary"
 
 
-def market(world: WorldState, consts: dict) -> list[dict]:
-    """Resolution substep g. Patron influence rises in non-civilian states,
-    resisted by your International standing and the regime's Exposure."""
+def market(world: WorldState, consts: dict, patrons: list[dict] | None = None) -> list[dict]:
+    """Resolution substep g (§8). Patron influence rises in non-civilian states,
+    resisted by your International standing and the regime's Exposure. In grand
+    mode (`rivalry_feedback` > 0) this is a *contest* between rival patron
+    archetypes, with a global rivalry score and bandwagon dynamics; in single-
+    theater play it stays the simple mercenary-only pull (calibration-safe)."""
     log: list[dict] = []
     intl = world.player.international
     norm_bonus = norms_mod.patron_norm_bonus(world, consts)  # autocratic precedent aids the patron
-    for country in world.countries():
-        capital = world.capital_of(country)
-        if capital is None or capital.government == "civilian":
-            continue
+    multi = consts["rivalry_feedback"] > 0 and patrons
+
+    def competitiveness(country: str) -> float:
         exposure = world.exposure.get(country, 0.0)
-        # Your competitiveness: a strong, credible offer slows the capture; a
-        # world that has normalised autocracy (norm_bonus) erodes it everywhere.
-        competitiveness = clamp(
+        return clamp(
             consts["patron_competitiveness_intl"] * (intl / 100.0)
             + consts["patron_competitiveness_exposure"] * (exposure / 100.0)
             - norm_bonus,
             0.0, 0.9,
         )
-        delta = consts["patron_drift_junta"] * (1.0 - competitiveness)
+
+    if not multi:
+        for country in world.countries():
+            capital = world.capital_of(country)
+            if capital is None or capital.government == "civilian":
+                continue
+            delta = consts["patron_drift_junta"] * (1.0 - competitiveness(country))
+            for node in world.country_nodes(country):
+                old = node.patron_influence.get(MERCENARY, 0.0)
+                node.patron_influence[MERCENARY] = clamp(old + delta)
+                if old < 50.0 <= node.patron_influence[MERCENARY]:
+                    log.append({"event": "patron_dominant", "patron": MERCENARY,
+                                "node": node.id, "turn": world.turn})
+        return log
+
+    # --- grand mode: the contest ---
+    defs = {p["id"]: p for p in patrons}
+    oil = world.markets["oil"]
+    countries = world.countries()
+    for country in countries:
+        capital = world.capital_of(country)
+        if capital is None or capital.government == "civilian":
+            continue
+
+        def appeal(pid: str) -> float:
+            d = defs[pid]
+            oil_boost = (oil - 50.0) * 0.2 if d.get("oil_funded") else 0.0
+            return (capital.patron_influence.get(pid, 0.0)
+                    + consts["patron_bandwagon"] * world.patron_strength.get(pid, 0.0)
+                    + d.get("speed", 1.0) * 3.0 + oil_boost)
+
+        chosen = max(sorted(defs), key=appeal)
+        delta = (consts["patron_drift_junta"] * (1.0 - competitiveness(country))
+                 * defs[chosen].get("speed", 1.0)
+                 * (1.0 + consts["rivalry_bandwagon"] * world.rivalry / 100.0))
+        world.patron_strength[chosen] = clamp(
+            world.patron_strength.get(chosen, 0.0) + consts["patron_strength_gain"]
+        )
         for node in world.country_nodes(country):
-            old = node.patron_influence.get(MERCENARY, 0.0)
-            new = clamp(old + delta)
-            node.patron_influence[MERCENARY] = new
-            if old < 50.0 <= new:
-                log.append({"event": "patron_dominant", "patron": MERCENARY,
+            old = node.patron_influence.get(chosen, 0.0)
+            node.patron_influence[chosen] = clamp(old + delta)
+            if old < 50.0 <= node.patron_influence[chosen]:
+                log.append({"event": "patron_dominant", "patron": chosen,
                             "node": node.id, "turn": world.turn})
+
+    # rivalry tracks the share of the world the rival bloc holds — left alone it
+    # grows, and a winning bloc captures faster (the bandwagon above).
+    captured = sum(
+        1 for c in countries
+        if (cap := world.capital_of(c)) is not None and cap.government != "civilian"
+    )
+    target = 100.0 * captured / max(1, len(countries))
+    world.rivalry += (target - world.rivalry) * consts["rivalry_adjust"]
     return log
+
+
+def dominant_patron(world: WorldState, country: str) -> str:
+    """The patron with the most influence in a country's capital (for sanctions)."""
+    cap = world.capital_of(country)
+    if cap is None or not cap.patron_influence:
+        return MERCENARY
+    return max(sorted(cap.patron_influence), key=lambda p: cap.patron_influence[p])
 
 
 def decay_exposure(world: WorldState, consts: dict) -> None:

@@ -26,7 +26,7 @@ def route_factor(world: WorldState, node_id: str) -> float:
 
 def growth_terms(
     world: WorldState, consts: dict, faction_id: str, node_id: str, amnesty_rate: float,
-    recruit_mult: float = 1.0,
+    recruit_mult: float = 1.0, arms_mult: float = 1.0,
 ) -> dict[str, float]:
     """The §5.1 equation, term by term, for one (faction, node)."""
     node = world.nodes[node_id]
@@ -43,7 +43,7 @@ def growth_terms(
     )
     external = (
         consts["sponsor_flow"] * route_factor(world, node_id) * (1.0 + consts["k_pool"] * n_links)
-        * headroom
+        * headroom * arms_mult
         if faction.sponsor
         else 0.0
     )
@@ -64,10 +64,12 @@ def growth_terms(
 
 
 def apply_growth(
-    world: WorldState, consts: dict, amnesty_rates: dict[str, float], recruit_mult: float = 1.0
+    world: WorldState, consts: dict, amnesty_rates: dict[str, float],
+    recruit_mult: float = 1.0, arms_mult: float = 1.0,
 ) -> tuple[list[dict], dict[str, float]]:
     """Resolution substep c. Returns (itemized growth log, attrition dealt per faction).
-    `recruit_mult` is the global precedent multiplier (§21); 1.0 in single-theater play."""
+    `recruit_mult` (precedent, §21) and `arms_mult` (arms market, §21) are global
+    multipliers — both 1.0 in single-theater play."""
     log: list[dict] = []
     attrition_dealt: dict[str, float] = {f.id: 0.0 for f in world.factions_sorted()}
     for faction in world.factions_sorted():
@@ -78,7 +80,9 @@ def apply_growth(
             if pres.strength <= 0 and pres.entrenchment <= 0:
                 continue
             rate = amnesty_rates.get(node.id, 0.0)
-            terms = growth_terms(world, consts, faction.id, node.id, rate, recruit_mult)
+            terms = growth_terms(
+                world, consts, faction.id, node.id, rate, recruit_mult, arms_mult
+            )
             delta = sum(terms.values())
             pres.strength = clamp(pres.strength + delta)
             attrition_dealt[faction.id] += -terms["attrition"]
