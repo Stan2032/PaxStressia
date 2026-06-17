@@ -24,9 +24,14 @@
   .gauge label{font-size:10px; color:var(--dim); display:flex; justify-content:space-between}
   .bar{height:7px; background:#000; border-radius:3px; overflow:hidden}
   .bar i{display:block; height:100%; transition:width .4s}
-  #map{flex:1; min-height:240px; background:
+  #mapwrap{flex:1; position:relative; display:flex; min-height:240px}
+  #map{flex:1; touch-action:none; background:
     radial-gradient(ellipse at 70% 20%, #1a2129 0%, var(--bg) 70%)}
-  #map svg{width:100%; height:100%}
+  #map svg{width:100%; height:100%; display:block}
+  #zoomctl{position:absolute; right:8px; bottom:8px; display:flex; flex-direction:column; gap:5px}
+  #zoomctl button{width:32px; height:32px; font-size:18px; line-height:1; border:1px solid #000;
+    border-radius:6px; background:var(--panel2); color:var(--ink); cursor:pointer; opacity:0.85}
+  #zoomctl button:active{background:var(--amber); color:#000}
   .edge{stroke:#3a4750; stroke-width:1.5}
   .edge.smuggling{stroke-dasharray:5 4; stroke:#5d4037}
   .node circle.body{stroke:#000; stroke-width:1.2; cursor:pointer}
@@ -129,7 +134,10 @@
         <div class="bar"><i id="bLoc" style="background:var(--green)"></i></div></div>
     </div>
   </header>
-  <div id="map"></div>
+  <div id="mapwrap"><div id="map"></div>
+    <div id="zoomctl"><button data-z="in" title="Zoom in">+</button>
+      <button data-z="out" title="Zoom out">−</button>
+      <button data-z="reset" title="Whole map">⤢</button></div></div>
   <div id="sheet">
     <nav>
       <button id="tabBrief" class="on">Briefing</button>
@@ -1068,6 +1076,8 @@ if (typeof document !== "undefined") (function () {
   let game = null, rules = null, allRules = null, rulesSource = "snapshot";
   let scenario = "sahel_lite";
   let tab = "brief", selNode = null, armed = null, queue = [], horizon = 60;
+  let view = { x: 0, y: 0, w: 100, h: 100 }, mapInit = false, lblZoom = false;  // map pan/zoom (v0.19)
+  const ZMIN = 22;  // closest zoom (smaller viewBox span = nearer)
 
   async function loadAll() {
     try {
@@ -1120,7 +1130,7 @@ if (typeof document !== "undefined") (function () {
   function newGame(seed) {
     rules = mergedRules(scenario);
     game = PaxEngine.Game(rules, seed);
-    queue = []; armed = null; selNode = null;
+    queue = []; armed = null; selNode = null; view = { x: 0, y: 0, w: 100, h: 100 };
     save(); renderAll();
   }
 
@@ -1199,7 +1209,8 @@ if (typeof document !== "undefined") (function () {
   }
   function renderMap() {
     const W = 100, H = 100;
-    let svg = '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">';
+    let svg = `<svg viewBox="${view.x.toFixed(2)} ${view.y.toFixed(2)} ${view.w.toFixed(2)} ` +
+      `${view.h.toFixed(2)}" preserveAspectRatio="xMidYMid meet">`;
     svg += mapBackdrop();
     for (const e of game.state.edges) {
       if (!POS[e.a] || !POS[e.b]) continue;  // defensive: never throw on an unmapped node
@@ -1208,9 +1219,11 @@ if (typeof document !== "undefined") (function () {
       svg += `<line class="${cls}" x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}"/>`;
     }
     const commands = game.state.commands || [];
-    // A 40-nation board can't carry 40 labels: when dense, the map speaks in
-    // colour + heat, and you tap a nation to learn its name and read its detail.
+    // A 40-nation board can't carry 40 labels: when dense and zoomed out, the map
+    // speaks in colour + heat and you tap to learn a nation. Zoom in and the
+    // names return — few are on screen, so there's room (lblZoom regime).
     const dense = game.nodesSorted().length > 20;
+    const showLabels = !dense || view.w < 46;
     for (const n of game.nodesSorted()) {
       const [x, y] = POS[n.id] || [50, 50];
       // log-scaled, capped: nations span millions (India) to thousands (Haiti),
@@ -1236,7 +1249,7 @@ if (typeof document !== "undefined") (function () {
         (tot > 12 ? `<circle class="heat" cx="${x}" cy="${y}" r="${(r + 0.8).toFixed(1)}" ` +
           `stroke-width="${heatW.toFixed(1)}"/>` : "") +
         `<circle class="body" cx="${x}" cy="${y}" r="${r}" fill="${GOV_FILL[n.government]}"/>` +
-        (n.capital && !dense ? `<text class="star" x="${x - 1.8}" y="${y - r - 1}">★</text>` : "") +
+        (n.capital && showLabels ? `<text class="star" x="${x - 1.8}" y="${y - r - 1}">★</text>` : "") +
         // your standing command over this theatre: a planted flag (breadth made visible)
         (commanded ? `<path class="flag" d="M${(x + r * 0.7).toFixed(1)} ${(y - r - 2.6).toFixed(1)} ` +
           `v3.4 M${(x + r * 0.7).toFixed(1)} ${(y - r - 2.6).toFixed(1)} ` +
@@ -1244,7 +1257,7 @@ if (typeof document !== "undefined") (function () {
         // a petro-state: an oil drop (what the world's markets are priced on)
         (oil ? `<circle class="oil" cx="${(x + r * 0.8).toFixed(1)}" cy="${(y + r * 0.8).toFixed(1)}" ` +
           `r="0.9"/>` : "") +
-        (!dense || sel ? `<text x="${lx}" y="${y - 0.3}" text-anchor="${anchor}">${label}</text>` : "") +
+        (showLabels || sel ? `<text x="${lx}" y="${y - 0.3}" text-anchor="${anchor}">${label}</text>` : "") +
         (sel && tot >= 1
           ? `<text class="est" x="${lx}" y="${y + 3.6}" text-anchor="${anchor}">` +
             `~${Math.round(tot)} fighters</text>` : "") +
@@ -1255,9 +1268,83 @@ if (typeof document !== "undefined") (function () {
     }
     svg += "</svg>";
     $("map").innerHTML = svg;
-    $("map").querySelectorAll(".node").forEach((g) => {
-      g.addEventListener("click", () => onNodeTap(g.dataset.node));
+    initMapInteraction();  // pan/zoom + tap-to-select (attached once to the container)
+  }
+  // ---------- map pan / zoom (v0.19) ----------
+  function clampView() {
+    view.w = Math.max(ZMIN, Math.min(100, view.w)); view.h = view.w;
+    view.x = Math.max(0, Math.min(100 - view.w, view.x));
+    view.y = Math.max(0, Math.min(100 - view.h, view.y));
+  }
+  function applyView() {
+    const s = $("map").querySelector("svg");
+    if (s) s.setAttribute("viewBox",
+      `${view.x.toFixed(2)} ${view.y.toFixed(2)} ${view.w.toFixed(2)} ${view.h.toFixed(2)}`);
+  }
+  function zoomViewAt(clientX, clientY, factor) {
+    const s = $("map").querySelector("svg"); const ctm = s && s.getScreenCTM();
+    if (!ctm) return;
+    const pt = s.createSVGPoint(); pt.x = clientX; pt.y = clientY;
+    const sp = pt.matrixTransform(ctm.inverse());  // svg coord under the cursor/pinch
+    const nw = Math.max(ZMIN, Math.min(100, view.w * factor));
+    view.x = sp.x - (sp.x - view.x) * (nw / view.w);
+    view.y = sp.y - (sp.y - view.y) * (nw / view.h);
+    view.w = nw; view.h = nw; clampView(); applyView();
+    const z = view.w < 46;  // zoomed in enough to bring the names back
+    if (z !== lblZoom) { lblZoom = z; renderMap(); }
+  }
+  function zoomCenter(factor) {
+    const r = $("map").getBoundingClientRect();
+    zoomViewAt(r.left + r.width / 2, r.top + r.height / 2, factor);
+  }
+  function resetView() { view = { x: 0, y: 0, w: 100, h: 100 }; applyView(); }
+  function initMapInteraction() {
+    if (mapInit) return; mapInit = true;
+    const el = $("map"); el.style.touchAction = "none";
+    const pointers = new Map(); let pan = null, pinch = 0;
+    el.addEventListener("pointerdown", (e) => {
+      el.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size === 1) {
+        const ctm = el.querySelector("svg") && el.querySelector("svg").getScreenCTM();
+        pan = { sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y,
+          scale: ctm ? ctm.a : 1, id: e.pointerId, moved: 0, target: e.target };
+      } else { pan = null; const p = [...pointers.values()];
+        pinch = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y); }
     });
+    el.addEventListener("pointermove", (e) => {
+      if (!pointers.has(e.pointerId)) return;
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size >= 2) {
+        const p = [...pointers.values()];
+        const d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+        if (pinch > 0 && d > 0) zoomViewAt((p[0].x + p[1].x) / 2, (p[0].y + p[1].y) / 2, pinch / d);
+        pinch = d;
+      } else if (pan && e.pointerId === pan.id) {
+        const dx = e.clientX - pan.sx, dy = e.clientY - pan.sy;
+        pan.moved = Math.max(pan.moved, Math.hypot(dx, dy));
+        view.x = pan.vx - dx / pan.scale; view.y = pan.vy - dy / pan.scale;
+        clampView(); applyView();
+      }
+    });
+    const up = (e) => {
+      const tap = pan && e.pointerId === pan.id && pan.moved < 6;
+      if (tap) { const g = pan.target.closest && pan.target.closest(".node");
+        if (g) onNodeTap(g.dataset.node); }
+      pointers.delete(e.pointerId);
+      if (pointers.size < 2) pinch = 0;
+      if (pointers.size === 0) pan = null;
+    };
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", up);
+    el.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      zoomViewAt(e.clientX, e.clientY, e.deltaY > 0 ? 1.15 : 1 / 1.15);
+    }, { passive: false });
+    $("zoomctl").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+      if (b.dataset.z === "reset") resetView();
+      else zoomCenter(b.dataset.z === "in" ? 1 / 1.4 : 1.4);
+    }));
   }
   function onNodeTap(id) {
     if (armed) {

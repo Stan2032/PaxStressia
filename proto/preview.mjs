@@ -2,7 +2,8 @@
 // the way index.html's renderMap() does, and write an SVG + PNG so the visual
 // language can be reviewed without a browser. Mirrors the proto's encoding —
 // run after changing renderMap to confirm what the screen says at a glance.
-//   node proto/preview.mjs [scenario] [seed] [turns]   (default: grand 4 36)
+//   node proto/preview.mjs [scenario] [seed] [turns] [viewBox]
+//   e.g. node proto/preview.mjs grand 4 40 "44 26 36 36"   (a zoomed-in theatre)
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 
@@ -17,7 +18,7 @@ const POS = {};
 for (const m of HTML.matchAll(/([a-z0-9_]+):\s*\[(\d+),\s*(\d+)\]/g))
   POS[m[1]] = [Number(m[2]), Number(m[3])];
 
-const [scenario = "grand", seed = "4", turns = "36"] = process.argv.slice(2);
+const [scenario = "grand", seed = "4", turns = "36", vb = "0 0 100 100"] = process.argv.slice(2);
 const R = (f) => JSON.parse(readFileSync(new URL(`../rules/${f}.json`, import.meta.url), "utf8"));
 const opt = (f) => { try { return R(f); } catch { return null; } };  // absent scenario files fall through
 const rules = {};
@@ -42,6 +43,7 @@ for (let t = 0; t < Number(turns); t++) {
 const GOV = { civilian: "#33691e", junta: "#b71c1c", emirate: "#4a148c", failed: "#37474f" };
 const commands = g.state.commands || [];
 const dense = g.nodesSorted().length > 20;
+const showLabels = !dense || Number(vb.split(/[ ,]+/)[2]) < 46;  // names return when zoomed in
 
 function convexHull(pts) {
   if (pts.length < 3) return pts.slice();
@@ -97,17 +99,17 @@ for (const n of g.nodesSorted()) {
   body += "<g>";
   if (tot > 12) body += `<circle cx="${x}" cy="${y}" r="${(r + 0.8).toFixed(1)}" fill="none" stroke="#ef5350" stroke-width="${heatW.toFixed(1)}" opacity="0.7"/>`;
   body += `<circle cx="${x}" cy="${y}" r="${r}" fill="${GOV[n.government]}" stroke="#000" stroke-width="1.2"/>`;
-  if (n.capital && !dense) body += `<text x="${x - 1.8}" y="${y - r - 1}" fill="#ffb300" font-size="4.5">★</text>`;
+  if (n.capital && showLabels) body += `<text x="${x - 1.8}" y="${y - r - 1}" fill="#ffb300" font-size="4.5">★</text>`;
   if (commands.includes(n.theater)) {
     const fx = (x + r * 0.7).toFixed(1), fy = (y - r - 2.6).toFixed(1);
     body += `<path d="M${fx} ${fy} v3.4 M${fx} ${fy} l2.2 0.8 -2.2 0.8" stroke="#26a69a" stroke-width="0.7" fill="none"/>`;
   }
   if ((n.resources || []).includes("oil"))
     body += `<circle cx="${(x + r * 0.8).toFixed(1)}" cy="${(y + r * 0.8).toFixed(1)}" r="0.9" fill="#111"/>`;
-  if (!dense) body += `<text x="${lx}" y="${y - 0.3}" text-anchor="${anchor}" fill="#cfd8dc" font-size="4">${label}</text>`;
+  if (showLabels) body += `<text x="${lx}" y="${y - 0.3}" text-anchor="${anchor}" fill="#cfd8dc" font-size="4">${label}</text>`;
   body += "</g>";
 }
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1000" height="1000">` +
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="1000" height="1000">` +
   `${back}${body}</svg>`;
 const out = new URL("./preview.svg", import.meta.url);
 writeFileSync(out, svg);

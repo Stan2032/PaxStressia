@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.19.0 — 2026-06-16
+
+**Pan & zoom — the 40-nation board becomes legible up close** (UI pass 3; the density gap the last two passes flagged). The intuitive fix Stan's direction asked for.
+
+- **The map's `viewBox` is now live:** drag to pan, pinch / mouse-wheel / buttons to zoom (pointer events throughout, `getScreenCTM` for cursor-anchored zoom, clamped to the board and to a sensible max zoom). Zooming just re-points the existing SVG — no re-render per frame, so it's smooth.
+- **Tap vs. drag is disambiguated:** a small-movement tap selects a nation; a drag pans without mis-selecting. So selection and panning coexist on touch.
+- **Zoom in and the names come back:** zoomed out, the dense board speaks in colour + heat and you tap to identify; once you zoom past a threshold, few nations are on screen so the labels and capital stars return automatically. Best of both — a clean overview *and* a readable close-up.
+- A small **`+ / − / ⤢`** control sits on the map for discoverability (and the whole-map reset).
+- Pure proto interaction: engine, rules, and `rules/*.json` untouched, so the **103-test suite, both-engine smoke, and calibration (10/10) hold**. `proto/preview.mjs` gained a `viewBox` argument so a zoomed-in theatre can be rendered for review. This closes the "make it interactive and intuitive" UI arc; production-grade pan/zoom and motion are the Godot client's to inherit.
+
 ## v0.18.0 — 2026-06-16
 
 **A situation map, not a void — "can we make it prettier?"** (Stan). The board stops being circles on black and becomes a strategic map.
