@@ -1486,22 +1486,22 @@ if (typeof document !== "undefined") (function () {
       const f = est.factions[fid], name = game.state.factions[fid].name;
       const quiet = f.e > 35 && f.v < 25;
       facts += `<div class="fcard"><div class="nm">${name}</div>` +
-        statRow("Forces", "Fighters — how dangerous right now (Strength). Your estimate; ± is the uncertainty.", f.s, -1, f.sBand) +
-        statRow("Dug-in", "Shadow government — taxes, courts, control. Hard to remove (Entrenchment).", f.e, -1, f.eBand) +
-        statRow("Activity", "Visible violence. Low can mean beaten — or quietly in control (Visibility).", f.v, -1) +
+        statRow("💥 Forces", "Fighters — how dangerous right now (Strength). Your estimate; ± is the uncertainty.", f.s, -1, f.sBand) +
+        statRow("🏚️ Dug-in", "Shadow government — taxes, courts, control. Hard to remove (Entrenchment).", f.e, -1, f.eBand) +
+        statRow("⚡ Activity", "Visible violence. Low can mean beaten — or quietly in control (Visibility).", f.v, -1) +
         (quiet ? `<div class="sub bd">⚠ dug-in but quiet — may be running this area, not losing it</div>` : "") +
         `</div>`;
     }
     if (!facts) facts = '<div class="sub">No insurgents detected here — but thin intel can hide them.</div>';
     return `<div class="card"><b>${n.name}</b> <span class="hint">${COUNTRY[n.country] || n.country}` +
       `${n.capital ? " · capital" : ""} · ${govWord(n.government)}</span>` +
-      statRow("Govt control", "How firmly the state runs this region (Governance). Higher resists insurgents.", n.governance, 1) +
-      statRow("Local support", "Whether the population backs you (Local legitimacy). The real win condition — and the only thing that permanently starves insurgents.", n.local, 1) +
-      statRow("Grievance", "Anger at the state. High grievance is what insurgents recruit from.", n.grievance, -1) +
-      statRow("Your visibility", "How clearly your intelligence sees this region. Low = the numbers above are guesses.", est.coverage * 100, 1) +
-      (n.opsPressure > 0 ? statRow("Military pressure", "Your forces' pressure here right now (suppresses Forces while active).", n.opsPressure, 1) : "") +
-      ((n.patron.mercenary || 0) > 0 ? statRow("Foreign patron", "A rival foreign patron's grip on this regime (mercenary/no-strings). High is bad: it buys the regime out of your conditions. Exposure and sanctions push it back.", n.patron.mercenary, -1) : "") +
-      (n.government !== "civilian" ? statRow("Regime exposure", "How thoroughly the world documents this regime's conduct (§ your think-tank/exile-media funding). High is good for you: it raises the patron's price and unlocks sanctions.", st.exposure[n.country] || 0, 1) : "") +
+      statRow("🏛️ Govt control", "How firmly the state runs this region (Governance). Higher resists insurgents.", n.governance, 1) +
+      statRow("🛡️ Local support", "Whether the population backs you (Local legitimacy). The real win condition — and the only thing that permanently starves insurgents.", n.local, 1) +
+      statRow("🔥 Grievance", "Anger at the state. High grievance is what insurgents recruit from.", n.grievance, -1) +
+      statRow("🕵️ Visibility", "How clearly your intelligence sees this region. Low = the numbers above are guesses.", est.coverage * 100, 1) +
+      (n.opsPressure > 0 ? statRow("🪖 Pressure", "Your forces' pressure here right now (suppresses Forces while active).", n.opsPressure, 1) : "") +
+      ((n.patron.mercenary || 0) > 0 ? statRow("🏴 Foreign patron", "A rival foreign patron's grip on this regime (mercenary/no-strings). High is bad: it buys the regime out of your conditions. Exposure and sanctions push it back.", n.patron.mercenary, -1) : "") +
+      (n.government !== "civilian" ? statRow("🔦 Exposure", "How thoroughly the world documents this regime's conduct (§ your think-tank/exile-media funding). High is good for you: it raises the patron's price and unlocks sanctions.", st.exposure[n.country] || 0, 1) : "") +
       facts + `</div>`;
   }
   function helpHTML() {
@@ -1689,11 +1689,10 @@ if (typeof document !== "undefined") (function () {
         s + game.initiatives[q.initiative].mandate_cost, 0);
       const tLeft = p.treasury - queue.reduce((s, q) =>
         s + game.initiatives[q.initiative].treasury_cost, 0);
-      const FAM = { military: "Military", governance: "Build / govern",
-        intelligence: "Intelligence", diplomatic: "Diplomacy", domestic: "At home" };
-      let html = `<div class="sub">Pick an action, then (if it needs a target) tap a region. ` +
-        `End the month to resolve. Left to spend: <b>${mLeft}</b> Mandate, ` +
-        `<b>${Math.round(tLeft)}</b> Funds.</div>`;
+      const FAM = { military: "⚔️ force", governance: "🏗️ build",
+        intelligence: "🕵️ intel", diplomatic: "🤝 talk", domestic: "🏛️ home" };
+      let html = `<div class="sub">Pick an action, then (if it needs a region) tap one. ` +
+        `Left to spend: <b>🏛️ ${mLeft}</b> · <b>💰 ${Math.round(tLeft)}</b></div>`;
       for (const id of Object.keys(game.initiatives).sort()) {
         const i = game.initiatives[id];
         // gate world-scale-only initiatives (Regional Commands §21.7, Coalition
@@ -1707,11 +1706,10 @@ if (typeof document !== "undefined") (function () {
         html += `<div class="${cls}" data-init="${id}" style="${affordable ? "" : "opacity:.5"}">` +
           `<div><b>${i.name}</b>` +
           `<small>${FAM[i.family] || i.family}` +
-          (i.target === "node" ? " · needs a region" : " · nationwide") +
-          ` · risk: ${i.backfire.channel.replace(/_/g, " ")} ` +
-          `(${Math.round(i.backfire.probability * 100)}%)</small></div>` +
+          (i.target === "node" ? " · 📍 tap a region" : "") +
+          ` · ⚠️ ${Math.round(i.backfire.probability * 100)}%</small></div>` +
           `<span class="cost" title="costs ${i.mandate_cost} Mandate and ${i.treasury_cost} Funds">` +
-          `${i.mandate_cost} Mandate<br>${i.treasury_cost} Funds</span></div>`;
+          `🏛️ ${i.mandate_cost}<br>💰 ${i.treasury_cost}</span></div>`;
       }
       if (queue.length) {
         html += '<div class="head">Queued</div>';
@@ -1798,17 +1796,17 @@ if (typeof document !== "undefined") (function () {
   function effectTags(effects) {
     // [label, value, goodWhenPositive]
     const MAP = {
-      domestic_legitimacy: ["Home", "delta", true],
-      international_legitimacy: ["Allies", "delta", true],
-      local_legitimacy: ["Local", "delta", true],
-      governance: ["Govt control", "delta", true],
-      grievance: ["Grievance", "delta", false],
-      coup_seed: ["Coup risk", "delta", false],
-      partner_capacity: ["Local forces", "delta", true],
-      exposure: ["Exposure", "delta", true],
-      intl_umbrella: ["UN cover", "delta", true],
-      intel: ["Intel", "delta", true],
-      drift: ["Authoritarian drift", "tiers", false],
+      domestic_legitimacy: ["🏠 Home", "delta", true],
+      international_legitimacy: ["🤝 Allies", "delta", true],
+      local_legitimacy: ["🛡️ Local", "delta", true],
+      governance: ["🏛️ Control", "delta", true],
+      grievance: ["🔥 Grievance", "delta", false],
+      coup_seed: ["⚠️ Coup risk", "delta", false],
+      partner_capacity: ["🪖 Local forces", "delta", true],
+      exposure: ["🔦 Exposure", "delta", true],
+      intl_umbrella: ["☂️ UN cover", "delta", true],
+      intel: ["🕵️ Intel", "delta", true],
+      drift: ["⛓️ Drift", "tiers", false],
     };
     const tags = [];
     for (const e of effects || []) {

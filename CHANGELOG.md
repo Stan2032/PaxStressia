@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.21.0 — 2026-06-17
+
+**The panels speak in objects too** (UI pass 5; finishing the "less wordy / ideas as objects" direction). The last text-heavy corner — the action list and region detail — now matches the header and map, so the whole interface is one visual language.
+
+- **Costs are objects:** every action and the budget line read **🏛️ n · 💰 n**, not "n Mandate / n Funds".
+- **Each action at a glance:** its family is an icon (⚔️ force · 🏗️ build · 🕵️ intel · 🤝 talk · 🏛️ home), its risk a **⚠️ %** (the backfire channel moved into the tooltip), its target a 📍 "tap a region".
+- **Effect previews lead with the same icons:** 🏠 Home · 🤝 Allies · 🛡️ Local · 🏛️ Control · 🔥 Grievance · ☂️ UN cover · 🕵️ Intel · ⛓️ Drift — so a trade-off reads "🏠 −4 · 🛡️ −2" at a glance.
+- **Region detail iconified:** 💥 Forces · 🏚️ Dug-in · ⚡ Activity · 🛡️ Local support · 🔥 Grievance · 🕵️ Visibility · 🪖 Pressure · 🏴 Foreign patron · 🔦 Exposure. The doctrinal terms stay in the tooltips (the legibility-gloss rule, DESIGN §13.3).
+- Proto/UI only: engine, rules, and `rules/*.json` untouched, so the **103-test suite, both-engine smoke, and calibration (10/10) hold**. Completes the interactive UI arc (objects → situation-map → pan/zoom → motion → consistent object-panels).
+
 ## v0.20.0 — 2026-06-17
 
 **Motion — the map reacts to a turn** (UI pass 4; what Stan asked for: "animate changes — a junta falling, a command planting, heat flaring"). Consequences are now *shown* on the board, not just itemised in the ledger.
