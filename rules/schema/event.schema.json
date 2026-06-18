@@ -59,7 +59,8 @@
           "country_collapsed": { "type": "string", "description": "Eligible only after this country collapsed." },
           "country_not_collapsed": { "type": "string", "description": "Eligible only while this country stands." },
           "min_collapsed": { "type": "integer", "minimum": 0, "description": "Eligible once at least N countries have collapsed." },
-          "min_links": { "type": "integer", "minimum": 0, "description": "Eligible once the faction graph holds at least N links." }
+          "min_links": { "type": "integer", "minimum": 0, "description": "Eligible once the faction graph holds at least N links." },
+          "requires_fired": { "type": "string", "description": "Narrative chain (§20.2): eligible only once the named event id has already fired." }
         }
       },
       "choices": {

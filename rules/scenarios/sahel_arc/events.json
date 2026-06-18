@@ -1139,5 +1139,293 @@
     "sources": [
       "US lifts sanctions on three Wagner-linked Malian officials to court security cooperation, March 2026 (HRW); Wagner rebranded as the state-run Africa Corps"
     ]
+  },
+  {
+    "id": "met_aminata",
+    "title": "A First Graduating Class",
+    "weight": 0.7,
+    "once": true,
+    "requires": {
+      "min_turn": 4,
+      "max_turn": 50
+    },
+    "text": "In a town you helped keep on the map, a school you backed graduates its first class. Aminata, the teacher who stayed when others left, sends a photograph and three lines of thanks. You file it. Good days are also data.",
+    "choices": [
+      {
+        "label": "Fund the next intake",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "Note it; the budget is thin",
+        "effects": [
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "Named-people arc (composite). Pairs with kept_aminata."
+  },
+  {
+    "id": "kept_aminata",
+    "title": "The New Curriculum",
+    "weight": 1.0,
+    "once": true,
+    "requires": {
+      "requires_fired": "met_aminata",
+      "any_junta": true
+    },
+    "text": "The town has fallen. Aminata still teaches — there is no one else — but the curriculum arrived by decree, and the photograph she once sent you would now be evidence. She does not write anymore.",
+    "choices": [
+      {
+        "label": "Fund the record of what the schools became",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 4
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "label": "Let her keep her head down",
+        "effects": [
+          {
+            "op": "local_legitimacy",
+            "delta": -3
+          },
+          {
+            "op": "grievance",
+            "delta": 2
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 named-people-kept: the quiet you left her to."
+  },
+  {
+    "id": "met_ousmane",
+    "title": "The Reporter",
+    "weight": 0.7,
+    "once": true,
+    "requires": {
+      "min_turn": 6,
+      "max_turn": 60
+    },
+    "text": "A wire story you almost missed: Ousmane, a local reporter, has documented a supply route no one wanted documented. His byline cost him friends. It will cost the people running that route, too.",
+    "choices": [
+      {
+        "label": "Amplify it through allied channels",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "label": "Quietly act on what he found",
+        "effects": [
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "Named-people arc (composite). Pairs with kept_ousmane."
+  },
+  {
+    "id": "kept_ousmane",
+    "title": "Mobilised",
+    "weight": 1.0,
+    "once": true,
+    "requires": {
+      "requires_fired": "met_ousmane",
+      "any_junta": true
+    },
+    "text": "Ousmane is at the front now — 'mobilised,' the decree says, the same week his next report would have run. He files nothing. The route he found runs again, unwatched.",
+    "choices": [
+      {
+        "label": "Make his case loudly — name the decree, name the names",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 4
+          },
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "There is a war on; let it go",
+        "effects": [
+          {
+            "op": "local_legitimacy",
+            "delta": -2
+          },
+          {
+            "op": "grievance",
+            "delta": 2
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 named-people-kept; ties to the conscription card."
+  },
+  {
+    "id": "met_fatou",
+    "title": "The Clinic That Stayed Open",
+    "weight": 0.7,
+    "once": true,
+    "requires": {
+      "min_turn": 5,
+      "max_turn": 55
+    },
+    "text": "Through three bad seasons one clinic never closed. Dr. Fatou runs it on diesel and stubbornness; you've quietly kept the fuel coming. A photograph of a full waiting room is its own kind of victory.",
+    "choices": [
+      {
+        "label": "Keep the supplies flowing",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "Note it; resources are stretched",
+        "effects": [
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "Named-people arc (composite). Pairs with kept_fatou."
+  },
+  {
+    "id": "kept_fatou",
+    "title": "Requisitioned",
+    "weight": 1.0,
+    "once": true,
+    "requires": {
+      "requires_fired": "met_fatou",
+      "any_junta": true
+    },
+    "text": "The clinic has been requisitioned — a garrison now, the waiting room a billet. Dr. Fatou went north with what she could carry. Where there was a clinic there is a checkpoint; the sick are someone else's problem.",
+    "choices": [
+      {
+        "label": "Fund the exile medics and document the takeover",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 4
+          }
+        ]
+      },
+      {
+        "label": "Mourn it and move on",
+        "effects": [
+          {
+            "op": "local_legitimacy",
+            "delta": -3
+          },
+          {
+            "op": "grievance",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 named-people-kept."
+  },
+  {
+    "id": "met_ibrahim",
+    "title": "A Conviction",
+    "weight": 0.7,
+    "once": true,
+    "requires": {
+      "min_turn": 8,
+      "max_turn": 65
+    },
+    "text": "A court does something rare: it convicts an officer for an abuse your monitors helped document. Judge Ibrahim read the sentence with the cameras off and the threats already arriving. The law worked, once, here.",
+    "choices": [
+      {
+        "label": "Back the court's protection",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "label": "Note the precedent",
+        "effects": [
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "Named-people arc (composite). Pairs with kept_ibrahim."
+  },
+  {
+    "id": "kept_ibrahim",
+    "title": "Court Adjourned",
+    "weight": 1.0,
+    "once": true,
+    "requires": {
+      "requires_fired": "met_ibrahim",
+      "any_junta": true
+    },
+    "text": "The courts are 'suspended pending reform.' The officer Judge Ibrahim convicted is back in uniform; the judge is not at his bench, or his home. The file your monitors built is the only place the conviction still exists.",
+    "choices": [
+      {
+        "label": "Keep the record alive outside the country",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "label": "Accept that the law has left",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": -2
+          },
+          {
+            "op": "grievance",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 named-people-kept."
   }
 ]

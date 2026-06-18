@@ -2,6 +2,15 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.23.0 — 2026-06-18
+
+**Named people, kept — the closed-society realities, made personal** (the emotional payoff of v0.22's moral layer; §20.2 / §19.10). Consequences become individual, not statistical.
+
+- **Four composite people you meet and lose:** **Aminata** the teacher (→ the new curriculum, in a town that fell), **Ousmane** the reporter (→ "mobilised" to the front, filing nothing), **Dr. Fatou** the clinic (→ requisitioned; she went north), **Judge Ibrahim** (→ his court "suspended pending reform"). Each is a two-card arc in the Sahel deck — a *met* beat (a good moment, early) and a *kept* beat that fires **only after their region falls**.
+- **A new `requires_fired` event-chain predicate** (added to the Python sim, the JS proto, and the event schema): a follow-up card is eligible only once a named setup card has fired — a clean, reusable primitive for narrative chains. A chain-integrity test proves a *kept* beat never fires without its *met* setup, and that the arcs complete in passive runs.
+- **The post-mortem capstone:** the proto end-screen now closes with **"And the people you met,"** listing each person's fate — red if their region fell, green if it held. The §20.2 reveal of *what the regime did with the quiet you left it*.
+- **Calibration-safe:** the *kept* losses live on choice 1, which the passive baseline never picks, so they never touch the §12 junta-timing — **Sahel calibration still 10/10; 103 tests pass / 0 xfail; both engines + smoke green.** The people are fictional composites (like the factions); their fates are drawn from the documented record (flagged in `rules/sources.json`).
+
 ## v0.22.0 — 2026-06-17
 
 **The Closed Society layer — the moral weight, made mechanical** (Stan's founding ask: *remind the player of the harsh, brutal realities citizens of authoritarian states endure*). Seven grounded event cards now surface the documented authoritarian playbook, in both the base deck (base + grand) and the Sahel-arc deck (the primary playable).
