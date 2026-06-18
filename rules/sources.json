@@ -149,6 +149,46 @@
       "citation": "Procedural-persona / self-play automated game balancing (MCTS personas; iterative tuning for asymmetric games).",
       "note": "The policy archetypes and the Monte-Carlo + history-calibration harness — the design's claims asserted as regression tests.",
       "confidence": "established"
+    },
+    {
+      "id": "african_initiative",
+      "category": "case",
+      "confidence": "verified",
+      "citation": "EEAS–VIGINUM–FCDO joint technical report on the 'African Initiative', June 2025; EUvsDisinfo.",
+      "note": "A Moscow news agency built on former Wagner assets running coordinated FIMI across the Sahel; with the April 2022 Gossi staged-corpse operation, grounds the 'closed_fimi' card.",
+      "url": "https://www.sgdsn.gouv.fr/files/files/Publications/20250612_TLP-CLEAR_VIGINUM_FCDO_EEAS_Technical_Report_African_Initiative_EN.pdf"
+    },
+    {
+      "id": "sahel_repression_decree",
+      "category": "case",
+      "confidence": "verified",
+      "citation": "Human Rights Watch and Amnesty International reporting, 2023–2026: party dissolution (Mali 2024, Burkina Faso 2026) and Burkina Faso's April 2023 mobilization decree.",
+      "note": "Repression by decree and the punitive conscription of critics; grounds 'closed_decree' and 'closed_conscription'.",
+      "url": "https://www.hrw.org/news/2024/04/12/mali-junta-suspends-political-parties-associations"
+    },
+    {
+      "id": "sahel_media_ban",
+      "category": "case",
+      "confidence": "verified",
+      "citation": "Committee to Protect Journalists and Reporters Without Borders, 2023–2024: France 24, RFI and BBC suspensions/bans across Mali, Burkina Faso and Niger.",
+      "note": "The escalating 'media-ban ladder'; grounds 'closed_blackout'.",
+      "url": "https://cpj.org/2023/08/niger-blocks-rfi-and-france-24-in-wake-of-coup/"
+    },
+    {
+      "id": "minusma_panel_veto",
+      "category": "case",
+      "confidence": "verified",
+      "citation": "UN Security Council Res. 2690 (June 2023) terminating MINUSMA; Russia's veto of the Mali sanctions Panel of Experts, August 2023 (UN News; HRW).",
+      "note": "The end of independent oversight; grounds 'closed_panel'.",
+      "url": "https://news.un.org/en/story/2023/06/1138257"
+    },
+    {
+      "id": "sanctions_reversed_2026",
+      "category": "case",
+      "confidence": "verified",
+      "citation": "Human Rights Watch, 'US Lifts Sanctions on Wagner-Linked Officials in Mali', March 2026; The Sentry, on Wagner→Africa Corps.",
+      "note": "Accountability reversed for realpolitik — the sobering counterweight; grounds 'closed_reversal'.",
+      "url": "https://www.hrw.org/news/2026/03/17/us-lifts-sanctions-on-wagner-linked-officials-in-mali"
     }
   ]
 }

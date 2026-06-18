@@ -16,7 +16,7 @@
             "domestic_legitimacy", "international_legitimacy",
             "governance", "development", "grievance", "amnesty",
             "partner_capacity", "coup_seed", "drift", "intl_umbrella",
-            "presence", "patron", "suppress_clock"
+            "presence", "patron", "suppress_clock", "exposure"
           ]
         },
         "amount": { "type": "number" },

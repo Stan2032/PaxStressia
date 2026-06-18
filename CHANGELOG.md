@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.22.0 — 2026-06-17
+
+**The Closed Society layer — the moral weight, made mechanical** (Stan's founding ask: *remind the player of the harsh, brutal realities citizens of authoritarian states endure*). Seven grounded event cards now surface the documented authoritarian playbook, in both the base deck (base + grand) and the Sahel-arc deck (the primary playable).
+
+- **The cards** (all `any_junta`-gated, sober — aftermath and number, never the act): **The Cordon** (the Moura massacre — UN OHCHR: ≥500 unlawfully killed), **What Everyone Knows** (the African-Initiative FIMI operation staging the denial), **Until Further Notice** (party dissolution by decree), **Mobilised** (punitive conscription of critics — the BF 2023 decree), **The Quiet** (the media-ban ladder; *quiet is not calm*), **Who Is Left to Count** (MINUSMA gone, the sanctions Panel vetoed), **Struck Off** (the March-2026 sanctions reversal — documentation exposes but rarely punishes).
+- **Each is a choice the player must make with their instruments:** *bear witness* — fund the documentation into the §20.4 **Exposure** track — or *look away*, which costs Local legitimacy and feeds grievance. The realities aren't narrated at the player; they arrive as decisions.
+- **Honest sourcing (§20.6):** grounded in a verified research pass (UN OHCHR, Human Rights Watch, CPJ/RSF, the EEAS–VIGINUM report) and added to `rules/sources.json` with checkable URLs and confidence flags. Built from existing ops (added `exposure` to the event-effect schema enum; no new ops).
+- **Calibration-safe:** the cards fire only after juntas form and never move the §12 junta-timing baseline — **Sahel calibration still 10/10; 103 tests pass / 0 xfail; both engines + smoke green.**
+- *Honest note:* a coalition inner/outer-ring tiering was prototyped first and **reverted** — it measured ~0 effect (Regional Commands don't persist long enough for the nuance to matter), so it wasn't shipped. The real lever is grand-mode command persistence, a future pass.
+
 ## v0.21.0 — 2026-06-17
 
 **The panels speak in objects too** (UI pass 5; finishing the "less wordy / ideas as objects" direction). The last text-heavy corner — the action list and region detail — now matches the header and map, so the whole interface is one visual language.

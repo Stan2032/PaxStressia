@@ -21,7 +21,7 @@ from .policies import (
 )
 from .world import WorldState, build_world, load_rules
 
-__version__ = "0.21.0"
+__version__ = "0.22.0"
 
 __all__ = [
     "POLICIES",
