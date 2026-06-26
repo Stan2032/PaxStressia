@@ -6,7 +6,18 @@ pure-kinetic paradox, hearts-minds-loses-to-momentum, and — once the full
 Emergency Powers track (§7) landed — emergency-powers-tempting-but-scored. A
 balance change that breaks any of them now fails CI: the design document stays
 true by force.
+
+v0.24 adds a fifth, *stronger* assertion — §19.7 (no pure strategy dominates the
+balanced baseline) at the arc's **full 168-turn horizon**, not only the 120-turn
+subset the enforced test checks. It currently **xfails**: a balance audit found
+that over the long run, sustained security's accumulating costs outpace what the
+score rewards, so 'hold the capitals by cutting grievance, cede the countryside'
+(pure hearts-minds) out-economises balanced play. The claim names the destination
+(the project's discipline); the fix — a *quiet ≠ peace at country scale* scoring
+pass — is the next balance milestone, to be done so the 10/10 calibration holds.
 """
+
+import pytest
 
 from sim import (
     CompetentPolicy,
@@ -132,6 +143,28 @@ def test_a_reasonable_player_can_beat_history():
     competent = mean_final(CompetentPolicy)
     passive = mean_final(PassivePolicy)
     assert competent > passive + 5.0, "skilled play must clearly beat inaction"
+
+
+@pytest.mark.xfail(
+    strict=False,
+    reason="Audit finding (v0.24): §19.7 holds at 120 turns but degrades by the "
+    "arc's full 168-turn horizon. Over the long run, sustained security's costs "
+    "(spend + casualties) accumulate faster than the score rewards them, so pure "
+    "hearts-minds — hold the capitals by cutting grievance, cede the countryside — "
+    "out-economises balanced play. The fix is a 'quiet ≠ peace at country scale' "
+    "scoring pass (§11/§19.4), done so the 10/10 calibration and the 120-turn "
+    "tests above hold. Asserted here so the destination is named and tracked.",
+)
+def test_no_pure_strategy_dominates_at_the_full_horizon():
+    """The §19.7 discipline at the arc's *actual* play length (168 turns), not the
+    120-turn subset the enforced test checks. Balanced play should top every pure
+    archetype over the whole run, or a dominant strategy exists at the horizon
+    players reach."""
+    balanced = mean_final(CompetentPolicy, turns=168)
+    for pure in (PureKineticPolicy, PureHeartsMindsPolicy, EmergencyPowersPolicy):
+        assert balanced > mean_final(pure, turns=168), (
+            f"{pure.__name__} out-scores balanced play at the full 168-turn horizon"
+        )
 
 
 def test_emergency_powers_tempting_but_scored():

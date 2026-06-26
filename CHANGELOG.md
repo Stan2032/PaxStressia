@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.24.0 — 2026-06-26
+
+**Balance audit — the horizon-dominance finding, surfaced not hidden** (§19.7). A new player-side instrument that grades the *player*, where calibrate.py grades the passive *world*.
+
+- **`harness/audit.py`** — runs every policy archetype (passive / kinetic / hearts-minds / mixed / competent / emergency) on the Sahel arc at **both** the 120-turn subset the enforced thesis test checks **and** the arc's full **168-turn horizon**, printing the score spread, the ending distribution, and the §19.7 "balanced tops every pure" gate at each length. Report-only — it never fails CI.
+- **The finding:** §19.7 **holds at 120 turns but breaks at 168.** Over the long run, pure hearts-minds (≈8.3) overtakes balanced play (≈1.3): sustained security's per-turn spend + casualty cost is charged every turn while the stabilization it buys is bounded, so *hold the capitals by cutting grievance, cede the countryside* out-economises balanced containment. A real leak in "every tool cuts both ways."
+- **Named, not papered over:** a fifth thesis assertion — `test_no_pure_strategy_dominates_at_the_full_horizon` (`tests/test_thesis.py`) — asserts the destination at the full horizon and **xfails** until it's closed. The xfail test is the gate; the audit harness is the instrument.
+- **The fix, named as the next milestone:** a *quiet ≠ peace at country scale* scoring pass — conceded territory must score as **unstabilized**, not merely drop out of the average — to be done (per the founding discipline) so the 10/10 calibration and the 120-turn gate stay true.
+- **Docs + tests + harness only** — no rules / sim / proto / calibration change. **Sahel calibration still 10/10; 104 tests pass / 1 xfail** (the named destination).
+
 ## v0.23.0 — 2026-06-18
 
 **Named people, kept — the closed-society realities, made personal** (the emotional payoff of v0.22's moral layer; §20.2 / §19.10). Consequences become individual, not statistical.
