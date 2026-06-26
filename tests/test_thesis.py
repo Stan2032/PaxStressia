@@ -7,14 +7,21 @@ Emergency Powers track (§7) landed — emergency-powers-tempting-but-scored. A
 balance change that breaks any of them now fails CI: the design document stays
 true by force.
 
-v0.24 adds a fifth, *stronger* assertion — §19.7 (no pure strategy dominates the
+v0.24 added a fifth, *stronger* assertion — §19.7 (no pure strategy dominates the
 balanced baseline) at the arc's **full 168-turn horizon**, not only the 120-turn
-subset the enforced test checks. It currently **xfails**: a balance audit found
-that over the long run, sustained security's accumulating costs outpace what the
-score rewards, so 'hold the capitals by cutting grievance, cede the countryside'
-(pure hearts-minds) out-economises balanced play. The claim names the destination
-(the project's discipline); the fix — a *quiet ≠ peace at country scale* scoring
-pass — is the next balance milestone, to be done so the 10/10 calibration holds.
+subset the enforced test checks — and it **xfails**. v0.25 diagnosed *why*, by
+measurement (the first hypothesis was wrong): capital collapse is driven by
+insurgent strength ÷ capital governance (`factions.collapse_rolls`), not by
+grievance directly — so keeping juntas low (and `order_mult` high) means keeping
+total insurgent strength low, and all-in development aimed at the worst-*grievance*
+regions starves recruitment at the source and does exactly that. Over a long
+enough run that concentration out-scores balanced play, because development has no
+diminishing returns or co-option downside (Galula's 'development without security
+is captured' is under-modelled). v0.25 shipped the calibration-safe half of the
+fix — sharpening the benchmark's own targeting, so it now dominates every pure by
+~9 points at 120 turns — and names the deeper one (diminishing-returns / co-option
+on development) as the next milestone. Asserted at the full horizon so the
+destination stays tracked.
 """
 
 import pytest
@@ -147,13 +154,15 @@ def test_a_reasonable_player_can_beat_history():
 
 @pytest.mark.xfail(
     strict=False,
-    reason="Audit finding (v0.24): §19.7 holds at 120 turns but degrades by the "
-    "arc's full 168-turn horizon. Over the long run, sustained security's costs "
-    "(spend + casualties) accumulate faster than the score rewards them, so pure "
-    "hearts-minds — hold the capitals by cutting grievance, cede the countryside — "
-    "out-economises balanced play. The fix is a 'quiet ≠ peace at country scale' "
-    "scoring pass (§11/§19.4), done so the 10/10 calibration and the 120-turn "
-    "tests above hold. Asserted here so the destination is named and tracked.",
+    reason="§19.7 holds at 120 turns but breaks at 168 (audit finding v0.24, "
+    "diagnosed v0.25). Capital collapse is driven by insurgent strength ÷ capital "
+    "governance, not grievance directly, so keeping juntas low means keeping total "
+    "strength low — and all-in development aimed at the worst-grievance regions "
+    "starves recruitment best. Over a long run that concentration out-scores "
+    "balanced play, because development has no diminishing-returns / co-option "
+    "downside (Galula under-modelled). v0.25 shipped the calibration-safe half — "
+    "sharpening the benchmark's targeting; the deeper fix (diminishing returns on "
+    "development) is the named next milestone. Tracked here at the full horizon.",
 )
 def test_no_pure_strategy_dominates_at_the_full_horizon():
     """The §19.7 discipline at the arc's *actual* play length (168 turns), not the

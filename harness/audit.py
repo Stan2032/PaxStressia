@@ -4,10 +4,14 @@ checks the PLAYER side: the score spread, the ending distribution, and the §19.
 forced-portfolio / §19.7 no-dominant-strategy discipline — and at BOTH the
 120-turn subset the thesis suite tests and the arc's full 168-turn horizon.
 
-It surfaced the v0.24 finding: balanced play tops the pures at 120 turns but not
-at 168, where 'hold the capitals by cutting grievance, cede the countryside'
-(pure hearts-minds) out-economises it (sustained security stops paying for
-itself). Report-only — it never fails CI; the xfail thesis test is the gate.
+It surfaced the v0.24 finding (diagnosed v0.25): balanced play tops the pures at
+120 turns but not at 168. The mechanism, measured: capital collapse is driven by
+insurgent strength / capital governance (factions.collapse_rolls), not grievance,
+so keeping juntas low means keeping total strength low — and all-in development
+aimed at the worst-GRIEVANCE regions starves recruitment best. Over a long run
+that concentration wins, because development has no diminishing-returns / co-option
+downside yet (Galula under-modelled). Report-only — it never fails CI; the xfail
+thesis test is the gate.
 
 Usage:
   python3 harness/audit.py --runs 8

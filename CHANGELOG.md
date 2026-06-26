@@ -2,14 +2,23 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.25.0 — 2026-06-26
+
+**The horizon finding, diagnosed — and the benchmark sharpened** (§19.7; the measured follow-through on v0.24). The v0.24 audit found that balanced play loses to pure hearts-minds at the arc's full 168-turn horizon and named a fix. Before building it, I measured *why* — and the first explanation was wrong. Recording that correction is the point: *measure, never assume.*
+
+- **The real mechanism:** capital collapse is driven by insurgent **strength ÷ capital governance** (`factions.collapse_rolls`), **not by grievance directly** — so the way to keep juntas low (and `order_mult` high) is to keep total insurgent **strength** low. All-in development aimed at the worst-**grievance** regions starves recruitment at the source and does exactly that; spending budget on any other tool costs that throughput. Over a long run the concentration wins, because **development has no diminishing-returns / co-option downside yet** (Galula's *development without security is captured*, under-modelled).
+- **What it is *not*:** conceded countryside does **not** "drop out of the average" (Stabilization is a mean over *all* nodes and actually rewards holding more ground — balanced play's stabilization is higher), and it is **not** security costs piling up (the benchmark barely uses force — zero casualties). Both were in the v0.24 prose; both are now corrected across the docs.
+- **The calibration-safe half of the fix, shipped:** `CompetentPolicy` now aims its development where **grievance** is worst — the prevention-at-source lever its own docstring always named — instead of at the highest-force regions (where development is largely co-opted). One targeting change, no world-dynamics touched. Effect: the §19.7 120-turn margin goes from ~1 point to **~9** (competent 12→**20**, dominating every pure), and the 168-turn gap narrows (1.3→**4.8**). Calibration **10/10 by construction** — policies never touch the passive world.
+- **The deeper fix stays named, not done:** diminishing-returns / co-option on development, so all-in development plateaus and balanced play that protects its gains wins at the horizon. A player-effect change (calibration-safe — passive never develops) that must still hold the 120-turn gate and the hearts-minds characterization, so it's a focused future milestone. `test_no_pure_strategy_dominates_at_the_full_horizon` still **xfails** (4.8 < 8.3) until it lands.
+- **Sim + docs only** — no rules / proto / calibration change. **Sahel calibration still 10/10; 104 tests pass / 1 xfail.**
+
 ## v0.24.0 — 2026-06-26
 
 **Balance audit — the horizon-dominance finding, surfaced not hidden** (§19.7). A new player-side instrument that grades the *player*, where calibrate.py grades the passive *world*.
 
 - **`harness/audit.py`** — runs every policy archetype (passive / kinetic / hearts-minds / mixed / competent / emergency) on the Sahel arc at **both** the 120-turn subset the enforced thesis test checks **and** the arc's full **168-turn horizon**, printing the score spread, the ending distribution, and the §19.7 "balanced tops every pure" gate at each length. Report-only — it never fails CI.
-- **The finding:** §19.7 **holds at 120 turns but breaks at 168.** Over the long run, pure hearts-minds (≈8.3) overtakes balanced play (≈1.3): sustained security's per-turn spend + casualty cost is charged every turn while the stabilization it buys is bounded, so *hold the capitals by cutting grievance, cede the countryside* out-economises balanced containment. A real leak in "every tool cuts both ways."
+- **The finding:** §19.7 **holds at 120 turns but breaks at 168** — pure hearts-minds overtakes balanced play once the run is long enough. (The mechanism here was first mis-attributed; **v0.25 diagnosed it by measurement and corrected the story** — see below. Recording the wrong first guess and its correction *is* the discipline.)
 - **Named, not papered over:** a fifth thesis assertion — `test_no_pure_strategy_dominates_at_the_full_horizon` (`tests/test_thesis.py`) — asserts the destination at the full horizon and **xfails** until it's closed. The xfail test is the gate; the audit harness is the instrument.
-- **The fix, named as the next milestone:** a *quiet ≠ peace at country scale* scoring pass — conceded territory must score as **unstabilized**, not merely drop out of the average — to be done (per the founding discipline) so the 10/10 calibration and the 120-turn gate stay true.
 - **Docs + tests + harness only** — no rules / sim / proto / calibration change. **Sahel calibration still 10/10; 104 tests pass / 1 xfail** (the named destination).
 
 ## v0.23.0 — 2026-06-18
