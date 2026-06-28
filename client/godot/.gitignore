@@ -1,0 +1,8 @@
+# Rules are single-sourced at the repo root and bundled in at build time (see README) —
+# never commit a second copy here.
+/rules/
+
+# Godot editor cache / generated import data / local export config.
+/.godot/
+/.import/
+export_presets.cfg
