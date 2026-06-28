@@ -127,8 +127,10 @@ class CompetentPolicy(Policy):
     the '§3.7 reasonable player' the design says should be able to beat history.
     It does not micro: it sets posture. Priorities each turn, greedily within
     the Mandate/Funds budget:
-      1. shore up the civilian capital nearest to collapse (development raises
-         governance + local, cuts grievance — the prevention lever);
+      1. cut grievance where the recruitment pool fills fastest — development on
+         the worst-*grievance* regions, the prevention lever that starves the
+         insurgency's intake at the source (§19.7; aiming it at already-entrenched
+         regions instead is largely co-opted);
       2. settle any genuinely stalemated faction (negotiation — the clean exit);
       3. build local support + see clearly in the worst contested regions;
       4. keep an international umbrella up;
@@ -164,9 +166,16 @@ class CompetentPolicy(Policy):
 
         ranked = sorted(est, key=risk, reverse=True)
         worst = [n for n in ranked if risk(n) > 0][:4]
+        # Prevention is aimed where the recruitment POOL fills fastest (worst
+        # grievance), not where forces already are: development cuts grievance at
+        # the source and starves the insurgency's intake — the measured dominant
+        # long-horizon lever (§19.7). Developing an already-entrenched region is
+        # largely co-opted, so the other tools below carry the contested ones.
+        by_grievance = sorted(est, key=lambda nid: est[nid]["grievance"], reverse=True)
+        worst_grievance = [n for n in by_grievance if est[n]["grievance"] > 0][:4]
 
-        # 1. prevention: development on the two worst regions (governance buffer)
-        for nid in worst[:2]:
+        # 1. prevention: development on the two worst-grievance regions
+        for nid in worst_grievance[:2]:
             if afford("development_program"):
                 do("development_program", nid)
         # 2. negotiate a stalemated faction (mid-strength, contested)

@@ -91,6 +91,30 @@ def test_arc_full_horizon_passive_run(seed):
             assert fired.count(event_id) == 1, f"once-beat {event_id} repeated"
 
 
+def test_narrative_chains_are_consistent():
+    """The §20.2 named-people arcs use `requires_fired`: every chained event must
+    reference a real setup event, and across passive runs a 'kept' beat must never
+    fire without its 'met' beat — the chain primitive holds, and the arcs complete."""
+    rules = load_rules(scenario="sahel_arc")
+    deck = {c["id"] for c in rules["events"]}
+    chained = [c for c in rules["events"] if "requires_fired" in c.get("requires", {})]
+    assert chained, "the arc deck should carry narrative chains (named-people arcs)"
+    for c in chained:
+        assert c["requires"]["requires_fired"] in deck, \
+            f"{c['id']} chains off a missing event"
+    completed = False
+    for seed in range(6):
+        eng = Engine(rules=load_rules(scenario="sahel_arc"), seed=seed, policy=PassivePolicy())
+        eng.run(168)
+        fired = eng.world.fired_events
+        for c in chained:
+            if c["id"] in fired:
+                assert c["requires"]["requires_fired"] in fired, \
+                    f"{c['id']} fired without its setup"
+                completed = True
+    assert completed, "named-people arcs should complete (met → kept) in some passive run"
+
+
 def test_spread_ignites_empty_nodes():
     """The arc's historical test for the v0.4 spread mechanic: regions that
     start empty (northern Burkina, the coastal marker's neighbors) must be

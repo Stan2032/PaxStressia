@@ -44,6 +44,8 @@ def _eligible(world: WorldState, card: dict) -> bool:
         pairs = sum(len(f.links) for f in world.factions_sorted()) // 2
         if pairs < req["min_links"]:
             return False
+    if "requires_fired" in req and req["requires_fired"] not in world.fired_events:
+        return False  # narrative chains (§20.2): a follow-up needs its setup to have fired
     return True
 
 

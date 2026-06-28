@@ -604,15 +604,27 @@
       {
         "label": "Own it: release the assessment, pay compensation",
         "effects": [
-          { "op": "domestic_legitimacy", "delta": -3 },
-          { "op": "international_legitimacy", "delta": -1 },
-          { "op": "local_legitimacy", "delta": -2 }
+          {
+            "op": "domestic_legitimacy",
+            "delta": -3
+          },
+          {
+            "op": "international_legitimacy",
+            "delta": -1
+          },
+          {
+            "op": "local_legitimacy",
+            "delta": -2
+          }
         ]
       },
       {
         "label": "Classify it",
         "effects": [
-          { "op": "suppress_clock", "severity": 9 }
+          {
+            "op": "suppress_clock",
+            "severity": 9
+          }
         ]
       }
     ],
@@ -832,5 +844,588 @@
     "sources": [
       "2026 Sahel entrenchment analyses — falling attacks ≠ security"
     ]
+  },
+  {
+    "id": "closed_moura",
+    "title": "The Cordon",
+    "weight": 1.3,
+    "once": true,
+    "requires": {
+      "any_junta": true
+    },
+    "text": "For five days nothing leaves the market town. When a fact-finding mission finally counts, the dead are in the hundreds — and they were executed, not killed in any battle. The junta's bulletin reads 'jihadists neutralised.' Its foreign partner does not give interviews.",
+    "choices": [
+      {
+        "label": "Fund the documentation — satellites, forensics, the survivors' testimony",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 8
+          },
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "Note it. The war will not wait for a tribunal",
+        "effects": [
+          {
+            "op": "local_legitimacy",
+            "delta": -3
+          },
+          {
+            "op": "grievance",
+            "delta": 2
+          }
+        ]
+      }
+    ],
+    "notes": "Closed-society layer (§20.2): mass atrocity rendered as aftermath and number, not act. Document vs. look away.",
+    "sources": [
+      "UN OHCHR fact-finding mission: Moura, Mali, 27–31 March 2022 — at least 500 unlawfully killed by FAMa and foreign (Wagner) personnel",
+      "Human Rights Watch, on Moura and the 2023 Russian veto"
+    ]
+  },
+  {
+    "id": "closed_fimi",
+    "title": "What Everyone Knows",
+    "weight": 1.3,
+    "once": true,
+    "requires": {
+      "any_junta": true
+    },
+    "text": "Staged footage multiplies across a thousand day-old accounts: bodies at a base your forces just vacated, captioned in your name. A Moscow 'news agency' assembled from a mercenary group's old contacts runs it first. By morning the lie is 'what everyone knows.'",
+    "choices": [
+      {
+        "label": "Fund attribution research — trace the network, publish the forensics",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 6
+          },
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "Refuse to dignify it",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": -4
+          }
+        ]
+      }
+    ],
+    "notes": "§20.3 the lying layer: the contested information space. Pairs with the atrocity card.",
+    "sources": [
+      "EEAS–VIGINUM–FCDO technical report on the 'African Initiative' Russian FIMI operation, June 2025",
+      "Staged-corpse disinformation at Gossi, Mali, April 2022, falsely blaming departing French forces"
+    ]
+  },
+  {
+    "id": "closed_decree",
+    "title": "Until Further Notice",
+    "weight": 1.2,
+    "once": true,
+    "requires": {
+      "any_junta": true
+    },
+    "text": "A single decree suspends every political party 'until further notice,' and the transition's calendar quietly loses its last date. The men who signed it will not be standing for election against anyone.",
+    "choices": [
+      {
+        "label": "Back exile media and designate the officials who signed it",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 5
+          },
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "Work with the new reality — you still need the basing rights",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          },
+          {
+            "op": "local_legitimacy",
+            "delta": -2
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": -1
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 repression by decree: party dissolution, indefinite rule.",
+    "sources": [
+      "Mali suspends then dissolves political parties, April 2024; Burkina Faso dissolves all parties by decree, January 2026 (HRW; Al Jazeera)"
+    ]
+  },
+  {
+    "id": "closed_conscription",
+    "title": "Mobilised",
+    "weight": 1.2,
+    "once": true,
+    "requires": {
+      "any_junta": true
+    },
+    "text": "A human-rights lawyer who had been cataloguing the army's abuses is filmed in fresh fatigues at the front — 'mobilised' by emergency decree. Courts rule the orders manifestly illegal; the orders keep arriving. Every other critic reads the message.",
+    "choices": [
+      {
+        "label": "Shelter the conscripted voices and carry their record out",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 5
+          },
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "Stay clear of their internal affairs",
+        "effects": [
+          {
+            "op": "local_legitimacy",
+            "delta": -2
+          },
+          {
+            "op": "grievance",
+            "delta": 2
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 punitive conscription of critics.",
+    "sources": [
+      "Burkina Faso's April 2023 'general mobilization' decree used to forcibly conscript journalists, judges and activists; courts ruled it illegal (HRW; Amnesty International — the Daouda Diallo case)"
+    ]
+  },
+  {
+    "id": "closed_blackout",
+    "title": "The Quiet",
+    "weight": 1.2,
+    "once": true,
+    "requires": {
+      "any_junta": true
+    },
+    "text": "Another rung down the ladder: the foreign broadcasters go off the air, then the wire services, then the apps. A new statute makes sharing 'data likely to disturb public order' a crime. The region goes quiet — which is not the same thing as calm.",
+    "choices": [
+      {
+        "label": "Fund exile and diaspora outlets to route around the blackout",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 5
+          },
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "Let the silence settle",
+        "effects": [
+          {
+            "op": "grievance",
+            "delta": 2
+          },
+          {
+            "op": "international_legitimacy",
+            "delta": -1
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 the media-ban ladder — quiet is not calm (the §9 deceptive-calm thesis, socialised).",
+    "sources": [
+      "Sahel media-ban ladder: France 24, RFI and the BBC suspended and banned across Mali, Burkina Faso and Niger, 2023–2024 (CPJ; RSF)"
+    ]
+  },
+  {
+    "id": "closed_panel",
+    "title": "Who Is Left to Count",
+    "weight": 1.2,
+    "once": true,
+    "requires": {
+      "any_junta": true,
+      "min_turn": 40
+    },
+    "text": "Your resolution to renew the independent panel — the last body still naming names — dies on a single veto. The peacekeepers are already gone. From here, what is recorded depends entirely on who is left to record it.",
+    "choices": [
+      {
+        "label": "Build the evidence outside the UN — fund the independent record",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 6
+          }
+        ]
+      },
+      {
+        "label": "Accept the limits of the instrument",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": -2
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": -1
+          }
+        ]
+      }
+    ],
+    "notes": "§20.3/§20.4: the rival's veto nullifies the UN instrument — a deliberately frustrating tool.",
+    "sources": [
+      "MINUSMA terminated at the junta's demand, UN Security Council Res. 2690, June 2023",
+      "Russia's lone veto ending the Mali sanctions Panel of Experts mandate, August 2023 (HRW)"
+    ]
+  },
+  {
+    "id": "closed_reversal",
+    "title": "Struck Off",
+    "weight": 1.1,
+    "once": true,
+    "requires": {
+      "any_junta": true,
+      "min_turn": 60
+    },
+    "text": "The designations you spent so much capital to win are quietly lifted — three names removed to 'court security cooperation' with the very officers they named. Impunity, it turns out, is also a policy. What endures is not the punishment you sought; it is the record you funded.",
+    "choices": [
+      {
+        "label": "Keep funding the record; documentation outlives the sanction",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 5
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "label": "Spend your outrage where it can still move something",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": -1
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "§20.4 the sobering counterweight: documentation exposes; it rarely punishes. The durable win is the record.",
+    "sources": [
+      "US lifts sanctions on three Wagner-linked Malian officials to court security cooperation, March 2026 (HRW); Wagner rebranded as the state-run Africa Corps"
+    ]
+  },
+  {
+    "id": "met_aminata",
+    "title": "A First Graduating Class",
+    "weight": 0.7,
+    "once": true,
+    "requires": {
+      "min_turn": 4,
+      "max_turn": 50
+    },
+    "text": "In a town you helped keep on the map, a school you backed graduates its first class. Aminata, the teacher who stayed when others left, sends a photograph and three lines of thanks. You file it. Good days are also data.",
+    "choices": [
+      {
+        "label": "Fund the next intake",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "Note it; the budget is thin",
+        "effects": [
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "Named-people arc (composite). Pairs with kept_aminata."
+  },
+  {
+    "id": "kept_aminata",
+    "title": "The New Curriculum",
+    "weight": 1.0,
+    "once": true,
+    "requires": {
+      "requires_fired": "met_aminata",
+      "any_junta": true
+    },
+    "text": "The town has fallen. Aminata still teaches — there is no one else — but the curriculum arrived by decree, and the photograph she once sent you would now be evidence. She does not write anymore.",
+    "choices": [
+      {
+        "label": "Fund the record of what the schools became",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 4
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "label": "Let her keep her head down",
+        "effects": [
+          {
+            "op": "local_legitimacy",
+            "delta": -3
+          },
+          {
+            "op": "grievance",
+            "delta": 2
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 named-people-kept: the quiet you left her to."
+  },
+  {
+    "id": "met_ousmane",
+    "title": "The Reporter",
+    "weight": 0.7,
+    "once": true,
+    "requires": {
+      "min_turn": 6,
+      "max_turn": 60
+    },
+    "text": "A wire story you almost missed: Ousmane, a local reporter, has documented a supply route no one wanted documented. His byline cost him friends. It will cost the people running that route, too.",
+    "choices": [
+      {
+        "label": "Amplify it through allied channels",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "label": "Quietly act on what he found",
+        "effects": [
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "Named-people arc (composite). Pairs with kept_ousmane."
+  },
+  {
+    "id": "kept_ousmane",
+    "title": "Mobilised",
+    "weight": 1.0,
+    "once": true,
+    "requires": {
+      "requires_fired": "met_ousmane",
+      "any_junta": true
+    },
+    "text": "Ousmane is at the front now — 'mobilised,' the decree says, the same week his next report would have run. He files nothing. The route he found runs again, unwatched.",
+    "choices": [
+      {
+        "label": "Make his case loudly — name the decree, name the names",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 4
+          },
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "There is a war on; let it go",
+        "effects": [
+          {
+            "op": "local_legitimacy",
+            "delta": -2
+          },
+          {
+            "op": "grievance",
+            "delta": 2
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 named-people-kept; ties to the conscription card."
+  },
+  {
+    "id": "met_fatou",
+    "title": "The Clinic That Stayed Open",
+    "weight": 0.7,
+    "once": true,
+    "requires": {
+      "min_turn": 5,
+      "max_turn": 55
+    },
+    "text": "Through three bad seasons one clinic never closed. Dr. Fatou runs it on diesel and stubbornness; you've quietly kept the fuel coming. A photograph of a full waiting room is its own kind of victory.",
+    "choices": [
+      {
+        "label": "Keep the supplies flowing",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": 1
+          },
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "label": "Note it; resources are stretched",
+        "effects": [
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "Named-people arc (composite). Pairs with kept_fatou."
+  },
+  {
+    "id": "kept_fatou",
+    "title": "Requisitioned",
+    "weight": 1.0,
+    "once": true,
+    "requires": {
+      "requires_fired": "met_fatou",
+      "any_junta": true
+    },
+    "text": "The clinic has been requisitioned — a garrison now, the waiting room a billet. Dr. Fatou went north with what she could carry. Where there was a clinic there is a checkpoint; the sick are someone else's problem.",
+    "choices": [
+      {
+        "label": "Fund the exile medics and document the takeover",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 4
+          }
+        ]
+      },
+      {
+        "label": "Mourn it and move on",
+        "effects": [
+          {
+            "op": "local_legitimacy",
+            "delta": -3
+          },
+          {
+            "op": "grievance",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 named-people-kept."
+  },
+  {
+    "id": "met_ibrahim",
+    "title": "A Conviction",
+    "weight": 0.7,
+    "once": true,
+    "requires": {
+      "min_turn": 8,
+      "max_turn": 65
+    },
+    "text": "A court does something rare: it convicts an officer for an abuse your monitors helped document. Judge Ibrahim read the sentence with the cameras off and the threats already arriving. The law worked, once, here.",
+    "choices": [
+      {
+        "label": "Back the court's protection",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "label": "Note the precedent",
+        "effects": [
+          {
+            "op": "domestic_legitimacy",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "Named-people arc (composite). Pairs with kept_ibrahim."
+  },
+  {
+    "id": "kept_ibrahim",
+    "title": "Court Adjourned",
+    "weight": 1.0,
+    "once": true,
+    "requires": {
+      "requires_fired": "met_ibrahim",
+      "any_junta": true
+    },
+    "text": "The courts are 'suspended pending reform.' The officer Judge Ibrahim convicted is back in uniform; the judge is not at his bench, or his home. The file your monitors built is the only place the conviction still exists.",
+    "choices": [
+      {
+        "label": "Keep the record alive outside the country",
+        "effects": [
+          {
+            "op": "exposure",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "label": "Accept that the law has left",
+        "effects": [
+          {
+            "op": "international_legitimacy",
+            "delta": -2
+          },
+          {
+            "op": "grievance",
+            "delta": 1
+          }
+        ]
+      }
+    ],
+    "notes": "§20.2 named-people-kept."
   }
 ]
