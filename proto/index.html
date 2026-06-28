@@ -104,6 +104,17 @@
   #helpBtn{margin-left:auto; background:var(--panel2); border:1px solid #000;
     color:var(--amber); border-radius:50%; width:24px; height:24px; font:inherit;
     font-weight:bold; cursor:pointer; flex:none}
+  #coach{position:fixed; left:50%; bottom:14px; transform:translateX(-50%);
+    width:calc(100% - 24px); max-width:340px; background:var(--panel2);
+    border:1px solid var(--amber); border-radius:10px; padding:12px 14px;
+    box-shadow:0 6px 24px rgba(0,0,0,.5); z-index:60; font-size:13px; line-height:1.45}
+  #coach .cn{display:flex; justify-content:space-between; align-items:center;
+    margin-top:10px; gap:10px}
+  #coach .cstep{color:var(--dim); font-size:11px}
+  #coach .cnext{background:var(--amber); color:#000; border:none; border-radius:6px;
+    padding:6px 12px; font-weight:bold; cursor:pointer}
+  #coach .cskip{color:var(--dim); background:none; border:none; cursor:pointer;
+    font-size:12px; text-decoration:underline; margin-right:4px}
   .kv{display:flex; justify-content:space-between; gap:8px; align-items:center;
     font-size:12px; padding:3px 0; border-bottom:1px solid #232b33}
   .kv .lbl{color:var(--dim)} .kv .val{font-variant-numeric:tabular-nums; white-space:nowrap}
@@ -126,19 +137,19 @@
   <header>
     <div class="row">
       <span class="date" id="hDate">—</span>
-      <span class="chip" title="Mandate — your political capital. Spend it each month on actions; it comes from the voters' support.">🏛️ <b id="hMandate">0</b></span>
-      <span class="chip" title="Funds — money for programmes this month.">💰 <b id="hTreasury">0</b></span>
+      <span class="chip" title="Backing — what you spend each month to act. It comes from the voters: the more they're with you, the more you get.">🏛️ <b id="hMandate">0</b></span>
+      <span class="chip" title="Money — your budget for programmes this month.">💰 <b id="hTreasury">0</b></span>
       <span class="chip" id="hElection">—</span>
-      <span class="chip" id="hDrift" style="display:none" title="Authoritarian Drift — the emergency powers you've reached for. Permanent, and it directly drags your final score: the democracy is the prize you're spending.">⛓️ <b>0</b></span>
-      <span class="chip" id="hSecrets" style="display:none; color:var(--red)" title="Buried scandals. Each turn there's a chance one leaks — costing far more than disclosing would have. A free press makes leaks more likely.">📂 <b>0</b></span>
+      <span class="chip" id="hDrift" style="display:none" title="Overreach — the emergency powers you've reached for. They never go away, and they drag down your final score: your own democracy is what you're spending.">⛓️ <b>0</b></span>
+      <span class="chip" id="hSecrets" style="display:none; color:var(--red)" title="Cover-ups — things you buried. Each month one might leak, costing far more than owning up would have. A free press makes leaks likelier.">📂 <b>0</b></span>
       <button id="helpBtn" title="What am I looking at?">?</button>
     </div>
     <div class="gauges">
-      <div class="gauge"><label><span title="Home legitimacy — the voters who can end your war at the ballot box">🏠 <span class="hint">home</span></span> <span id="vDom"></span></label>
+      <div class="gauge"><label><span title="Home — the voters back home. They can end your war at the ballot box.">🏠 <span class="hint">home</span></span> <span id="vDom"></span></label>
         <div class="bar"><i id="bDom" style="background:var(--blue)"></i></div></div>
-      <div class="gauge"><label><span title="International legitimacy — allies and institutions standing with you">🤝 <span class="hint">allies</span></span> <span id="vIntl"></span></label>
+      <div class="gauge"><label><span title="Allies — the other countries and bodies standing with you.">🤝 <span class="hint">allies</span></span> <span id="vIntl"></span></label>
         <div class="bar"><i id="bIntl" style="background:var(--teal)"></i></div></div>
-      <div class="gauge"><label><span title="Local legitimacy — whether the people on the ground trust you over the insurgency (the real win)">🛡️ <span class="hint">local</span></span> <span id="vLoc"></span></label>
+      <div class="gauge"><label><span title="Trust — whether the people on the ground are with you, not the insurgents. The real win.">🛡️ <span class="hint">trust</span></span> <span id="vLoc"></span></label>
         <div class="bar"><i id="bLoc" style="background:var(--green)"></i></div></div>
     </div>
   </header>
@@ -1164,7 +1175,7 @@ if (typeof document !== "undefined") (function () {
     const buried = (p.suppressClocks || []).length;
     $("hSecrets").style.display = buried > 0 ? "" : "none";
     if (buried > 0) $("hSecrets").querySelector("b").textContent = buried;
-    $("hSource").textContent = "rules: " + rulesSource;
+    const hSrc = $("hSource"); if (hSrc) hSrc.textContent = "rules: " + rulesSource;
     setBar("Dom", p.domestic); setBar("Intl", p.international);
     setBar("Loc", game.localAvg());
   }
@@ -1434,7 +1445,7 @@ if (typeof document !== "undefined") (function () {
           "Election lost. The state endures; your standing reverts.");
       } else if (l.event === "patron_dominant" && !seen.has("pat")) {
         seen.add("pat");
-        push("pat", 1, "Mercenary patron now dominant in " + l.node + ".");
+        push("pat", 1, "Foreign backer now dominant in " + l.node + ".");
       } else if (l.event === "leak" && !seen.has("leak")) {
         seen.add("leak");
         push("leak", 2, "It leaked. A scandal you buried is on every front page — " +
@@ -1448,8 +1459,8 @@ if (typeof document !== "undefined") (function () {
           "). The longer it's left, the costlier every option against it.");
       } else if (l.event === "designation" && !seen.has("desig")) {
         seen.add("desig");
-        push("desig", 1, "Your evidence lands: sanctions designate " + l.country +
-          "'s figures, and the patron's grip loosens.");
+        push("desig", 1, "Your evidence lands: sanctions hit " + l.country +
+          "'s figures, and the foreign backer's grip loosens.");
       } else if (l.event === "negotiated" && !seen.has("nego")) {
         seen.add("nego");
         push("nego", 1, "A settlement holds in " + l.node + ". Soft at home, respected abroad — " +
@@ -1487,101 +1498,74 @@ if (typeof document !== "undefined") (function () {
       const f = est.factions[fid], name = game.state.factions[fid].name;
       const quiet = f.e > 35 && f.v < 25;
       facts += `<div class="fcard"><div class="nm">${name}</div>` +
-        statRow("💥 Forces", "Fighters — how dangerous right now (Strength). Your estimate; ± is the uncertainty.", f.s, -1, f.sBand) +
-        statRow("🏚️ Dug-in", "Shadow government — taxes, courts, control. Hard to remove (Entrenchment).", f.e, -1, f.eBand) +
-        statRow("⚡ Activity", "Visible violence. Low can mean beaten — or quietly in control (Visibility).", f.v, -1) +
-        (quiet ? `<div class="sub bd">⚠ dug-in but quiet — may be running this area, not losing it</div>` : "") +
+        statRow("💥 Fighters", "How dangerous this group is right now. It's an estimate — the ± shows how unsure you are.", f.s, -1, f.sBand) +
+        statRow("🏚️ Dug in", "Shadow rule — their own taxes, courts, control. Hard to dislodge.", f.e, -1, f.eBand) +
+        statRow("⚡ Violence", "How much open fighting. Low can mean they're beaten — or quietly in charge.", f.v, -1) +
+        (quiet ? `<div class="sub bd">⚠ dug in but quiet — may be running this area, not losing it</div>` : "") +
         `</div>`;
     }
-    if (!facts) facts = '<div class="sub">No insurgents detected here — but thin intel can hide them.</div>';
+    if (!facts) facts = '<div class="sub">No insurgents detected here — but a poor view can hide them.</div>';
     return `<div class="card"><b>${n.name}</b> <span class="hint">${COUNTRY[n.country] || n.country}` +
       `${n.capital ? " · capital" : ""} · ${govWord(n.government)}</span>` +
-      statRow("🏛️ Govt control", "How firmly the state runs this region (Governance). Higher resists insurgents.", n.governance, 1) +
-      statRow("🛡️ Local support", "Whether the population backs you (Local legitimacy). The real win condition — and the only thing that permanently starves insurgents.", n.local, 1) +
-      statRow("🔥 Grievance", "Anger at the state. High grievance is what insurgents recruit from.", n.grievance, -1) +
-      statRow("🕵️ Visibility", "How clearly your intelligence sees this region. Low = the numbers above are guesses.", est.coverage * 100, 1) +
-      (n.opsPressure > 0 ? statRow("🪖 Pressure", "Your forces' pressure here right now (suppresses Forces while active).", n.opsPressure, 1) : "") +
-      ((n.patron.mercenary || 0) > 0 ? statRow("🏴 Foreign patron", "A rival foreign patron's grip on this regime (mercenary/no-strings). High is bad: it buys the regime out of your conditions. Exposure and sanctions push it back.", n.patron.mercenary, -1) : "") +
-      (n.government !== "civilian" ? statRow("🔦 Exposure", "How thoroughly the world documents this regime's conduct (§ your think-tank/exile-media funding). High is good for you: it raises the patron's price and unlocks sanctions.", st.exposure[n.country] || 0, 1) : "") +
+      statRow("🏛️ Control", "How firmly the government runs this region. Higher pushes the insurgents back.", n.governance, 1) +
+      statRow("🛡️ Trust", "Whether the people here are with you. The real win — and the only thing that starves the insurgency for good.", n.local, 1) +
+      statRow("🔥 Anger", "How angry people are at the government. Anger is what the insurgents recruit from.", n.grievance, -1) +
+      statRow("🕵️ Your view", "How clearly you can see this region. Low means the numbers above are guesses.", est.coverage * 100, 1) +
+      (n.opsPressure > 0 ? statRow("🪖 Pressure", "Pressure your forces are putting on the fighters here right now.", n.opsPressure, 1) : "") +
+      ((n.patron.mercenary || 0) > 0 ? statRow("🏴 Foreign backer", "A rival foreign power's hold on this regime. High is bad: it buys the regime out of your demands. Spotlight and sanctions push it back.", n.patron.mercenary, -1) : "") +
+      (n.government !== "civilian" ? statRow("🔦 Spotlight", "How thoroughly the world is documenting this regime. High is good for you: it raises the foreign backer's price and unlocks sanctions.", st.exposure[n.country] || 0, 1) : "") +
       facts + `</div>`;
   }
   function helpHTML() {
     return '<div class="help">' +
-      '<div class="head">What is this?</div>' +
-      '<p>You run a democracy trying to stabilise a region without becoming the ' +
-      'thing you are fighting. Each month you spend <span class="term">Mandate</span> ' +
-      '(political capital) and <span class="term">Funds</span> on actions, then end the month ' +
-      'and the world reacts.</p>' +
-      '<h3>Reading the map — it speaks in colour, not words</h3>' +
-      '<p><b>The dot is who rules:</b> <span style="color:#9ccc65">green</span> civilian · ' +
-      '<span style="color:#ef5350">red</span> junta · <span style="color:#9575cd">purple</span> emirate · ' +
-      '<span style="color:#90a4ae">grey</span> collapsed. <b>The red ring is the insurgency</b> — ' +
-      'the thicker it is, the stronger they are. A <span style="color:#26a69a">teal flag</span> is your ' +
-      'standing Regional Command; a dark dot is an oil state; a <span style="color:#ffb300">★</span> ' +
-      'marks a capital. <b>Tap any nation</b> for its name and its numbers.</p>' +
-      '<h3>Your standings are objects in the bar: 🏛️ 💰 🏠 🤝 🛡️</h3>' +
-      '<p>🏛️ <b>Mandate</b> (political capital you spend on actions) · 💰 <b>Funds</b> · ' +
-      '🏠 <b>Home</b> (your voters) · 🤝 <b>Allies</b> (the world) · 🛡️ <b>Local</b> (the ground). ' +
-      '⛓️ <b>Drift</b> appears once you reach for emergency powers — and never leaves.</p>' +
-      '<h3>Your three standings (top bars, 0–100, higher is better)</h3>' +
-      '<p><span class="term">Home</span> — your voters\' patience. It sets how much ' +
-      'Mandate you get. Body bags and scandals drain it.</p>' +
-      '<p><span class="term">Allies</span> — the world\'s trust. Unlocks coalitions and ' +
-      'cover; civilian harm and hypocrisy drain it.</p>' +
-      '<p><span class="term">Local</span> — whether the population on the ground backs you. ' +
-      'The slowest to raise and the <b>only</b> thing that permanently starves an insurgency.</p>' +
-      '<h3>A region\'s numbers (tap any region)</h3>' +
-      '<p><span class="term">Govt control</span> / <span class="term">Local support</span> ' +
-      '— high is good (green). <span class="term">Grievance</span> — high is bad (red): it is ' +
-      'the fuel insurgents recruit from.</p>' +
-      '<p>For each insurgent group: <span class="term">Forces</span> = how dangerous now · ' +
-      '<span class="term">Dug-in</span> = shadow control, hard to remove · ' +
-      '<span class="term">Activity</span> = visible violence. ' +
-      '<b>Dug-in + low Activity = quiet but captured</b> — the trap this game is about.</p>' +
+      '<div class="head">How to play</div>' +
+      '<p>You lead a democracy trying to hold a region together — without becoming the thing ' +
+      'you are fighting. Each month you spend <b>Backing</b> and <b>Money</b> on actions, then ' +
+      'end the month and the world reacts.</p>' +
+      '<h3>The map shows it in colour, not words</h3>' +
+      '<p>The dot is who rules: <span style="color:#9ccc65">green</span> elected · ' +
+      '<span style="color:#ef5350">red</span> junta · <span style="color:#9575cd">purple</span> insurgent-run · ' +
+      '<span style="color:#90a4ae">grey</span> collapsed. The <b>red ring is the insurgency</b> — ' +
+      'thicker means stronger. A <span style="color:#26a69a">teal flag</span> is your regional base; ' +
+      'a <span style="color:#ffb300">★</span> marks a capital. <b>Tap any place</b> to see its numbers.</p>' +
+      '<h3>Your bars (top of screen)</h3>' +
+      '<p>🏠 <b>Home</b> — your voters\' patience (it sets how much Backing you get). ' +
+      '🤝 <b>Allies</b> — the world\'s trust. 🛡️ <b>Trust</b> — whether the people on the ground ' +
+      'are with you. Trust is the slowest to earn and the only thing that starves an insurgency for good.</p>' +
+      '<h3>A place\'s numbers (tap one)</h3>' +
+      '<p><b>Control</b> and <b>Trust</b> — high is good. <b>Anger</b> — high is bad; it\'s what ' +
+      'the insurgents recruit from. For each armed group: <b>Fighters</b> (how dangerous now), ' +
+      '<b>Dug in</b> (shadow rule, hard to remove), <b>Violence</b> (open fighting).</p>' +
+      '<p><b>Dug in + low Violence = quiet but captured.</b> That trap is what this game is about.</p>' +
       '<h3>The numbers are guesses</h3>' +
-      '<p>Insurgent figures show a <span class="term">± band</span> — your uncertainty. ' +
-      'Where <span class="term">Your visibility</span> (intel) is low, a region can look calm ' +
-      'while it is quietly lost. Intelligence actions narrow the guesses.</p>' +
-      '<h3>How it all connects</h3>' +
-      '<p>Grievance <span class="arrow">→</span> grows insurgent Forces. ' +
-      'Govt control + Local support <span class="arrow">→</span> resist them. ' +
-      'Unwatched Forces <span class="arrow">→</span> become Dug-in. ' +
-      'A region overrun <span class="arrow">→</span> can topple its capital into a junta, ' +
-      'which makes things <i>worse</i>, not better.</p>' +
-      '<p><span class="term">Every action cuts both ways</span> — each one lists its risk and ' +
-      'its chance. There are no free moves.</p>' +
-      '<h3>Telling the truth (the Transparency Dial)</h3>' +
-      '<p>When something goes wrong with your fingerprints on it — an errant strike, a ' +
-      'partner\'s atrocity — you choose: <span class="term">disclose</span> (pay a cost now, ' +
-      'but less, and your honesty registers) or <span class="term">bury it</span> (nothing now, ' +
-      'but it becomes a <span class="term">Buried</span> secret). Each month a buried secret may ' +
-      '<span class="term">leak</span> — and a free press makes that likely — costing far more ' +
-      'than the truth would have. Honesty is expensive every time, and cheaper on average.</p>' +
-      '<h3>Blocs, patrons & exposing regimes</h3>' +
-      '<p>When neighbouring states fall out of elected rule they can <span class="term">federate ' +
-      'into a bloc</span> that consolidates over time — pooling propaganda (draining your Allies ' +
-      'standing) and exporting grievance. Left alone, it grows; the longer you wait, the costlier ' +
-      'it is to contain.</p>' +
-      '<p>A rival <span class="term">foreign patron</span> (no-strings, mercenary) buys these ' +
-      'regimes out of your conditions. Your counter is the truth: <span class="term">fund research, ' +
-      'exile media, and OSINT</span> to raise a regime\'s <span class="term">Exposure</span>. High ' +
-      'exposure raises the patron\'s price, blunts bloc propaganda, and unlocks ' +
-      '<span class="term">targeted sanctions</span> — but funding has its own risks, and the ' +
-      'regime hits back at the people you fund.</p>' +
-      '<p>Where a faction is <span class="term">stalemated</span> — too strong to crush, too weak ' +
-      'to win — you can <span class="term">negotiate a settlement</span>: soft at home, respected ' +
-      'abroad, often the only clean exit.</p>' +
+      '<p>Insurgent figures show a ± band — how unsure you are. Where <b>Your view</b> is low, ' +
+      'a place can look calm while it is quietly lost. Spying and patrols sharpen the picture.</p>' +
+      '<h3>How it connects</h3>' +
+      '<p>Anger <span class="arrow">→</span> more fighters. Control + Trust <span class="arrow">→</span> ' +
+      'push them back. Fighters left alone <span class="arrow">→</span> dig in. A place overrun ' +
+      '<span class="arrow">→</span> can topple its capital into a junta, which makes things <i>worse</i>.</p>' +
+      '<p><b>Every action cuts both ways</b> — each one lists its risk. There are no free moves.</p>' +
+      '<h3>Telling the truth</h3>' +
+      '<p>When something goes wrong with your fingerprints on it, you choose: <b>own up</b> ' +
+      '(a smaller cost now) or <b>bury it</b> (nothing now — but it may leak later for much more, ' +
+      'and a free press makes leaks likelier). Honesty costs every time, and is cheaper on average.</p>' +
+      '<h3>The wider game</h3>' +
+      '<p>Fallen states can band into a <b>bloc</b> that grows if you ignore it. A rival ' +
+      '<b>foreign backer</b> props these regimes up; your counter is the truth — fund researchers ' +
+      'and back exile media to put a regime under the <b>Spotlight</b>, which raises the backer\'s ' +
+      'price and unlocks sanctions. A group too strong to crush but too weak to win can be offered ' +
+      'a <b>deal</b> — often the only clean way out.</p>' +
       '<h3>Map key</h3>' +
       '<p><span class="swatch" style="background:var(--civ)"></span>elected · ' +
-      '<span class="swatch" style="background:var(--junta)"></span>military junta · ' +
+      '<span class="swatch" style="background:var(--junta)"></span>junta · ' +
       '<span class="swatch" style="background:var(--emirate)"></span>insurgent-run · ' +
       '<span class="swatch" style="background:var(--failed)"></span>collapsed</p>' +
-      '<p>★ capital · red <b>!</b> = visible violence · ' +
-      '<span class="swatch" style="background:#ff7043"></span> = rival foreign patron entrenched · ' +
+      '<p>★ capital · red <b>!</b> = open fighting · ' +
+      '<span class="swatch" style="background:#ff7043"></span> = rival foreign backer dug in · ' +
       'brown dashed line = smuggling route.</p>' +
       '<h3>Goal</h3>' +
-      '<p>Reach the end with regions stabilised, allies onside, and your own democracy intact. ' +
-      'Winning by force or emergency powers is possible — and the score will say so.</p>' +
+      '<p>Reach the end with regions calm, allies onside, and your own democracy intact. ' +
+      'You can win by force or emergency powers — and the final score will say so.</p>' +
       sourcesHTML() +
       '</div>';
   }
@@ -1609,18 +1593,54 @@ if (typeof document !== "undefined") (function () {
     return html;
   }
   function showIntro() {
-    $("modalPaper").innerHTML = '<h2>PaxStressia — quick orientation</h2>' +
+    $("modalPaper").innerHTML = '<h2>PaxStressia — in one breath</h2>' +
       '<p>You lead a democracy trying to hold a region together. Each month, spend ' +
-      '<b>Mandate</b> on <b>actions</b>, then <b>End month</b>.</p>' +
-      '<p>Watch three standings up top — <b>Home</b> (voters), <b>Allies</b> (world), ' +
-      '<b>Local</b> (the population). Tap a region to see who runs it and how strong the ' +
-      'insurgents are. Those insurgent numbers are <b>estimates</b> — the ± is your uncertainty.</p>' +
-      '<p>The trap to watch: a region that looks <b>quiet</b> may be quietly <b>captured</b>. ' +
-      'Every action has a downside, listed on it.</p>' +
-      '<p class="sub">Full plain-language glossary any time: the <b>Key</b> tab.</p>' +
+      '<b>Backing</b> 🏛️ on a few <b>actions</b>, then tap <b>End month</b> and watch.</p>' +
+      '<p>Up top: 🏠 <b>Home</b> (your voters), 🤝 <b>Allies</b> (the world), 🛡️ <b>Trust</b> ' +
+      '(the people on the ground). Tap any place on the map to see who runs it and how strong ' +
+      'the insurgents are — those numbers are <b>estimates</b>.</p>' +
+      '<p>The trap: a place that looks <b>quiet</b> may be quietly <b>captured</b>. ' +
+      'Every action has a downside, shown on it.</p>' +
+      '<p class="sub">Need a word explained? The <b>Key</b> tab spells everything out.</p>' +
       '<button class="choice" id="introOk" style="text-align:center;color:var(--amber)">Got it</button>';
     $("modal").classList.add("show");
     $("introOk").addEventListener("click", () => $("modal").classList.remove("show"));
+  }
+  // ---------- first-time coach: teach the loop one step at a time ----------
+  const COACH = [
+    'Welcome. 👋 You lead a democracy holding this region together. On the map, the ' +
+      '<b>red rings</b> are the insurgency — the thicker the ring, the stronger they are.',
+    'Tap a place that has a ring. You\'ll see its numbers: high <b>Anger</b> 🔥 is what the ' +
+      'insurgents recruit from; low <b>Trust</b> 🛡️ means the people aren\'t with you yet.',
+    'Open the <b>Act</b> tab and pick an action. <b>Aid &amp; services</b> 🏗️ calms Anger — ' +
+      'choose it, then tap the place you want it to go.',
+    'You spend <b>Backing</b> 🏛️ and <b>Money</b> 💰 each month (top bar). Line up an action ' +
+      'or two, then tap <b>End month</b> and watch the map react.',
+    'That\'s the whole loop. Watch for places that go <b>quiet</b> — quiet can hide trouble, ' +
+      'not peace. Anything unclear? The <b>Key</b> tab explains every word. Good luck.',
+  ];
+  let coachStep = -1;
+  function startCoach() { coachStep = 0; renderCoach(); }
+  function renderCoach() {
+    let el = $("coach");
+    if (coachStep < 0 || coachStep >= COACH.length) { if (el) el.remove(); return; }
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "coach";
+      document.body.appendChild(el);
+    }
+    const last = coachStep === COACH.length - 1;
+    el.innerHTML = `<div>${COACH[coachStep]}</div>` +
+      `<div class="cn"><span class="cstep">${coachStep + 1} / ${COACH.length}</span>` +
+      `<span><button class="cskip" id="coachSkip">skip</button> ` +
+      `<button class="cnext" id="coachNext">${last ? "Start playing" : "Next ▸"}</button></span></div>`;
+    $("coachNext").addEventListener("click", () => { coachStep++; renderCoach(); if (coachStep >= COACH.length) endCoach(); });
+    $("coachSkip").addEventListener("click", endCoach);
+  }
+  function endCoach() {
+    coachStep = -1;
+    const el = $("coach"); if (el) el.remove();
+    try { localStorage.setItem("paxstressia_coached", "1"); } catch (e) { /* private mode */ }
   }
   function renderPanel() {
     const P = $("panel");
@@ -1629,8 +1649,8 @@ if (typeof document !== "undefined") (function () {
       const rep = game.state.reports[game.state.reports.length - 1];
       let html = '<div class="head">This month\'s news</div>';
       for (const h of headlines(rep)) html += `<div class="${sevClass(h)}">${h.text}</div>`;
-      html += `<div class="sub">+${game.state.lastIncome} Mandate this month. ` +
-        `Insurgent numbers are <b>estimates</b> (the ± shows how unsure) — better intel narrows them. ` +
+      html += `<div class="sub">+${game.state.lastIncome} Backing this month. ` +
+        `Insurgent numbers are <b>estimates</b> (the ± shows how unsure you are) — a clearer view narrows them. ` +
         `New here? Tap <b>Key</b> below.</div>`;
       if (game.consts.norm_feedback > 0) {
         const nm = game.state.norms;
@@ -1654,7 +1674,7 @@ if (typeof document !== "undefined") (function () {
           .filter(([, v]) => v > 5).sort((a, b) => b[1] - a[1])
           .map(([k, v]) => `${k} ${Math.round(v)}`).join(" · ") || "none yet";
         html += `<div class="card"><b>World markets &amp; rivals</b> ` +
-          `<span class="hint">conflict and oil move global prices; rival patrons contest the regimes</span>` +
+          `<span class="hint">conflict and oil move global prices; rival foreign backers contest the regimes</span>` +
           `<div class="kv"><span class="lbl">markets</span><span class="val">` +
           `${tag("arms", mk.arms, true)} · ${tag("oil", mk.oil, true)}</span></div>` +
           `<div class="kv"><span class="lbl">rival reach</span><span class="val">${ps}</span></div>` +
@@ -1691,7 +1711,20 @@ if (typeof document !== "undefined") (function () {
       const tLeft = p.treasury - queue.reduce((s, q) =>
         s + game.initiatives[q.initiative].treasury_cost, 0);
       const FAM = { military: "⚔️ force", governance: "🏗️ build",
-        intelligence: "🕵️ intel", diplomatic: "🤝 talk", domestic: "🏛️ home" };
+        intelligence: "🕵️ spy", diplomatic: "🤝 talk", domestic: "🏛️ home" };
+      // Plain-language action names — the rules keep the doctrinal names; the UI speaks plainly.
+      const ANAME = {
+        presence_patrols: "Patrols", partnered_raids: "Local-force raids",
+        drone_strike: "Air strike", train_equip: "Train local forces",
+        development_program: "Aid & services", amnesty_reintegration: "Amnesty deal",
+        humint_network: "Informant network", un_mandate: "Seek UN approval",
+        fund_research: "Fund researchers", support_exile_media: "Back exile media",
+        targeted_sanctions: "Sanctions", negotiate_settlement: "Negotiate a deal",
+        surveillance_expansion: "Mass surveillance", establish_command: "Set up a regional base",
+        rally_coalition: "Rally allies", administrative_detention: "Detain without trial",
+        martial_law: "Censorship & martial law",
+      };
+      const aName = (id) => ANAME[id] || game.initiatives[id].name;
       let html = `<div class="sub">Pick an action, then (if it needs a region) tap one. ` +
         `Left to spend: <b>🏛️ ${mLeft}</b> · <b>💰 ${Math.round(tLeft)}</b></div>`;
       for (const id of Object.keys(game.initiatives).sort()) {
@@ -1705,17 +1738,17 @@ if (typeof document !== "undefined") (function () {
         const cls = armed === id ? "card init armed" : "card init";
         const affordable = i.mandate_cost <= mLeft && i.treasury_cost <= tLeft;
         html += `<div class="${cls}" data-init="${id}" style="${affordable ? "" : "opacity:.5"}">` +
-          `<div><b>${i.name}</b>` +
+          `<div><b>${aName(id)}</b>` +
           `<small>${FAM[i.family] || i.family}` +
           (i.target === "node" ? " · 📍 tap a region" : "") +
-          ` · ⚠️ ${Math.round(i.backfire.probability * 100)}%</small></div>` +
-          `<span class="cost" title="costs ${i.mandate_cost} Mandate and ${i.treasury_cost} Funds">` +
+          ` · ⚠️ ${Math.round(i.backfire.probability * 100)}% risk</small></div>` +
+          `<span class="cost" title="costs ${i.mandate_cost} Backing and ${i.treasury_cost} Money">` +
           `🏛️ ${i.mandate_cost}<br>💰 ${i.treasury_cost}</span></div>`;
       }
       if (queue.length) {
         html += '<div class="head">Queued</div>';
         queue.forEach((q, k) => {
-          html += `<div class="queue" data-dq="${k}">✕ ${game.initiatives[q.initiative].name}` +
+          html += `<div class="queue" data-dq="${k}">✕ ${aName(q.initiative)}` +
             (q.node ? " → " + q.node : "") + "</div>";
         });
       }
@@ -1751,7 +1784,7 @@ if (typeof document !== "undefined") (function () {
         }
         html += "</div>";
       }
-      if (!rep.ledger.length) html += '<div class="sub">No legitimacy movement.</div>';
+      if (!rep.ledger.length) html += '<div class="sub">No change in your standings.</div>';
       if (rep.events.length) {
         html += '<div class="head">Events</div>';
         for (const ev of rep.events)
@@ -1799,15 +1832,15 @@ if (typeof document !== "undefined") (function () {
     const MAP = {
       domestic_legitimacy: ["🏠 Home", "delta", true],
       international_legitimacy: ["🤝 Allies", "delta", true],
-      local_legitimacy: ["🛡️ Local", "delta", true],
+      local_legitimacy: ["🛡️ Trust", "delta", true],
       governance: ["🏛️ Control", "delta", true],
-      grievance: ["🔥 Grievance", "delta", false],
+      grievance: ["🔥 Anger", "delta", false],
       coup_seed: ["⚠️ Coup risk", "delta", false],
       partner_capacity: ["🪖 Local forces", "delta", true],
-      exposure: ["🔦 Exposure", "delta", true],
+      exposure: ["🔦 Spotlight", "delta", true],
       intl_umbrella: ["☂️ UN cover", "delta", true],
-      intel: ["🕵️ Intel", "delta", true],
-      drift: ["⛓️ Drift", "tiers", false],
+      intel: ["🕵️ Your view", "delta", true],
+      drift: ["⛓️ Overreach", "tiers", false],
     };
     const tags = [];
     for (const e of effects || []) {
@@ -1859,10 +1892,10 @@ if (typeof document !== "undefined") (function () {
     const s = game.score(), e = game.ending();
     const E = $("endPaper");
     E.innerHTML = `<h2>${e.name}</h2><p>${e.text}</p>` +
-      `<table><tr><td>Stabilization</td><td>${s.stabilization}</td></tr>` +
+      `<table><tr><td>Peace held</td><td>${s.stabilization}</td></tr>` +
       `<tr><td>× Order (juntas ${s.juntas}, blocs ${s.blocs})</td><td>${s.order_mult}</td></tr>` +
-      `<tr><td>× Integrity (drift ${s.drift})</td><td>${s.integrity_mult}</td></tr>` +
-      `<tr><td>− Costs (casualties ${s.casualties}, spend)</td><td>${s.costs}</td></tr>` +
+      `<tr><td>× Staying clean (overreach ${s.drift})</td><td>${s.integrity_mult}</td></tr>` +
+      `<tr><td>− Costs (lives ${s.casualties}, money)</td><td>${s.costs}</td></tr>` +
       `<tr><td><b>Final score</b></td><td><b>${s.final}</b></td></tr></table>` +
       `<div class="head">Post-mortem: what you believed vs what was true</div>` +
       `<canvas id="pm" width="380" height="170"></canvas>` +
@@ -1910,7 +1943,7 @@ if (typeof document !== "undefined") (function () {
     gaps.sort((a, b) => b.gap - a.gap);
     const worst = gaps.filter((g) => g.gap > 3).slice(0, 3);
     if (!worst.length) return '<div class="sub" style="margin-top:6px">Your map was honest: ' +
-      'little hidden strength at the end. Intel money well spent.</div>';
+      'little hidden strength at the end. Money on a clearer view, well spent.</div>';
     let html = '<div class="head" style="font-size:12px">Where the quiet lied</div>';
     for (const g of worst)
       html += `<div class="sub">${g.name}: you believed ~${Math.round(g.bel)} fighters; ` +
@@ -1966,13 +1999,13 @@ if (typeof document !== "undefined") (function () {
     $("tabKey").addEventListener("click", () => setTab("key"));
     $("helpBtn").addEventListener("click", showIntro);
     if (game.state.turn >= horizon) { showEnd(); } else renderAll();
-    // First-ever load: orient the player once (tracked separately from the game save).
+    // First-ever load: coach the player through the loop, one step at a time
+    // (tracked separately from the game save). The "?" button reopens the short intro.
     try {
-      if (!localStorage.getItem("paxstressia_seen_intro")) {
-        showIntro();
-        localStorage.setItem("paxstressia_seen_intro", "1");
+      if (!localStorage.getItem("paxstressia_coached") && game.state.turn < horizon) {
+        startCoach();
       }
-    } catch (e) { /* private mode: just skip the one-time intro */ }
+    } catch (e) { /* private mode: just skip the one-time coach */ }
   })();
 })();
 </script>

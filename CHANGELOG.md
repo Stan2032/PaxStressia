@@ -2,6 +2,17 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.26.0 — 2026-06-28
+
+**Plainer words, and a coach (UI pass 6).** Per Stan: the learning curve was too steep — in skill *and* in language. The game now speaks in everyday words and teaches by doing.
+
+- **Jargon out of the UI:** the specialist vocabulary is gone from the screen. Mandate → **Backing**, Funds → **Money**, Local (legitimacy) → **Trust**, Grievance → **Anger**, Govt control → **Control**, Entrenchment / Dug-in → **Dug in**, Activity → **Violence**, Visibility → **Your view**, Exposure → **Spotlight**, Foreign patron → **Foreign backer**, Drift → **Overreach**. Action names too — HUMINT Network → **Informant network**, Development Program → **Aid & services**, Seek UN Mandate → **Seek UN approval**, Administrative Detention → **Detain without trial**, and so on. The end-screen score table reads in plain terms as well (Peace held · Order · Staying clean · Costs).
+- **A first-run coach, not a wall of text:** a five-step bubble walks a new player through the loop one thing at a time (spot the red rings → tap a region → pick an action → end the month), skippable and shown once.
+- **The glossary, cut to size:** the Key tab's wall of text became a short, scannable plain-language explainer.
+- **The doctrinal vocabulary is kept where it belongs** — in the rules data and the Sources appendix (the game's "homework"). A player never has to learn it to play; the curious can still find it.
+- **Fixed a latent bug found along the way:** `renderHeader` referenced a missing element (`#hSource`) and threw on every render, silently skipping the standing-bar update right below it; now guarded.
+- **Proto / UI only** — no engine, rules, or calibration change (the Python sim is untouched; smoke test and rules snapshot both green). Verified in a headless browser: header, region card, action list, glossary, and the coach all render the plain vocabulary.
+
 ## v0.25.0 — 2026-06-26
 
 **The horizon finding, diagnosed — and the benchmark sharpened** (§19.7; the measured follow-through on v0.24). The v0.24 audit found that balanced play loses to pure hearts-minds at the arc's full 168-turn horizon and named a fix. Before building it, I measured *why* — and the first explanation was wrong. Recording that correction is the point: *measure, never assume.*
