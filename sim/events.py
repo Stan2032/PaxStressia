@@ -27,6 +27,11 @@ def _eligible(world: WorldState, card: dict) -> bool:
     if "min_coup_risk" in req:
         if max(world.coup_risk.values(), default=0.0) < req["min_coup_risk"]:
             return False
+    if "min_exposure" in req:
+        # the 'world notices' chain (§20.4): gated on the documentation the player
+        # has funded. Passive never funds research → exposure stays 0 → never fires.
+        if max(world.exposure.values(), default=0.0) < req["min_exposure"]:
+            return False
     if "min_partner_capacity" in req:
         best = max((n.partner_capacity for n in world.nodes_sorted()), default=0.0)
         if best < req["min_partner_capacity"]:

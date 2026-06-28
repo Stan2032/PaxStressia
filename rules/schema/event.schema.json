@@ -54,6 +54,7 @@
           "min_avg_grievance": { "type": "number", "minimum": 0, "maximum": 100 },
           "any_junta": { "type": "boolean" },
           "min_coup_risk": { "type": "number", "minimum": 0 },
+          "min_exposure": { "type": "number", "minimum": 0, "description": "Eligible once any regime's Exposure (the §20 documentation track the player funds) reaches this level — the 'world notices' cards. Passive never funds research, so these never fire unprompted (calibration-safe)." },
           "min_partner_capacity": { "type": "number", "minimum": 0 },
           "min_casualties": { "type": "integer", "minimum": 0 },
           "country_collapsed": { "type": "string", "description": "Eligible only after this country collapsed." },

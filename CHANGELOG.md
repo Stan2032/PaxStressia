@@ -2,6 +2,18 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.29.0 — 2026-06-28
+
+**"The world notices" — the founding vision's payoff, made content (§20.4).** Per Stan's founding ask (*fund think-tanks and academics so the reality reaches the global stage and pressure rises*), funding the documentation track now has a **narrative arc**, not just a slow score nudge — which also gives the otherwise-low-leverage Exposure tool a reason to exist.
+
+- **A new `min_exposure` event predicate** (Python sim + JS proto + schema): cards gated on how much a regime's Exposure the player has funded. The passive baseline never funds research, so Exposure stays 0 and these **never fire unprompted — calibration-safe by construction**.
+- **Three grounded, sober cards** (base + Sahel-arc decks), each a real choice with a trade:
+  - **The Report Lands** — the think tanks and exile reporters you funded publish together; it's cited in three capitals (the Global Witness / The Sentry → Magnitsky pipeline). Push for designations, or hold and build the case.
+  - **They Reach the Researchers** — transnational repression: the regime targets the people you funded (spyware, a detained cousin, a revoked visa). Relocate and protect them (a cost), or ask them to keep going (they pay). The human cost, kept sober and named.
+  - **Cited at the Council** — the documentation reaches the Security Council; the regime cries "neocolonial fabrication" (the EEAS–VIGINUM "African Initiative" FIMI playbook). Chained to *The Report Lands* via `requires_fired`.
+- **Verified live and safe:** all three fire for a research-funding player and the chain holds; nothing in the passive/pure/competent test policies funds research, so **calibration stays 10/10 and 105 tests pass / 0 xfail**. Both engines + snapshot; grounded in the existing documented record (Freedom House transnational repression; EEAS–VIGINUM; The Sentry / Global Witness; OCCRP).
+- Also folds in a docs clarification (§19.7): the v0.28 "support tools don't pay their way" caveat was softened to the measured truth — breadth isn't punished in normal play (development-backbone + situational support beats every pure through 120 turns); only the extreme 168-turn grind favours focus, a deep budget-economy property that resists clean tuning.
+
 ## v0.28.0 — 2026-06-28
 
 **The thesis suite is complete — the 168-turn dominance gap is closed (§19.7).** The fifth design-thesis assertion, xfailing since v0.24, is now **enforced**. All five claims are true by force.
