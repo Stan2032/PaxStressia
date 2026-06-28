@@ -2,6 +2,15 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.27.0 — 2026-06-28
+
+**The Sources page, made readable without losing its scholarship.** A small follow-up to v0.26, with a deliberate boundary (per Stan: *words have weight — don't lose scope to synonyms*).
+
+- The cited research uses precise terms — *legitimacy, counterinsurgency, attrition, decapitation, sanctuaries, FIMI, transnational repression* — that carry exact meaning and link to the literature. Swapping them for everyday synonyms would lose scope, so they're **kept verbatim**.
+- Instead, the Sources section gains a one-line **translation key** mapping the game's plain bar-names to the research terms (**Backing** = mandate, **Trust** = local legitimacy, **Anger** = grievance, **Spotlight** = exposure, **Overreach** = authoritarian drift, …). The appendix is now readable in the new vocabulary without a single precise term being softened.
+- The design doc's **Legibility principle (§13.3)** now records the canonical **plain ↔ model** vocabulary map and states the rule explicitly: the model/doctrinal terms remain the development language (in code, tests, and docs); the UI is a plain-language *skin* over them. This supersedes the old v0.5 "plain word + doctrinal gloss in the tooltip" rule for the player UI.
+- Proto + docs only — no engine, rules, or calibration change.
+
 ## v0.26.0 — 2026-06-28
 
 **Plainer words, and a coach (UI pass 6).** Per Stan: the learning curve was too steep — in skill *and* in language. The game now speaks in everyday words and teaches by doing.
