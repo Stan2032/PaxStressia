@@ -551,5 +551,92 @@
     "sources": [
       "US lifts sanctions on three Wagner-linked Malian officials to court security cooperation, March 2026 (HRW); Wagner rebranded as the state-run Africa Corps"
     ]
+  },
+  {
+    "id": "exposure_report_lands",
+    "title": "The Report Lands",
+    "text": "The think tanks and exile reporters you funded publish together: the names, the shell companies, the mining concessions that pay the mercenaries. By morning it is cited in three capitals.",
+    "weight": 1.1,
+    "once": true,
+    "requires": { "min_exposure": 26 },
+    "choices": [
+      {
+        "label": "Push for designations",
+        "effects": [
+          { "op": "international_legitimacy", "delta": 4 },
+          { "op": "domestic_legitimacy", "delta": 2 }
+        ]
+      },
+      {
+        "label": "Hold, and build the case",
+        "effects": [
+          { "op": "exposure", "delta": 6 }
+        ]
+      }
+    ],
+    "notes": "§20.4 founding vision: the empirical research the player funds reaches the global stage and pressure rises. The documentation→designation pipeline (Global Witness / The Sentry → Magnitsky).",
+    "sources": [
+      "Global Witness / The Sentry → Magnitsky designation pipeline",
+      "DESIGN §20.4 Exposure"
+    ]
+  },
+  {
+    "id": "exposure_reach_researchers",
+    "title": "They Reach the Researchers",
+    "text": "The regime cannot unsay the reports, so it reaches the people who wrote them: a spyware text, a cousin detained back home, a visa quietly revoked. The work has a price, and others are paying it.",
+    "weight": 1.0,
+    "once": true,
+    "requires": { "min_exposure": 30 },
+    "choices": [
+      {
+        "label": "Relocate and protect them",
+        "effects": [
+          { "op": "domestic_legitimacy", "delta": -2 },
+          { "op": "international_legitimacy", "delta": 1 },
+          { "op": "exposure", "delta": 2 }
+        ]
+      },
+      {
+        "label": "Ask them to keep going",
+        "effects": [
+          { "op": "exposure", "delta": 4 },
+          { "op": "local_legitimacy", "delta": -2 }
+        ]
+      }
+    ],
+    "notes": "§20.5 transnational repression as documented pattern (Freedom House; Pegasus): the human cost of exposure, kept sober and named.",
+    "sources": [
+      "Freedom House — Transnational Repression",
+      "DESIGN §20.5"
+    ]
+  },
+  {
+    "id": "exposure_cited_council",
+    "title": "Cited at the Council",
+    "text": "Your documentation reaches the Security Council floor. The regime's delegate calls it neocolonial fabrication and walks out — but the record now exists, and the abstaining states look uneasy.",
+    "weight": 1.0,
+    "once": true,
+    "requires": { "min_exposure": 34, "requires_fired": "exposure_report_lands" },
+    "choices": [
+      {
+        "label": "Press the resolution",
+        "effects": [
+          { "op": "international_legitimacy", "delta": 5 },
+          { "op": "local_legitimacy", "delta": -2 }
+        ]
+      },
+      {
+        "label": "Let it sit on the record",
+        "effects": [
+          { "op": "international_legitimacy", "delta": 2 },
+          { "op": "exposure", "delta": 3 }
+        ]
+      }
+    ],
+    "notes": "The funders' paradox: pressing the case abroad lets the regime's FIMI brand local partners 'foreign puppets' at home (the EEAS–VIGINUM 'African Initiative' playbook). Chained to exposure_report_lands.",
+    "sources": [
+      "EEAS–VIGINUM–FCDO 'African Initiative' report (2025)",
+      "OCCRP funding-independence FAQ"
+    ]
   }
 ]
