@@ -2,6 +2,14 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.30.0 — 2026-06-28
+
+**Production direction: the thin-client contract, and a Godot scaffold (§13.4).** A step toward the production client — the JSON core's third consumer, after the Python sim and the JS proto.
+
+- **`docs/CLIENT.md` — the thin-client contract** (the solid, verifiable deliverable). How any client consumes the rules core: the two strategies (embed an engine vs display one), rules loading + §18.9 scenario layering, the turn-loop/engine contract, the state-to-render shape, the score/ending contract, and the binding display rules (plain words on screen + the canonical plain↔model vocabulary map; show-don't-tell). Grounded entirely in the existing, tested engines — it documents what is already true.
+- **`client/godot/` — a Godot 4 scaffold** (a *starting skeleton*, **explicitly UNVERIFIED**): loads the rules with scenario layering and renders the Sahel arc's starting state read-only, in plain words. It was authored **without a Godot binary in the build env, so it has not been run** — open it in Godot 4.x to validate and iterate. Deliberately **isolated** under `client/godot/`: it touches nothing in `sim/` or `proto/`, so it cannot affect the tested game.
+- **Discipline kept:** the contract doc is grounded in tested behaviour; the unverified scaffold is quarantined with zero blast radius and flagged as such (the project does not pretend untested code works). **No change to sim / rules / proto / tests — calibration 10/10; 105 tests / 0 xfail unchanged.**
+
 ## v0.29.0 — 2026-06-28
 
 **"The world notices" — the founding vision's payoff, made content (§20.4).** Per Stan's founding ask (*fund think-tanks and academics so the reality reaches the global stage and pressure rises*), funding the documentation track now has a **narrative arc**, not just a slow score nudge — which also gives the otherwise-low-leverage Exposure tool a reason to exist.

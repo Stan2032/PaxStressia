@@ -1,0 +1,18 @@
+; Engine configuration file.
+; PaxStressia — Godot 4 thin-client scaffold.
+; UNVERIFIED: written without a Godot binary in the build env; open in Godot 4.x
+; to validate and iterate. See README.md. It does not affect the tested sim/proto.
+
+config_version=5
+
+[application]
+
+config/name="PaxStressia (scaffold)"
+run/main_scene="res://Main.tscn"
+config/features=PackedStringArray("4.3")
+config/description="Thin-client scaffold over the JSON rules core (docs/CLIENT.md)."
+
+[display]
+
+window/size/viewport_width=900
+window/size/viewport_height=760
