@@ -19,9 +19,13 @@ enough run that concentration out-scores balanced play, because development has 
 diminishing returns or co-option downside (Galula's 'development without security
 is captured' is under-modelled). v0.25 shipped the calibration-safe half of the
 fix — sharpening the benchmark's own targeting, so it now dominates every pure by
-~9 points at 120 turns — and names the deeper one (diminishing-returns / co-option
-on development) as the next milestone. Asserted at the full horizon so the
-destination stays tracked.
+~9 points at 120 turns. The deeper fix's *direction* was then corrected by a second
+measurement: grip-scaled development co-option (the obvious candidate) was built
+and pointed the wrong way (it rewards the lowest-control strategy, i.e. pure
+prevention), so it was reverted; the real requirement is a grievance-independent
+insurgent sustainment channel (coercion / external arms) — a world-dynamics,
+calibration-sensitive milestone. Asserted at the full horizon so the destination
+stays tracked.
 """
 
 import pytest
@@ -161,8 +165,9 @@ def test_a_reasonable_player_can_beat_history():
     "starves recruitment best. Over a long run that concentration out-scores "
     "balanced play, because development has no diminishing-returns / co-option "
     "downside (Galula under-modelled). v0.25 shipped the calibration-safe half — "
-    "sharpening the benchmark's targeting; the deeper fix (diminishing returns on "
-    "development) is the named next milestone. Tracked here at the full horizon.",
+    "sharpening the benchmark's targeting. The deeper fix (a grievance-independent "
+    "insurgent sustainment channel — grip-scaled co-option was measured and points "
+    "the WRONG way) is the named next milestone. Tracked here at the full horizon.",
 )
 def test_no_pure_strategy_dominates_at_the_full_horizon():
     """The §19.7 discipline at the arc's *actual* play length (168 turns), not the
