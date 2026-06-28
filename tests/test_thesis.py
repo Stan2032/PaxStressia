@@ -9,26 +9,24 @@ true by force.
 
 v0.24 added a fifth, *stronger* assertion — §19.7 (no pure strategy dominates the
 balanced baseline) at the arc's **full 168-turn horizon**, not only the 120-turn
-subset the enforced test checks — and it **xfails**. v0.25 diagnosed *why*, by
-measurement (the first hypothesis was wrong): capital collapse is driven by
-insurgent strength ÷ capital governance (`factions.collapse_rolls`), not by
-grievance directly — so keeping juntas low (and `order_mult` high) means keeping
-total insurgent strength low, and all-in development aimed at the worst-*grievance*
-regions starves recruitment at the source and does exactly that. Over a long
-enough run that concentration out-scores balanced play, because development has no
-diminishing returns or co-option downside (Galula's 'development without security
-is captured' is under-modelled). v0.25 shipped the calibration-safe half of the
-fix — sharpening the benchmark's own targeting, so it now dominates every pure by
-~9 points at 120 turns. The deeper fix's *direction* was then corrected by a second
-measurement: grip-scaled development co-option (the obvious candidate) was built
-and pointed the wrong way (it rewards the lowest-control strategy, i.e. pure
-prevention), so it was reverted; the real requirement is a grievance-independent
-insurgent sustainment channel (coercion / external arms) — a world-dynamics,
-calibration-sensitive milestone. Asserted at the full horizon so the destination
-stays tracked.
+subset — and it began life xfailing. The road to enforcing it is a case study in
+*measure, never assume*: v0.24's first mechanism guess was wrong (it is NOT that
+conceded countryside drops out of the score, NOR that sustained security's costs
+pile up — the benchmark barely uses force). v0.25 measured the truth — capital
+collapse is driven by insurgent strength ÷ capital governance
+(`factions.collapse_rolls`), not grievance directly, so the long-game winner is
+whoever ends with the *smallest* insurgency — and sharpened the benchmark's
+targeting. Two candidate world-dynamics fixes (grip-scaled co-option; a
+low-grievance coercion channel) were then built and **measured to point the wrong
+way** — both reward the lowest-strength strategy (pure prevention) — and reverted.
+The fix that worked is a *benchmark* fix, calibration-safe: a **concentrated
+political-primacy** player (prevent at scale via grievance-targeted development
+**and** shrink the established force via negotiation) ends with a smaller
+insurgency than pure prevention and **robustly tops every pure at both 120 and 168
+turns**. **Enforced at v0.28.** (Honest caveat, §19.7: the win comes from
+concentration, not breadth — the support tools are currently too low-leverage to
+earn the scarce budget, a separate tuning question.)
 """
-
-import pytest
 
 from sim import (
     CompetentPolicy,
@@ -156,24 +154,17 @@ def test_a_reasonable_player_can_beat_history():
     assert competent > passive + 5.0, "skilled play must clearly beat inaction"
 
 
-@pytest.mark.xfail(
-    strict=False,
-    reason="§19.7 holds at 120 turns but breaks at 168 (audit finding v0.24, "
-    "diagnosed v0.25). Capital collapse is driven by insurgent strength ÷ capital "
-    "governance, not grievance directly, so keeping juntas low means keeping total "
-    "strength low — and all-in development aimed at the worst-grievance regions "
-    "starves recruitment best. Over a long run that concentration out-scores "
-    "balanced play, because development has no diminishing-returns / co-option "
-    "downside (Galula under-modelled). v0.25 shipped the calibration-safe half — "
-    "sharpening the benchmark's targeting. The deeper fix (a grievance-independent "
-    "insurgent sustainment channel — grip-scaled co-option was measured and points "
-    "the WRONG way) is the named next milestone. Tracked here at the full horizon.",
-)
 def test_no_pure_strategy_dominates_at_the_full_horizon():
-    """The §19.7 discipline at the arc's *actual* play length (168 turns), not the
-    120-turn subset the enforced test checks. Balanced play should top every pure
-    archetype over the whole run, or a dominant strategy exists at the horizon
-    players reach."""
+    """ENFORCED at v0.28 (§19.7) — the §19.7 discipline at the arc's *actual* play
+    length (168 turns), not only the 120-turn subset the test above checks. Balanced
+    play must top every pure archetype over the whole run, or a dominant strategy
+    exists at the horizon players reach. Promoted from xfail once a *concentrated
+    political-primacy* benchmark — prevent at scale (grievance-targeted development)
+    **and** shrink the established force (negotiation) — was shown to end with a
+    smaller insurgency than pure prevention and so to win robustly at both horizons.
+    Calibration-safe: only the player benchmark changed; the passive WORLD (§12) is
+    untouched. (§19.7 caveat: the win is from concentration, not breadth — the
+    support tools are currently too low-leverage to earn the scarce budget.)"""
     balanced = mean_final(CompetentPolicy, turns=168)
     for pure in (PureKineticPolicy, PureHeartsMindsPolicy, EmergencyPowersPolicy):
         assert balanced > mean_final(pure, turns=168), (

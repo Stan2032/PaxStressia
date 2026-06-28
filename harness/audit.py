@@ -4,14 +4,15 @@ checks the PLAYER side: the score spread, the ending distribution, and the §19.
 forced-portfolio / §19.7 no-dominant-strategy discipline — and at BOTH the
 120-turn subset the thesis suite tests and the arc's full 168-turn horizon.
 
-It surfaced the v0.24 finding (diagnosed v0.25): balanced play tops the pures at
-120 turns but not at 168. The mechanism, measured: capital collapse is driven by
+It surfaced the v0.24 finding — balanced play once trailed the pures at 168 turns —
+and tracked its fix. The mechanism, measured: capital collapse is driven by
 insurgent strength / capital governance (factions.collapse_rolls), not grievance,
-so keeping juntas low means keeping total strength low — and all-in development
-aimed at the worst-GRIEVANCE regions starves recruitment best. Over a long run
-that concentration wins, because development has no diminishing-returns / co-option
-downside yet (Galula under-modelled). Report-only — it never fails CI; the xfail
-thesis test is the gate.
+so the long-game winner is whoever ends with the SMALLEST insurgency. The fix
+(v0.28): a concentrated political-primacy benchmark that both prevents at scale
+(grievance-targeted development) AND shrinks the established force (negotiation)
+ends smaller than pure prevention and now tops every pure at BOTH horizons — so
+§19.7 holds @120 AND @168. Report-only — it never fails CI; the thesis tests are
+the gate.
 
 Usage:
   python3 harness/audit.py --runs 8
@@ -75,7 +76,7 @@ def main() -> int:
         print(f"\n===== sahel_arc · {turns} turns · {args.runs} seeds =====")
         holds[turns] = audit("sahel_arc", turns, args.runs)["no_pure_dominates"]
     print(f"\nsummary: §19.7 holds @120={holds[120]}  @168={holds[168]} "
-          f"(168 is the arc's real horizon; the v0.24 finding is the gap)")
+          f"(both enforced as of v0.28; 168 is the arc's real horizon)")
     return 0
 
 

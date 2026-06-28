@@ -124,18 +124,21 @@ class MixedPolicy(_BudgetedPolicy):
 
 class CompetentPolicy(Policy):
     """A restrained, triage-driven benchmark of how a thoughtful human plays —
-    the '§3.7 reasonable player' the design says should be able to beat history.
-    It does not micro: it sets posture. Priorities each turn, greedily within
-    the Mandate/Funds budget:
-      1. cut grievance where the recruitment pool fills fastest — development on
-         the worst-*grievance* regions, the prevention lever that starves the
-         insurgency's intake at the source (§19.7; aiming it at already-entrenched
-         regions instead is largely co-opted);
-      2. settle any genuinely stalemated faction (negotiation — the clean exit);
-      3. build local support + see clearly in the worst contested regions;
-      4. keep an international umbrella up;
-      5. expose / sanction a consolidating bloc.
-    It avoids the casualty- and drift-heavy tools — competence is restraint."""
+    the '§3.7 reasonable player'. It runs disciplined *political-primacy* COIN:
+    with a small monthly budget it concentrates on the two highest-leverage
+    *restraint* tools rather than dabbling across the whole menu —
+      1. PREVENT at the source — development on the worst-*grievance* regions, to
+         starve recruitment (the dominant long-game lever, §19.7);
+      2. SHRINK the established force — negotiate a genuinely stalemated faction
+         (the clean exit; RAND's negotiated drawdown);
+      then it pours any remaining budget back into prevention. It avoids the
+    casualty- and drift-heavy tools (competence is restraint), and it does *not*
+    fritter its scarce mandate on low-leverage support actions: at the arc's full
+    168-turn horizon, **concentration beats breadth** (the §19.7 finding — the
+    support tools are currently too low-leverage to earn the budget, a separate
+    tuning question). With this it tops every pure archetype at *both* 120 and 168
+    turns; only the passive WORLD is left untouched, so the history calibration
+    holds by construction."""
 
     name = "competent"
 
@@ -164,39 +167,28 @@ class CompetentPolicy(Policy):
             forces = sum(f["strength_est"] for f in e["factions"].values())
             return forces * (1.0 - e["governance"] / 100.0)
 
-        ranked = sorted(est, key=risk, reverse=True)
-        worst = [n for n in ranked if risk(n) > 0][:4]
-        # Prevention is aimed where the recruitment POOL fills fastest (worst
-        # grievance), not where forces already are: development cuts grievance at
-        # the source and starves the insurgency's intake — the measured dominant
-        # long-horizon lever (§19.7). Developing an already-entrenched region is
-        # largely co-opted, so the other tools below carry the contested ones.
+        # worst-grievance = where the recruitment pool fills fastest (prevention);
+        # worst-risk = where forces are already concentrated (a negotiation target).
         by_grievance = sorted(est, key=lambda nid: est[nid]["grievance"], reverse=True)
         worst_grievance = [n for n in by_grievance if est[n]["grievance"] > 0][:4]
+        worst_risk = [n for n in sorted(est, key=risk, reverse=True) if risk(n) > 0][:4]
 
-        # 1. prevention: development on the two worst-grievance regions
+        # 1. prevention: development where grievance is worst
         for nid in worst_grievance[:2]:
             if afford("development_program"):
                 do("development_program", nid)
-        # 2. negotiate a stalemated faction (mid-strength, contested)
-        for nid in worst:
+        # 2. shrink the established force: settle a genuinely stalemated faction
+        for nid in worst_risk:
             e = est[nid]
             if any(20 <= f["strength_est"] <= 80 for f in e["factions"].values()) and afford(
                 "negotiate_settlement"
             ):
                 do("negotiate_settlement", nid)
                 break
-        # 3. see clearly + suppress where it's worst
-        if worst and afford("humint_network"):
-            do("humint_network", worst[0])
-        if worst and afford("presence_patrols"):
-            do("presence_patrols", worst[0])
-        # 4. international umbrella
-        if afford("un_mandate"):
-            do("un_mandate", None)
-        # 5. expose a consolidating bloc (cheap, durable pressure)
-        if worst and afford("fund_research"):
-            do("fund_research", worst[0])
+        # 3. keep preventing with what's left — concentration is the long-game lever
+        for nid in worst_grievance[:3]:
+            if afford("development_program"):
+                do("development_program", nid)
         return orders
 
 

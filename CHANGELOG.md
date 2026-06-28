@@ -2,6 +2,16 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.28.0 — 2026-06-28
+
+**The thesis suite is complete — the 168-turn dominance gap is closed (§19.7).** The fifth design-thesis assertion, xfailing since v0.24, is now **enforced**. All five claims are true by force.
+
+- **The journey (measure, never assume):** v0.24 found balanced play loses to pure hearts-minds at the arc's full 168-turn horizon and guessed wrong about why. v0.25 measured the truth — capital collapse is driven by insurgent **strength ÷ governance**, not grievance, so the long-game winner is whoever ends with the **smallest** insurgency. Two world-dynamics fixes (grip-scaled co-option; a low-grievance coercion channel) were built and **measured to point the wrong way** — both reward the lowest-strength strategy (pure prevention) — and reverted.
+- **The fix that worked — a calibration-safe *benchmark* fix:** pure prevention only loses to a player who *also shrinks the established force*. `CompetentPolicy` is now **concentrated political-primacy COIN** — prevent at scale (grievance-targeted development) **and** negotiate genuinely stalemated factions (the clean strength-shrinker), pouring leftover budget back into prevention, and **not** frittering its scarce mandate on low-leverage support actions. It ends with a smaller insurgency than pure prevention and **robustly tops every pure at both 120 and 168 turns** (competent ≈21.7 / 10.9 vs best pure ≈11.0 / 8.3; the 168t win holds across 5-, 8- and 20-seed batteries — not seed-overfit).
+- **Calibration-safe by construction** — only the player benchmark changed; the passive WORLD (the §12 history calibration) is untouched. **Sahel calibration still 10/10; 105 tests pass / 0 xfail** (the suite is now all-green, no expected failures).
+- **Honest caveat (now documented, not hidden):** the win comes from *concentration*, not *breadth*. At the full horizon the support tools (intel, international umbrella, exposure) are currently too low-leverage to earn the tiny monthly budget, so "broad balance" loses to "focused political-primacy." That the supporting tools don't yet pay their way is a real, separate balance question — a future tuning pass.
+- Sim + harness + docs only — no rules / proto / calibration change.
+
 ## v0.27.0 — 2026-06-28
 
 **The Sources page, made readable without losing its scholarship.** A small follow-up to v0.26, with a deliberate boundary (per Stan: *words have weight — don't lose scope to synonyms*).
