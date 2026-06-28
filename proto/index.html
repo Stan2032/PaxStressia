@@ -1579,7 +1579,11 @@ if (typeof document !== "undefined") (function () {
       established: '<span class="hint">established</span>',
       alt_history: '<span class="bd">⚠ alt-history (not fact)</span>' };
     let html = '<h3>Sources — the game cites its homework</h3>' +
-      `<p class="sub">${src.disclaimer}</p>`;
+      `<p class="sub">${src.disclaimer}</p>` +
+      '<p class="sub">These notes keep the research\'s own words; the game\'s plain labels map to them — ' +
+      '<b>Backing</b> = political mandate · <b>Home</b> = domestic support · <b>Allies</b> = international ' +
+      'legitimacy · <b>Trust</b> = local legitimacy · <b>Anger</b> = grievance · <b>Control</b> = governance · ' +
+      '<b>Your view</b> = visibility · <b>Spotlight</b> = exposure · <b>Overreach</b> = authoritarian drift.</p>';
     for (const cat of ["doctrine", "case", "data_org", "precedent", "method"]) {
       const items = src.entries.filter((e) => e.category === cat);
       if (!items.length) continue;
