@@ -2,6 +2,15 @@
 
 Small incremental releases, every balance change a readable diff (working convention, `docs/PROJECT_CONTEXT.md` §4).
 
+## v0.31.0 — 2026-06-28
+
+**Playtest fix: the end-screen crash (`sorted is not defined`).** Found by actually playing a full game in the browser — the first end-to-end playthrough that ends months and reaches the end screen (earlier QA only ever rendered turn-1 states, which is why it had stayed hidden).
+
+- **The bug:** the proto's end-screen "deceptive-calm" reveal called `sorted()`, a helper that is **private to the engine IIFE** and invisible to the separate UI-layer IIFE — so it threw the moment a finished game tried to draw its post-mortem. A genuine Python-ism (`sorted`) left across the JS scope boundary.
+- **The fix:** give the UI layer its own `sorted` helper (`Object.keys(x).sort()`), matching the engine's. One line.
+- **Verified by playthrough:** a full 60-turn game now completes; the end screen renders with the plain labels (**Peace held · Order · Staying clean · Costs · Final**) and the post-mortem; and events fire and are choosable in-browser (probe: 17 event modals in 40 turns, no page errors).
+- Proto / UI only — engine, rules, and calibration untouched; smoke + rules snapshot green; **105 tests / 0 xfail; calibration 10/10.**
+
 ## v0.30.0 — 2026-06-28
 
 **Production direction: the thin-client contract, and a Godot scaffold (§13.4).** A step toward the production client — the JSON core's third consumer, after the Python sim and the JS proto.
